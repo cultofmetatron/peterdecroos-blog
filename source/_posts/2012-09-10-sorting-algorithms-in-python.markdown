@@ -132,6 +132,7 @@ worth using on large datasets.
 	            merge(array, p, q, r)
 	    sort(0, len(array)-1, "root")
 	    return array
+	
 
 Quick sort and its probabilistic guarantee of fast enough run time strikes me as the most 
 mathematically perverse form of black magic. Beautiful in the inherent underlying fabric 
