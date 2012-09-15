@@ -51,7 +51,7 @@ The compare function
 
 	def min(array):
 	    return minv(array, 0)
-	
+
 
 Selection Sort
 
@@ -62,8 +62,8 @@ Selection Sort
 	        array1 = swap(i, minv(array1, i)[0], array1)
 	        i = i + 1
 	    return array1
-	
-Insertion sort is just a specialized case of shellsort so I created a base composite function that encapsulates the core of both algorithms. 
+
+Insertion sort is just a specialized case of shellsort so I created a base composite function that encapsulates the core of both algorithms.
 
 	def gapSort(array, gap):
 	    """helper function to aid insertion sort and shell sort"""
@@ -90,9 +90,9 @@ Insertion sort is just a specialized case of shellsort so I created a base compo
 	    for val in vals:
 	        array = gapSort(array, val)
 	    return array
-	
 
-Finally, Merge sort; Running in N log(N), it is the only algorithms other than Quicksort 
+
+Finally, Merge sort; Running in N log(N), it is the only algorithms other than Quicksort
 worth using on large datasets.
 
 	def merge(array, p, q, r):
@@ -132,10 +132,12 @@ worth using on large datasets.
 	            merge(array, p, q, r)
 	    sort(0, len(array)-1, "root")
 	    return array
-	
 
-Quick sort and its probabilistic guarantee of fast enough run time strikes me as the most 
-mathematically perverse form of black magic. Beautiful in the inherent underlying fabric 
+
+Quick sort and its probabilistic guarantee of fast enough run time strikes me as the most
+mathematically perverse form of black magic. Beautiful in the inherent underlying fabric
 of its utility. I'll cover that when I get to part 2.
-	
+
+
+
 
