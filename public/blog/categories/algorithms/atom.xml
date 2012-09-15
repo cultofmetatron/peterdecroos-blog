@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Blog.PeterdeCroos.com]]></title>
-  <link href="http://blog.peterdecroos.com/atom.xml" rel="self"/>
+  <title><![CDATA[Category: algorithms | Blog.PeterdeCroos.com]]></title>
+  <link href="http://blog.peterdecroos.com/blog/categories/algorithms/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
   <updated>2012-09-15T17:48:11-04:00</updated>
   <id>http://blog.peterdecroos.com/</id>
@@ -18,7 +18,7 @@
     <link href="http://blog.peterdecroos.com/blog/2012/09/10/sorting-algorithms-in-python/"/>
     <updated>2012-09-10T00:11:00-04:00</updated>
     <id>http://blog.peterdecroos.com/blog/2012/09/10/sorting-algorithms-in-python</id>
-    <content type="html"><![CDATA[<p>I&#8217;m in a couple of weeks into Robert Sedgewick&#8217;s class on algorithms currently
+    <content type="html"><![CDATA[<p>I'm in a couple of weeks into Robert Sedgewick's class on algorithms currently
 running on <a href="https://www.coursera.org/course/algs4partI">coursera</a>. To round off the weekend
 I decided to reimpliment some of the classic sortting algorithms in python.</p>
 
@@ -148,7 +148,7 @@ def mergeSort(array):
 
 <p>Quick sort and its probabilistic guarantee of fast enough run time strikes me as the most
 mathematically perverse form of black magic. Beautiful in the inherent underlying fabric
-of its utility. I&#8217;ll cover that when I get to part 2.</p>
+of its utility. I'll cover that when I get to part 2.</p>
 ]]></content>
   </entry>
   
