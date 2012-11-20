@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Interview with a Turing Mage]]></title>
+  <link href="http://blog.peterdecroos.com/atom.xml" rel="self"/>
+  <link href="http://blog.peterdecroos.com/"/>
+  <updated>2012-09-19T17:38:48-04:00</updated>
+  <id>http://blog.peterdecroos.com/</id>
+  <author>
+    <name><![CDATA[Peter de Croos]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[understanding priority queues]]></title>
+    <link href="http://blog.peterdecroos.com/blog/2012/09/18/understanding-priority-queues/"/>
+    <updated>2012-09-18T20:12:00-04:00</updated>
+    <id>http://blog.peterdecroos.com/blog/2012/09/18/understanding-priority-queues</id>
+    <content type="html"><![CDATA[<p>Node.js, twisted, eventmachine and gevent are all the rage amongst the cool kids
+these days. Despite their inherent popularity, there seems to be a gap in the
+understanding of what drives this particular paradigm of scalable architecture.</p>
+
+<p>The event driven system of programming at its core revolves around the concept of
+a central event loop running through a list of nonblocking procedures. Ok, thats
+kind of a mouthful and probably doesn&#8217;t mean much unless you already know how to
+implement one already.</p>
+
+<p>To put it more concretely, Lets flesh out the situation in more concrete terms. Imagine Sam the intern. Sam does alot of things around the office and each one takes a certain amount of time to do.</p>
+
+<p>For the sake of simpicity, Sam is majoring in comparative literature so he&#8217;s not going to be doing any career related work. He&#8217;s the office bitch.</p>
+
+<ul>
+<li>making coffee -  5 min</li>
+<li>collate papers from the printer - 2 min + 20 seconds per page</li>
+<li>write annual TPS report - 20 min</li>
+<li>deliver mail to the desks -10 min</li>
+<li>call for takeout - 5min</li>
+<li>take out the trash - 2 min</li>
+<li>clean computer screens - 1 min per computer</li>
+</ul>
+
+
+<p>You&#8217;ll notice that Sam is only doing tasks within O(N) time. ie: the time it takes to perform a tasks grows linearly with the size of the task itself.  Theres a good reason for that. For now, Suffice to say that giving Sam a task where the the big O is quadratic is gonna give you a bad time. I&#8217;ll cover this in more detail later on. For more info on orders of growth, <a href="http://en.wikipedia.org/wiki/Big_O_notation">wikipedia FTW</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[sorting algorithms in python - part 1]]></title>
+    <link href="http://blog.peterdecroos.com/blog/2012/09/10/sorting-algorithms-in-python/"/>
+    <updated>2012-09-10T00:11:00-04:00</updated>
+    <id>http://blog.peterdecroos.com/blog/2012/09/10/sorting-algorithms-in-python</id>
+    <content type="html"><![CDATA[<p>I&#8217;m in a couple of weeks into Robert Sedgewick&#8217;s class on algorithms currently
+running on <a href="https://www.coursera.org/course/algs4partI">coursera</a>. To round off the weekend
+I decided to reimpliment some of the classic sortting algorithms in python.</p>
+
+<p>The compare function</p>
+
+<pre><code>def cmp(a, b):
+    if (a == b):
+        return 0
+    elif (a &gt; b):
+        return 1
+    else:
+        return -1
+
+def swap(i, j, array):
+    swapv = array[i]
+    array[i] = array[j]
+    array[j] = swapv
+    return array
+
+def biggest(array):
+    i = 0
+    biggest_val = array[0]
+    biggest_index = i
+    while(i &lt; len(array)):
+        if (array[i] &gt; biggest_val):
+            biggest_val = array[i]
+            biggest_index = i
+        i = i + 1
+    return (biggest_index, biggest_val)
+
+def minv(array, start_index):
+    i = start_index
+    min_val = array[start_index]
+    min_index = i
+    while(i &lt; len(array)):
+        if (array[i] &lt; min_val):
+            min_val = array[i]
+            min_index = i
+        i = i + 1
+    return (min_index, min_val)
+
+def min(array):
+    return minv(array, 0)
+</code></pre>
+
+<p>Selection Sort</p>
+
+<pre><code>def selectionSort(array):
+    i = 0
+    array1 = array
+    while (i &lt; len(array1)):
+        array1 = swap(i, minv(array1, i)[0], array1)
+        i = i + 1
+    return array1
+</code></pre>
+
+<p>Insertion sort is just a specialized case of shellsort so I created a base composite function that encapsulates the core of both algorithms.</p>
+
+<pre><code>def gapSort(array, gap):
+    """helper function to aid insertion sort and shell sort"""
+    i = 0
+    array1 = array
+    while (i &lt; len(array)):
+        if (i &gt; 0):
+            j = i
+            while ((cmp(array1[j], array1[j-gap]) &lt; 0) and (j != 0 ) ):
+                #while object at i is less than the one before it
+                swap(j, j-gap, array1)
+                j = j - 1
+        i = i + 1
+    return array1
+
+def insertionSort(array):
+    return gapSort(array, 1)
+
+
+
+def shellSort(array):
+    """sorts using the shellsort algorithm"""
+    vals = [3*h+1 for h in range(len(array)/3)][::-1]
+    for val in vals:
+        array = gapSort(array, val)
+    return array
+</code></pre>
+
+<p>Finally, Merge sort; Running in N log(N), it is the only algorithms other than Quicksort
+worth using on large datasets.</p>
+
+<pre><code>def merge(array, p, q, r):
+"""The merge function"
+    if ((r - p) &gt; 1):
+        left = array[p:q+1]
+        loggr("left" + str(left))
+        right = array[q+1:r+1]
+        loggr("right"+ str(right))
+        left.append('c')
+        right.append('c')
+        i = 0
+        j = 0
+        for k in range(p, r+1):
+            if left[i] &lt;= right[j]:
+                array[k] = left[i]
+                i = i + 1
+            else:
+                array[k] = right[j]
+                j = j + 1
+    elif ((r - p) == 1 ):
+        if (array[r] &lt; array[p]):
+            i = array[p]
+            j = array[r]
+            array[p] = j
+            array[r] = i
+
+
+
+def mergeSort(array):
+    def sort(p, r, msg):
+        if p &lt; r:
+            q = (p+r)/2
+            if (r - p) &gt; 1:
+                sort(p, q, "in left array")
+                sort(q+1, r, "right array")
+            merge(array, p, q, r)
+    sort(0, len(array)-1, "root")
+    return array
+</code></pre>
+
+<p>Quick sort and its probabilistic guarantee of fast enough run time strikes me as the most
+mathematically perverse form of black magic. Beautiful in the inherent underlying fabric
+of its utility. I&#8217;ll cover that when I get to part 2.</p>
+]]></content>
+  </entry>
+  
+</feed>
