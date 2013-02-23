@@ -10,17 +10,17 @@ Here's a basic Quicksort algorithm. You can call this code using Node.js
 
 
 {% codeblock lang:javascript %}
-	var Sort = require('./quicksort.js');
-	list = [3, 4, 5,2, 5];
-	var sorted = Sort(list, function(a, b) {
-		if (a > b) {
-			return 1;
-		} else if (a === b) {
-			return 0;
-		} else {
-			return -1;
-		}
-	});
+var Sort = require('./quicksort.js');
+list = [3, 4, 5,2, 5];
+var sorted = Sort(list, function(a, b) {
+	if (a > b) {
+		return 1;
+	} else if (a === b) {
+		return 0;
+	} else {
+		return -1;
+	}
+});
 {% endcodeblock %}
 
 have fun and hope this proves useful to somebody!
