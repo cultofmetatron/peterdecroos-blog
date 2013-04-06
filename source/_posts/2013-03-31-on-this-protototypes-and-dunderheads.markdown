@@ -36,7 +36,7 @@ This is a basic object. It is also a hash.
   //we can store strings, numbers, other objects and very importantly,
   // other functions!
   myObject.title = function() {
-    return "this is the Jackson " + this.5;
+    return "this is the Jackson " + this.jackson;
   }
 
   myObject.title() // => "this is the Jackson 5";
