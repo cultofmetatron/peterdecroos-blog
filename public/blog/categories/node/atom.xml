@@ -4,7 +4,7 @@
   <title><![CDATA[Category: node | Interview with a Turing Mage]]></title>
   <link href="http://blog.peterdecroos.com/blog/categories/node/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2013-04-21T17:17:08-07:00</updated>
+  <updated>2013-04-21T17:24:44-07:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -198,7 +198,7 @@ write some files to the disk before kicking off the exit procedures.</p>
 </span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<p>You cannot overwrite the kill -9 signal. This is why certain programs can ecome corrupted
+<p>You cannot overwrite the kill -9 signal. This is why certain programs can become corrupted
 when you kill-9 them. they are not given a chance to save state.</p>
 
 <p>For more information about signals, I found these two guides to be excellent.</p>
