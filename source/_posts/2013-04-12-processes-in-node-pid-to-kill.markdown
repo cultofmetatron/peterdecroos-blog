@@ -115,7 +115,7 @@ write some files to the disk before kicking off the exit procedures.
 
 {% endcodeblock %}
 
-You cannot overwrite the kill -9 signal. This is why certain programs can ecome corrupted
+You cannot overwrite the kill -9 signal. This is why certain programs can become corrupted
 when you kill-9 them. they are not given a chance to save state.
 
 For more information about signals, I found these two guides to be excellent.
