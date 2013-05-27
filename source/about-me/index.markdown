@@ -15,7 +15,8 @@ mongodb and backbone.js. I've been programming since I was 17 and decided
 to move out to san francisco to find great opportunities to work with cutting
 edge open source technology.
 
-hireme@peterdecroos.com
+
+[hireme@peterdecroos.com](mailto:hireme@peterdecroos.com)
 
 
 
