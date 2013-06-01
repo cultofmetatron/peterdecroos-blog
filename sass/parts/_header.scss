@@ -2,9 +2,13 @@ $header-height: 30px;
 
 #header{
 	height: $header-height;
-	padding: 30px 0;
+	padding: 30px 2%;
 	border-bottom: 1px solid $color-gray04;
 	line-height: $header-height;
+	width:98%;
+	position:fixed;
+	z-index: 5;
+	background-color:#ffffff;
 	@media screen and (max-width: 1040px){
 		height: auto;
 		position: relative;
