@@ -16,8 +16,7 @@ to move out to san francisco to find great opportunities to work with cutting
 edge open source technology.
 
 
-[hireme@peterdecroos.com](mailto:hireme@peterdecroos.com)
-
+[My github](github.peterdecroos.com)
 
 
 
