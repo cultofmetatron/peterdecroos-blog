@@ -261,13 +261,18 @@ $header-height: 30px;
 	}
 }
 #sub-nav{
-	@media screen and (max-width: 1040px){
+  padding-right: 15px;
+ 	@media screen and (max-width: 1040px){
 		position: absolute;
 		top: 30px;
 		right: 0;
-	}
+    padding-right: 15px;
+
+  }
 	@media screen and (max-width: 600px){
 		display: none;
+    padding-right: 15px;
+
 	}
 	.search{
 		float: left;
