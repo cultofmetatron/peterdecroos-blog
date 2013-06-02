@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: mvc | Interview with a Turing Mage]]></title>
+  <link href="http://blog.peterdecroos.com/blog/categories/mvc/atom.xml" rel="self"/>
+  <link href="http://blog.peterdecroos.com/"/>
+  <updated>2013-06-02T16:35:44-07:00</updated>
+  <id>http://blog.peterdecroos.com/</id>
+  <author>
+    <name><![CDATA[Peter de Croos]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Backbone, a short primer]]></title>
+    <link href="http://blog.peterdecroos.com/blog/2013/06/02/backbone-primer/"/>
+    <updated>2013-06-02T14:42:00-07:00</updated>
+    <id>http://blog.peterdecroos.com/blog/2013/06/02/backbone-primer</id>
+    <content type="html"><![CDATA[<p>Its been a few months since I've started using backbone on my personal projects.
+Its a great library for rolling out MVC structure into your application but the
+learning curve is pretty brutal.</p>
+
+<p>The first step to really understanding the backbone.js framework.</p>
+
+<h3>There is no framework</h3>
+
+<p>Seriously, get it out of your head entirely that backbone is a frameowrk. Its far
+too minimal. Backbone is more like a toolkit library for contructing MVC frameworks.</p>
+
+<p>Backbone provides the following objects</p>
+
+<ul>
+<li><a href="http://backbonejs.org/#Model">Backbone.Model</a></li>
+<li><a href="http://backbonejs.org/#Collection">Backbone.Collection</a></li>
+<li><a href="http://backbonejs.org/#View">Backbone.View</a></li>
+<li><a href="http://backbonejs.org/#Router">Backbone.Router</a></li>
+</ul>
+
+
+<p>Ok, so thats pretty much backbone. The real key is how we use it. Like Chess, it can be
+learned very quickly. the problem is that you also need to understand the tectics and strategies.
+The offical docs leave alot of that to the imagination.</p>
+
+<h3>Backbone.Model</h3>
+
+<p>Backbone.Model is a storage container where we can add and remove items via <em>set</em> and <em>get</em> attributes</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">newModel</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">();</span>
+</span><span class='line'>  <span class="nx">newModel</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="nx">bar</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">newModel</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">)</span> <span class="c1">// =&gt; &#39;bar&#39;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>You may be wondering, "why don't I jsut use newModel.foo = 'bar'?"  The real power in backbone is
+the set of events models can fire. By having you access the model's attributes via <em>set</em> and <em>get</em>, you
+ensure that the associated callbacks get fired everytime an attribute is changed.</p>
+
+<h4>Extending Backbone.Model</h4>
+
+<p>Backbone.Model is inherited using extend. This is also where we add methods that may be specific
+to our particular subclass of Backbone.Model. For instance, lets create a Comments model which may contain a
+username, content, rating and timestamp.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">Comment</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">//defaults are self explanatory</span>
+</span><span class='line'><span class="nx">defaults</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">rating</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'><span class="p">},</span>
+</span><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm"> * initialize runs whenever new is called, it takes care of</span>
+</span><span class='line'><span class="cm"> * setting up __super in the inheritance chain</span>
+</span><span class='line'><span class="cm"> * there is also &#39;constructor&#39; which overides the contructor entirely</span>
+</span><span class='line'><span class="cm"> * leaving you to manually impliment the prototype chaining.</span>
+</span><span class='line'><span class="cm"> * ie: only use contryctor if you know what you are doing.</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'><span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="nx">getCurrentUser</span><span class="p">());</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;timestamp&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">());</span>
+</span><span class='line'><span class="p">},</span>
+</span><span class='line'><span class="nx">upvote</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">)</span><span class="o">++</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="err">/&lt;em&gt; now we initialize the model passing in values in an object. &lt;/em&gt;/&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">newComment</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Comment</span><span class="p">({</span>
+</span><span class='line'><span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;backbone needs a library for reactive databindings&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">newComment</span><span class="p">.</span><span class="nx">upvote</span><span class="p">().</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">);</span> <span class="c1">// =&gt; 1</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+]]></content>
+  </entry>
+  
+</feed>

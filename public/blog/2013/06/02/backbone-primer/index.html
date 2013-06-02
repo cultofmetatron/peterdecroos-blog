@@ -1,0 +1,291 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Backbone, a short primer - Interview with a Turing Mage</title>
+	<meta name="author" content="Peter de Croos">
+
+	
+	<meta name="description" content="Its been a few months since I&#8217;ve started using backbone on my personal projects.
+Its a great library for rolling out MVC structure into your &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Interview with a Turing Mage" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Interview with a Turing Mage</a></h1>
+<nav id="main-nav"><ul class="main">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about-me">About</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about-me">About</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.peterdecroos.com">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+		<a class="github" href="https://github.com/cultofmetatron" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:blog.peterdecroos.com">
+	</form>
+</nav>
+
+</header>
+	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">Backbone, a Short Primer</h1>
+	<div class="entry-content"><p>Its been a few months since I&#8217;ve started using backbone on my personal projects.
+Its a great library for rolling out MVC structure into your application but the
+learning curve is pretty brutal.</p>
+
+<p>The first step to really understanding the backbone.js framework.</p>
+
+<h3>There is no framework</h3>
+
+<p>Seriously, get it out of your head entirely that backbone is a frameowrk. Its far
+too minimal. Backbone is more like a toolkit library for contructing MVC frameworks.</p>
+
+<p>Backbone provides the following objects</p>
+
+<ul>
+<li><a href="http://backbonejs.org/#Model">Backbone.Model</a></li>
+<li><a href="http://backbonejs.org/#Collection">Backbone.Collection</a></li>
+<li><a href="http://backbonejs.org/#View">Backbone.View</a></li>
+<li><a href="http://backbonejs.org/#Router">Backbone.Router</a></li>
+</ul>
+
+
+<p>Ok, so thats pretty much backbone. The real key is how we use it. Like Chess, it can be
+learned very quickly. the problem is that you also need to understand the tectics and strategies.
+The offical docs leave alot of that to the imagination.</p>
+
+<h3>Backbone.Model</h3>
+
+<p>Backbone.Model is a storage container where we can add and remove items via <em>set</em> and <em>get</em> attributes</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">newModel</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">();</span>
+</span><span class='line'>  <span class="nx">newModel</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="nx">bar</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">newModel</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">)</span> <span class="c1">// =&gt; &#39;bar&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You may be wondering, &#8220;why don&#8217;t I jsut use newModel.foo = &#8216;bar&#8217;?&#8221;  The real power in backbone is
+the set of events models can fire. By having you access the model&#8217;s attributes via <em>set</em> and <em>get</em>, you
+ensure that the associated callbacks get fired everytime an attribute is changed.</p>
+
+<h4>Extending Backbone.Model</h4>
+
+<p>Backbone.Model is inherited using extend. This is also where we add methods that may be specific
+to our particular subclass of Backbone.Model. For instance, lets create a Comments model which may contain a
+username, content, rating and timestamp.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">Comment</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+</span><span class='line'>    <span class="c1">//defaults are self explanatory</span>
+</span><span class='line'>    <span class="nx">defaults</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">rating</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="cm">/*</span>
+</span><span class='line'><span class="cm">     * initialize runs whenever new is called, it takes care of</span>
+</span><span class='line'><span class="cm">     * setting up __super in the inheritance chain</span>
+</span><span class='line'><span class="cm">     * there is also &#39;constructor&#39; which overides the contructor entirely</span>
+</span><span class='line'><span class="cm">     * leaving you to manually impliment the prototype chaining.</span>
+</span><span class='line'><span class="cm">     * ie: only use contryctor if you know what you are doing.</span>
+</span><span class='line'><span class="cm">    */</span>
+</span><span class='line'>    <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="nx">getCurrentUser</span><span class="p">());</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;timestamp&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">());</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">upvote</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">)</span><span class="o">++</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="cm">/* now we initialize the model passing in values in an object. */</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">newComment</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Comment</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;backbone needs a library for reactive databindings&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">newComment</span><span class="p">.</span><span class="nx">upvote</span><span class="p">().</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">);</span> <span class="c1">// =&gt; 1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-02T14:42:00-07:00" pubdate data-updated="true">Jun 2<span>nd</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/backbone-js/'>backbone.js</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>, <a class='category' href='/blog/categories/mvc/'>mvc</a>
+
+
+</div>
+	
+		<span class="comments"><a href="/blog/2013/06/02/backbone-primer/#disqus_thread">Comments</a></span>
+	
+</div></article>
+<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+
+  <div style="float: right" class='angellist_embed' data-user_id='277748'>  <a href='https://angel.co/peter-de-croos?utm_medium=web&utm_campaign=individual_embed&utm_content=277748'></a></div><script type='text/javascript' src='https://angel.co/peter-de-croos/embed/angellist.js'></script>
+
+
+
+</div>
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2013
+
+    Peter de Croos
+
+<div>
+<a href="https://angel.co/peter-de-croos?follow=1&type=User&id=277748"></a><script src="https://angel.co/javascripts/embed.js" type="text/javascript"></script>
+</div>
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'peterdecroosblog';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.peterdecroos.com/blog/2013/06/02/backbone-primer/';
+        var disqus_url = 'http://blog.peterdecroos.com/blog/2013/06/02/backbone-primer/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-33062340-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+
+
+</body>
+</html>
