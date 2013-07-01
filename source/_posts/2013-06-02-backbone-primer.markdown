@@ -26,8 +26,9 @@ Backbone provides the following objects
   * [Backbone.Router](http://backbonejs.org/#Router)
 
 The real key is how we use it. Like Chess, it can be
-learned very quickly. the problem is that you also need to understand the tectics and strategies.
-The offical docs leave alot of that to the imagination.
+learned very quickly. the problem is that you also need to understand the tactics and strategies.
+The offical docs leave a lot to the imagination and the examples are lackluster at best if they 
+exist at all.
 
 ###Backbone.Model
 
