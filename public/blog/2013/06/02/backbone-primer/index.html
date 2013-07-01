@@ -3,7 +3,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Backbone, a short primer - Part 1 - console.blog( this.thought )</title>
+	<title>Backbone, a short primer - Part 1: Models and Events - console.blog( this.thought )</title>
 	<meta name="author" content="Peter de Croos">
 
 	
@@ -73,7 +73,7 @@ Its a great library for rolling out MVC structure into your &hellip;">
 </header>
 	
 	<div id="content" class="inner"><article class="post">
-	<h1 class="title">Backbone, a Short Primer - Part 1</h1>
+	<h1 class="title">Backbone, a Short Primer - Part 1: Models and Events</h1>
 	<div class="entry-content"><p>Its been a few months since I&#8217;ve started using backbone on my personal projects.
 Its a great library for rolling out MVC structure into your application but the
 learning curve is pretty brutal.</p>
@@ -101,7 +101,8 @@ The offical docs leave alot of that to the imagination.</p>
 
 <h3>Backbone.Model</h3>
 
-<p>Backbone.Model is a storage container where we can add and remove items via <em>set</em> and <em>get</em> attributes</p>
+<p>Backbone.Model is a storage container where we can add and remove
+items via <em>set</em> and <em>get</em> attributes.</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -112,10 +113,16 @@ The offical docs leave alot of that to the imagination.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Why don&#8217;t I use newModel.foo = &#8216;bar&#8217;?  The real power in backbone is in the
+<p>You may be wondering why you don&#8217;t use <em>newModel.foo = &#8216;bar&#8217;?</em>
+The real power in backbone is in the
 events that models can fire. By having you access the model&#8217;s attributes via
 <em>set</em> and <em>get</em>, you ensure that the associated callbacks get fired everytime
 an attribute is changed.</p>
+
+<p>For example, in a View containing a Model,
+when we change an attribute on the model via the setter and getter methods.
+A callback automatically makes the model emit a &#8216;change&#8217; event which we can set
+the view to listen to and trigger a rerender.</p>
 
 <h4>Extending Backbone.Model</h4>
 
@@ -216,8 +223,10 @@ I have the functionality for those defaults set to run in initialize.</p>
 
 <h4>Backbone.Model events</h4>
 
-<p>Backbone models idealy only broadcast events. Models can contain another model as an attribute.
-Backbone.Model&#8217;s &#8216;change&#8217; event only fires when it detects a change in the value of the attribute.
+<p>Backbone models should only broadcast events in order to notify things that
+contain it. A model itself can contain another model as an attribute.</p>
+
+<p>Backbone.Model&#8217;s &#8216;change&#8217; event fires when it detects a change in the value of the attribute.
 If the value is a model, then a change in that model&#8217;s attributes won&#8217;t change the reference
 to the model. Unlike the dom, we have to explicitly set up our own event bubbling.</p>
 
@@ -235,22 +244,31 @@ events in the attribute model.</p>
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">CommentHolder</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
 </span><span class='line'>    <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>      <span class="c1">//we set up event listeners here</span>
+</span><span class='line'>      <span class="cm">/* We set up event listeners here</span>
+</span><span class='line'><span class="cm">        the first argument is message being fired</span>
+</span><span class='line'><span class="cm">        the second is the function to be invoked</span>
+</span><span class='line'><span class="cm">        the third is the context for function to be called in</span>
+</span><span class='line'><span class="cm">      */</span>
 </span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">bubble</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
 </span><span class='line'>    <span class="p">},</span>
 </span><span class='line'>    <span class="nx">bubble</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>      <span class="c1">// apply is used to propegate all possible arguments</span>
 </span><span class='line'>      <span class="c1">// that can be coming form multiple events.</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span> <span class="c1">//trigger is a backbone function</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>  <span class="p">})</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><a href="http://backbonejs.org/#Events-catalog">&#8216;all&#8217;</a> is a backbone defined catch all event that sends
-along the name of the event as</p>
+<p><a href="http://backbonejs.org/#Events-catalog">&#8216;all&#8217;</a> is a backbone defined catch all event
+that sends along the name of the event as the first argument. The model will listen
+to its comment and broadcast any messages it recieves to any who would hear.</p>
 </div>
 
 

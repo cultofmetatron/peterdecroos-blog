@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Backbone, a short primer - Part 1"
+title: "Backbone, a short primer - Part 1: Models and Events"
 date: 2013-06-02 14:42
 comments: true
 categories: javascript backbone.js models mvc
@@ -31,7 +31,8 @@ The offical docs leave alot of that to the imagination.
 
 ###Backbone.Model
 
-Backbone.Model is a storage container where we can add and remove items via *set* and *get* attributes
+Backbone.Model is a storage container where we can add and remove 
+items via *set* and *get* attributes.
 
 {% codeblock lang:javascript %}
 
@@ -41,10 +42,17 @@ Backbone.Model is a storage container where we can add and remove items via *set
 
 {% endcodeblock %}
 
-Why don't I use newModel.foo = 'bar'?  The real power in backbone is in the 
-events that models can fire. By having you access the model's attributes via 
-*set* and *get*, you ensure that the associated callbacks get fired everytime 
+You may be wondering why you don't use *newModel.foo = 'bar'?*
+The real power in backbone is in the 
+events that models can fire. By having you access the model's attributes via
+*set* and *get*, you ensure that the associated callbacks get fired everytime
 an attribute is changed.
+
+For example, in a View containing a Model,
+when we change an attribute on the model via the setter and getter methods.
+A callback automatically makes the model emit a 'change' event which we can set 
+the view to listen to and trigger a rerender.
+
 
 ####Extending Backbone.Model
 
@@ -109,8 +117,10 @@ I have the functionality for those defaults set to run in initialize.
 
 ####Backbone.Model events
 
-Backbone models idealy only broadcast events. Models can contain another model as an attribute.
-Backbone.Model's 'change' event only fires when it detects a change in the value of the attribute.
+Backbone models should only broadcast events in order to notify things that
+contain it. A model itself can contain another model as an attribute. 
+
+Backbone.Model's 'change' event fires when it detects a change in the value of the attribute.
 If the value is a model, then a change in that model's attributes won't change the reference
 to the model. Unlike the dom, we have to explicitly set up our own event bubbling.
 
@@ -121,19 +131,25 @@ events in the attribute model.
 
   var CommentHolder = Backbone.Model.extend({
     initialize: function() {
-      //we set up event listeners here
+      /* We set up event listeners here
+        the first argument is message being fired
+        the second is the function to be invoked
+        the third is the context for function to be called in
+      */
       this.get('comment').on('all', this.bubble, this);
     },
     bubble: function() {
       // apply is used to propegate all possible arguments
       // that can be coming form multiple events.
-      this.trigger.apply(this, arguments);
+      this.trigger.apply(this, arguments); //trigger is a backbone function
     }
   })
 
 {% endcodeblock %}
 
-['all'](http://backbonejs.org/#Events-catalog) is a backbone defined catch all event that sends
-along the name of the event as
+['all'](http://backbonejs.org/#Events-catalog) is a backbone defined catch all event 
+that sends along the name of the event as the first argument. The model will listen
+to its comment and broadcast any messages it recieves to any who would hear.
+
 
 
