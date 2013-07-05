@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Javascript, | console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/blog/categories/javascript-/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2013-06-30T20:57:08-07:00</updated>
+  <updated>2013-07-05T16:45:15-07:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -31,51 +31,31 @@ in staggeringly flexible ways.</p>
 
 <p>Lets take an object</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">myObject</span> <span class="o">=</span> <span class="p">{};</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+  var myObject = {};
+{% endcodeblock %}</p>
 
 <p>This is a basic object. It is also a hash.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="c1">//We can access it via dot notation or hash notation</span>
-</span><span class='line'>  <span class="nx">myObject</span><span class="p">[</span><span class="s1">&#39;jackson&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
-</span><span class='line'>  <span class="mi">5</span> <span class="o">+</span> <span class="nx">myObject</span><span class="p">[</span><span class="s1">&#39;jackson&#39;</span><span class="p">];</span> <span class="c1">// =&gt; 10;</span>
-</span><span class='line'>  <span class="mi">5</span> <span class="o">+</span> <span class="nx">myObject</span><span class="p">.</span><span class="nx">jackson</span><span class="p">;</span>    <span class="c1">// =&gt; 10;&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="c1">//we can store strings, numbers, other objects and very importantly,</span>
-</span><span class='line'>  <span class="c1">// other functions!</span>
-</span><span class='line'>  <span class="nx">myObject</span><span class="p">.</span><span class="nx">title</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">return</span> <span class="s2">&quot;this is the Jackson &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">jackson</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">myObject</span><span class="p">.</span><span class="nx">title</span><span class="p">()</span> <span class="c1">// =&gt; &quot;this is the Jackson 5&quot;;&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}</p>
+
+<p>  //We can access it via dot notation or hash notation
+  myObject['jackson'] = 5;
+  5 + myObject['jackson']; // => 10;
+  5 + myObject.jackson;    // => 10;</p>
+
+<p>  //we can store strings, numbers, other objects and very importantly,
+  // other functions!
+  myObject.title = function() {</p>
+
+<pre><code>return "this is the Jackson " + this.jackson;
+</code></pre>
+
+<p>  }</p>
+
+<p>  myObject.title() // => "this is the Jackson 5";</p>
+
+<p>{% endcodeblock %}</p>
 
 <p>If you are currently a javascript programmer, you've probably seen code like this. In
 langages like Java, or c, Functions are simply routines that operate on code. they are static.
@@ -97,111 +77,66 @@ do not have a call time.</p>
 
 <p>Lets take a cannonical example in Java.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">ExampleClass</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="kd">public</span> <span class="kt">int</span> <span class="n">foo</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Clojure is way more fun&quot;</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="nf">ExampleClass</span><span class="o">(</span><span class="kt">int</span> <span class="n">foo</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="c1">// initialize code goes here</span>
-</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">foo</span> <span class="o">=</span> <span class="n">foo</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'><span class="kd">public</span> <span class="nf">getFoo</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">foo</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:java %}
+  public class ExampleClass {</p>
+
+<pre><code>public int foo;
+
+public static void main(String[] args) {
+    System.out.println("Clojure is way more fun");
+}
+
+public ExampleClass(int foo) {
+    // initialize code goes here
+    this.foo = foo;
+}
+public getFoo() {
+    return this.foo;
+}
+</code></pre>
+
+<p>  }
+{% endcodeblock %}</p>
 
 <p>Java functions are not first class. The <em>'this'</em> refers only to the instantiated instance of
 this class. If I instantiate this class and call the function, I will get the
 class variable "foo" of the instance.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>  <span class="n">ExampleClass</span> <span class="n">exampleClass</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ExampleClass</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span> <span class="c1">// Java is ridiculous!!!</span>
-</span><span class='line'>  <span class="n">exampleClass</span><span class="o">.</span><span class="na">getFoo</span><span class="o">();</span> <span class="c1">// =&gt; 5&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>   <span class="c1">// this results in an error because there is no public variable getFoo</span>
-</span><span class='line'>  <span class="n">exampleClass</span><span class="o">.</span><span class="na">getFoo</span><span class="o">;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:java %}
+  ExampleClass exampleClass = new ExampleClass(5); // Java is ridiculous!!!
+  exampleClass.getFoo(); // => 5</p>
+
+<p>   // this results in an error because there is no public variable getFoo
+  exampleClass.getFoo;</p>
+
+<p>{% endcodeblock %}</p>
 
 <p>Because Java's functions are not first class, there is no notion of this function being
 referred to unless its being specifically called. Javascript's functions are dfferent. I can declare
 a javascript function and bind it to several objects.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">getFoo</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">foo</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">first</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">foo</span><span class="o">:</span><span class="mi">1</span> <span class="p">};</span>
-</span><span class='line'>  <span class="nx">first</span><span class="p">.</span><span class="nx">getFoo</span> <span class="o">=</span> <span class="nx">getFoo</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">second</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">foo</span><span class="o">:</span> <span class="mi">2</span> <span class="p">};</span>
-</span><span class='line'>  <span class="nx">second</span><span class="p">.</span><span class="nx">getFoo</span> <span class="o">=</span> <span class="nx">getFoo</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">third</span> <span class="o">=</span> <span class="p">{</span><span class="nx">foo</span><span class="o">:</span><span class="mi">3</span><span class="p">};</span>
-</span><span class='line'>  <span class="nx">third</span><span class="p">.</span><span class="nx">theNameIsIrrelevant</span><span class="o">=</span> <span class="nx">getFoo</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">first</span><span class="p">.</span><span class="nx">getFoo</span><span class="p">()</span> <span class="c1">// =&gt; 1</span>
-</span><span class='line'>  <span class="nx">second</span><span class="p">.</span><span class="nx">getFoo</span><span class="p">()</span> <span class="c1">// =&gt; 2</span>
-</span><span class='line'>  <span class="nx">third</span><span class="p">.</span><span class="nx">theNameIsIrrelevant</span><span class="p">()</span> <span class="c1">// =&gt; 3&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+  var getFoo = function() {</p>
+
+<pre><code>return this.foo;
+</code></pre>
+
+<p>  };</p>
+
+<p>  var first = { foo:1 };
+  first.getFoo = getFoo;</p>
+
+<p>  var second = { foo: 2 };
+  second.getFoo = getFoo;</p>
+
+<p>  var third = {foo:3};
+  third.theNameIsIrrelevant= getFoo;</p>
+
+<p>  first.getFoo() // => 1
+  second.getFoo() // => 2
+  third.theNameIsIrrelevant() // => 3</p>
+
+<p>{% endcodeblock %}</p>
 
 <p>This code in javascript works because javascript functions are variables that can be assigned and passed
 around like a company pen. (thats about as work safe a metaphor as I could come up with. sorry...) The only
@@ -211,17 +146,12 @@ large difference between functions and other javascript types is that functions 
 resolves to whatever object that function is being called upon. If there is no object, <em>'this'</em> resolves
 to the global object. In Browsers, the global object is <em>window.</em></p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="nb">window</span><span class="p">.</span><span class="nx">foo</span> <span class="o">=</span> <span class="s2">&quot;ramalamadingdong&quot;</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">getFoo</span><span class="p">();</span> <span class="c1">// =&gt;  &quot;ramalamadingdong&quot;&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+  window.foo = "ramalamadingdong";</p>
+
+<p>  getFoo(); // =>  "ramalamadingdong"</p>
+
+<p>{% endcodeblock %}</p>
 
 <h3>on <strong>proto</strong> and prototype</h3>
 
@@ -231,57 +161,32 @@ becomes an object that is being modified and eventually returned. It will delega
 cannot respond to to whatever the function's prototype attribute is. IE: functions in javasript are
 objects.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">dundar</span> <span class="o">=</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">gummy</span><span class="o">:</span><span class="s1">&#39;bear&#39;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">ContructorFunction</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">// at this point this == {};</span>
-</span><span class='line'><span class="k">this</span><span class="p">.</span><span class="nx">foo</span> <span class="o">=</span> <span class="s2">&quot;bar&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// &quot;return this&quot; is implicit</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">ContructorFunction</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">dundar</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">newObject</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ContructorFunction</span><span class="p">();</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">newObject</span><span class="p">.</span><span class="nx">gummy</span><span class="p">;</span> <span class="c1">// =&gt; &#39;bear&#39;</span>
-</span><span class='line'>  <span class="nx">newObject</span><span class="p">.</span><span class="nx">foo</span><span class="p">;</span> <span class="c1">// =&gt; &#39;bar&#39;&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+  var dundar = {</p>
+
+<pre><code>gummy:'bear'
+</code></pre>
+
+<p>  }</p>
+
+<p>  var ContructorFunction = function() {</p>
+
+<pre><code>// at this point this == {};
+this.foo = "bar"
+
+// "return this" is implicit
+</code></pre>
+
+<p>  }</p>
+
+<p>  ContructorFunction.prototype = dundar;</p>
+
+<p>  newObject = new ContructorFunction();</p>
+
+<p>  newObject.gummy; // => 'bear'
+  newObject.foo; // => 'bar'</p>
+
+<p>{% endcodeblock %}</p>
 
 <h3>The __proto__ Attribute</h3>
 
@@ -291,33 +196,19 @@ The __proto__ is determined by the constructor function's <em>prototype</em> att
 
 <h4>This begs the question? why doesn't this work?</h4>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">dundar</span> <span class="o">=</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">gummy</span><span class="o">:</span><span class="s1">&#39;bear&#39;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">newObject</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">foo</span><span class="o">:</span> <span class="s1">&#39;bar&#39;</span> <span class="p">};</span>
-</span><span class='line'>  <span class="nx">newObject</span><span class="p">.</span><span class="o">&lt;</span><span class="nx">strong</span><span class="o">&gt;</span><span class="nx">proto</span><span class="o">&lt;</span><span class="err">/strong&gt; = dundar;&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}</p>
+
+<p>  var dundar = {</p>
+
+<pre><code>gummy:'bear'
+</code></pre>
+
+<p>  }</p>
+
+<p>  newObject = { foo: 'bar' };
+  newObject.<strong>proto</strong> = dundar;</p>
+
+<p>{% endcodeblock %}</p>
 
 <h4>Actually it DOES, But only in V8 - ie: chrome and node.js</h4>
 
@@ -335,99 +226,56 @@ the only surefire way to assign the __proto__ attribute.</p>
 <p>Unless you call the function with new, <em>'this'</em> becomes resolved within the function to whatever is on
 the left side of the '.'.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="c1">// if &#39;this&#39; is in the definition of getFoo, it will resolve to myObject.</span>
-</span><span class='line'>  <span class="nx">myObject</span><span class="p">.</span><span class="nx">getFoo</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+  // if 'this' is in the definition of getFoo, it will resolve to myObject.
+  myObject.getFoo()
+{% endcodeblock %}</p>
 
 <p>call() and apply() can be called on any function and allow you to explicitly set what <em>'this'</em> will
 resolve to. the only difference is that call takes the arguments of the function right after the new
 meaning of <em>'this'</em> and apply takes the arguments as an array.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">myObject1</span> <span class="o">=</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">foo</span><span class="o">:</span> <span class="s1">&#39;bar&#39;</span><span class="p">,</span>
-</span><span class='line'><span class="nx">num</span><span class="o">:</span> <span class="mi">1</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">myObject2</span> <span class="o">=</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">foo</span><span class="o">:</span> <span class="s1">&#39;manshu&#39;</span><span class="p">,</span>
-</span><span class='line'><span class="nx">getFoo</span> <span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">foo</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">inc</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">num</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">num</span> <span class="o">+=</span> <span class="nx">num</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">num</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="c1">//errors out because it doesn&#39;t have a getFoo() method</span>
-</span><span class='line'>  <span class="nx">myObject1</span><span class="p">.</span><span class="nx">getFoo</span><span class="p">();</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">myObject2</span><span class="p">.</span><span class="nx">getFoo</span><span class="p">()</span> <span class="c1">// =&gt; &#39;manshu&#39;&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="c1">//heres where is gets interesting</span>
-</span><span class='line'>  <span class="nx">myObject2</span><span class="p">.</span><span class="nx">getsFoo</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">myObject1</span><span class="p">)</span> <span class="c1">// =&gt; &#39;bar&#39;&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="c1">//this one errors because myObject2 does not have a num attribute</span>
-</span><span class='line'>  <span class="nx">myObject2</span><span class="p">.</span><span class="nx">inc</span><span class="p">()</span> <span class="c1">// badd&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">myObject2</span><span class="p">.</span><span class="nx">inc</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">myObject1</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">//sets myObject1.num to 2&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="c1">//apply does the same with the arguments in an array</span>
-</span><span class='line'>  <span class="nx">myObject2</span><span class="p">.</span><span class="nx">inc</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">myObject1</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]);</span> <span class="c1">// myObject1.num is now 3!!&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}</p>
+
+<p>  myObject1 = {</p>
+
+<pre><code>foo: 'bar',
+num: 1
+</code></pre>
+
+<p>  }</p>
+
+<p>  myObject2 = {</p>
+
+<pre><code>foo: 'manshu',
+getFoo : function() {
+  return this.foo;
+}
+inc: function(num) {
+  this.num += num;
+  return this.num;
+}
+</code></pre>
+
+<p>  }</p>
+
+<p>  //errors out because it doesn't have a getFoo() method
+  myObject1.getFoo();</p>
+
+<p>  myObject2.getFoo() // => 'manshu'</p>
+
+<p>  //heres where is gets interesting
+  myObject2.getsFoo.call(myObject1) // => 'bar'</p>
+
+<p>  //this one errors because myObject2 does not have a num attribute
+  myObject2.inc() // badd</p>
+
+<p>  myObject2.inc.call(myObject1, 1); //sets myObject1.num to 2</p>
+
+<p>  //apply does the same with the arguments in an array
+  myObject2.inc.apply(myObject1, [1]); // myObject1.num is now 3!!</p>
+
+<p>{% endcodeblock %}</p>
 
 <p>Now we're ready for how to create inheritence chains in javascript!
 (that article is comming soon.)</p>

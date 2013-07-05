@@ -4,7 +4,7 @@
   <title><![CDATA[Category: algorithms | console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/blog/categories/algorithms/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2013-06-30T20:57:08-07:00</updated>
+  <updated>2013-07-05T16:45:15-07:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -20,165 +20,90 @@
     <id>http://blog.peterdecroos.com/blog/2013/02/14/quicksort</id>
     <content type="html"><![CDATA[<p>Here's a basic Quicksort algorithm. You can call this code using Node.js</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">Sort</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./quicksort.js&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="nx">list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">];</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">sorted</span> <span class="o">=</span> <span class="nx">Sort</span><span class="p">(</span><span class="nx">list</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+var Sort = require('./quicksort.js');
+list = [3, 4, 5,2, 5];
+var sorted = Sort(list, function(a, b) {</p>
+
+<pre><code>if (a &gt; b) {
+    return 1;
+} else if (a === b) {
+    return 0;
+} else {
+    return -1;
+}
+</code></pre>
+
+<p>});
+{% endcodeblock %}</p>
 
 <p>have fun and hope this proves useful to somebody!</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//quicksort.js</span>
-</span><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">list1</span><span class="p">,</span> <span class="nx">compareFunction</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">list</span> <span class="o">=</span> <span class="nx">list1</span><span class="p">;</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">cmp</span> <span class="o">=</span> <span class="nx">compareFunction</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">swap</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">j</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="cm">/* swaps the indexer A[i] and A[j] */</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">_i</span> <span class="o">=</span> <span class="nx">list</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">_j</span> <span class="o">=</span> <span class="nx">list</span><span class="p">[</span><span class="nx">j</span><span class="p">];</span>
-</span><span class='line'>    <span class="nx">list</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="o">=</span> <span class="nx">_i</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">list</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">_j</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">partition</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="cm">/* the partition function goes through the array</span>
-</span><span class='line'><span class="cm">     *  list[</span>
-</span><span class='line'><span class="cm">     */</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="nx">r</span><span class="p">;</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">p</span><span class="p">;</span> <span class="c1">//on intiial pass, p is 0</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="cm">/* for each entry i where A[i] is less than A[r-1]</span>
-</span><span class='line'><span class="cm">     * where r-1 is the index of the Penultimate item</span>
-</span><span class='line'><span class="cm">     */</span>
-</span><span class='line'>    <span class="c1">//from j = 0 to j = r-1</span>
-</span><span class='line'>    <span class="c1">//exchange A[i] and A[j] if A[j] &amp;gt; A[r]</span>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">j</span> <span class="o">=</span> <span class="nx">p</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span> <span class="nx">r</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">//console.log(&quot;lets try this &quot;, list);</span>
-</span><span class='line'>        <span class="c1">//console.log(&quot;i : &quot; + i + &quot; j : &quot; + j);</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">cmp</span><span class="p">(</span><span class="nx">list</span><span class="p">[</span><span class="nx">j</span><span class="p">],</span><span class="nx">list</span><span class="p">[</span><span class="nx">r</span><span class="p">])</span> <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="o">=</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="c1">//swap them!! and then increment i</span>
-</span><span class='line'>            <span class="nx">swap</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">j</span><span class="p">);</span>
-</span><span class='line'>            <span class="nx">i</span><span class="o">++</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">swap</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">r</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nx">i</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">quickSort</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">p</span> <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span> <span class="nx">r</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">q</span> <span class="o">=</span> <span class="nx">partition</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">r</span><span class="p">);</span>
-</span><span class='line'>        <span class="nx">quickSort</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>        <span class="nx">quickSort</span><span class="p">(</span><span class="nx">q</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">initialize</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">quickSort</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">list1</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="c1">//compute the sorted value</span>
-</span><span class='line'><span class="nx">initialize</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">return</span> <span class="nx">list1</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+//quicksort.js
+module.exports = function(list1, compareFunction) {</p>
+
+<pre><code>var list = list1;
+var cmp = compareFunction;
+
+var swap = function(i, j) {
+    /* swaps the indexer A[i] and A[j] */
+    var _i = list[i];
+    var _j = list[j];
+    list[j] = _i;
+    list[i] = _j;
+}
+
+var partition = function(p, r) {
+    /* the partition function goes through the array
+     *  list[
+     */
+    var r = r;
+    var i = p; //on intiial pass, p is 0
+
+    /* for each entry i where A[i] is less than A[r-1]
+     * where r-1 is the index of the Penultimate item
+     */
+    //from j = 0 to j = r-1
+    //exchange A[i] and A[j] if A[j] &gt; A[r]
+    for (var j = p; j &lt; r; j++) {
+        //console.log("lets try this ", list);
+        //console.log("i : " + i + " j : " + j);
+        if (cmp(list[j],list[r]) &lt;= 0 ) {
+            //swap them!! and then increment i
+            swap(i, j);
+            i++;
+        }
+    }
+
+    swap(i, r);
+    return i;
+
+
+}
+
+var quickSort = function(p, r) {
+    if (p &lt; r) {
+        q = partition(p, r);
+        quickSort(p, q - 1);
+        quickSort(q + 1, r)
+
+    }
+
+}
+
+var initialize = function() {
+    quickSort(0, list1.length-1);
+
+}
+//compute the sorted value
+initialize();
+
+return list1;
+</code></pre>
+
+<p>}
+{% endcodeblock %}</p>
 ]]></content>
   </entry>
   
@@ -193,269 +118,138 @@ I decided to reimpliment some of the classic sortting algorithms in python.</p>
 
 <p>The compare function</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">def</span> <span class="nf">cmp</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">b</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">return</span> <span class="mi">0</span>
-</span><span class='line'>    <span class="k">elif</span> <span class="p">(</span><span class="n">a</span> <span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">b</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">return</span> <span class="mi">1</span>
-</span><span class='line'>    <span class="k">else</span><span class="p">:</span>
-</span><span class='line'>        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">swap</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">array</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">swapv</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-</span><span class='line'>    <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
-</span><span class='line'>    <span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">swapv</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">array</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">biggest</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'>    <span class="n">biggest_val</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span class='line'>    <span class="n">biggest_index</span> <span class="o">=</span> <span class="n">i</span>
-</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">biggest_val</span><span class="p">):</span>
-</span><span class='line'>            <span class="n">biggest_val</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-</span><span class='line'>            <span class="n">biggest_index</span> <span class="o">=</span> <span class="n">i</span>
-</span><span class='line'>        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">biggest_index</span><span class="p">,</span> <span class="n">biggest_val</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">minv</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">start_index</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">i</span> <span class="o">=</span> <span class="n">start_index</span>
-</span><span class='line'>    <span class="n">min_val</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">start_index</span><span class="p">]</span>
-</span><span class='line'>    <span class="n">min_index</span> <span class="o">=</span> <span class="n">i</span>
-</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">min_val</span><span class="p">):</span>
-</span><span class='line'>            <span class="n">min_val</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-</span><span class='line'>            <span class="n">min_index</span> <span class="o">=</span> <span class="n">i</span>
-</span><span class='line'>        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">min_index</span><span class="p">,</span> <span class="n">min_val</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">min</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">minv</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>{% codeblock lang:python %}</p>
+
+<pre><code>def cmp(a, b):
+    if (a == b):
+        return 0
+    elif (a &gt; b):
+        return 1
+    else:
+        return -1
+
+def swap(i, j, array):
+    swapv = array[i]
+    array[i] = array[j]
+    array[j] = swapv
+    return array
+
+def biggest(array):
+    i = 0
+    biggest_val = array[0]
+    biggest_index = i
+    while(i &lt; len(array)):
+        if (array[i] &gt; biggest_val):
+            biggest_val = array[i]
+            biggest_index = i
+        i = i + 1
+    return (biggest_index, biggest_val)
+
+def minv(array, start_index):
+    i = start_index
+    min_val = array[start_index]
+    min_index = i
+    while(i &lt; len(array)):
+        if (array[i] &lt; min_val):
+            min_val = array[i]
+            min_index = i
+        i = i + 1
+    return (min_index, min_val)
+
+def min(array):
+    return minv(array, 0)
+</code></pre>
+
+<p>{% endcodeblock %}
 Selection Sort
-<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">def</span> <span class="nf">selectionSort</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'>    <span class="n">array1</span> <span class="o">=</span> <span class="n">array</span>
-</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="nb">len</span><span class="p">(</span><span class="n">array1</span><span class="p">)):</span>
-</span><span class='line'>        <span class="n">array1</span> <span class="o">=</span> <span class="n">swap</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">minv</span><span class="p">(</span><span class="n">array1</span><span class="p">,</span> <span class="n">i</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">array1</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">array1</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+{% codeblock lang:python %}</p>
+
+<pre><code>def selectionSort(array):
+    i = 0
+    array1 = array
+    while (i &lt; len(array1)):
+        array1 = swap(i, minv(array1, i)[0], array1)
+        i = i + 1
+    return array1
+</code></pre>
+
+<p>{% endcodeblock %}
 Insertion sort is just a specialized case of shellsort so I created a base composite function that encapsulates the core of both algorithms.
-<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">def</span> <span class="nf">gapSort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">gap</span><span class="p">):</span>
-</span><span class='line'>    <span class="sd">&quot;&quot;&quot;helper function to aid insertion sort and shell sort&quot;&quot;&quot;</span>
-</span><span class='line'>    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'>    <span class="n">array1</span> <span class="o">=</span> <span class="n">array</span>
-</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="mi">0</span><span class="p">):</span>
-</span><span class='line'>            <span class="n">j</span> <span class="o">=</span> <span class="n">i</span>
-</span><span class='line'>            <span class="k">while</span> <span class="p">((</span><span class="nb">cmp</span><span class="p">(</span><span class="n">array1</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">array1</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="n">gap</span><span class="p">])</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">j</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">):</span>
-</span><span class='line'>                <span class="c">#while object at i is less than the one before it</span>
-</span><span class='line'>                <span class="n">swap</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="o">-</span><span class="n">gap</span><span class="p">,</span> <span class="n">array1</span><span class="p">)</span>
-</span><span class='line'>                <span class="n">j</span> <span class="o">=</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span>
-</span><span class='line'>        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">array1</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">insertionSort</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">gapSort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">shellSort</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
-</span><span class='line'>    <span class="sd">&quot;&quot;&quot;sorts using the shellsort algorithm&quot;&quot;&quot;</span>
-</span><span class='line'>    <span class="n">vals</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="o">*</span><span class="n">h</span><span class="o">+</span><span class="mi">1</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">)][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</span><span class='line'>    <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">vals</span><span class="p">:</span>
-</span><span class='line'>        <span class="n">array</span> <span class="o">=</span> <span class="n">gapSort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">array</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+{% codeblock lang:python %}</p>
+
+<pre><code>def gapSort(array, gap):
+    """helper function to aid insertion sort and shell sort"""
+    i = 0
+    array1 = array
+    while (i &lt; len(array)):
+        if (i &gt; 0):
+            j = i
+            while ((cmp(array1[j], array1[j-gap]) &lt; 0) and (j != 0 ) ):
+                #while object at i is less than the one before it
+                swap(j, j-gap, array1)
+                j = j - 1
+        i = i + 1
+    return array1
+
+def insertionSort(array):
+    return gapSort(array, 1)
+
+
+
+def shellSort(array):
+    """sorts using the shellsort algorithm"""
+    vals = [3*h+1 for h in range(len(array)/3)][::-1]
+    for val in vals:
+        array = gapSort(array, val)
+    return array
+</code></pre>
+
+<p>{% endcodeblock %}
 Finally, Merge sort; Running in N log(N), it is the only algorithms other than Quicksort
 worth using on large datasets.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-</span><span class='line'><span class="sd">&quot;&quot;&quot;The merge function&quot;&quot;&quot;</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">((</span><span class="n">r</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="mi">1</span><span class="p">):</span>
-</span><span class='line'>        <span class="n">left</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">p</span><span class="p">:</span><span class="n">q</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
-</span><span class='line'>        <span class="n">loggr</span><span class="p">(</span><span class="s">&quot;left&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">left</span><span class="p">))</span>
-</span><span class='line'>        <span class="n">right</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">q</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
-</span><span class='line'>        <span class="n">loggr</span><span class="p">(</span><span class="s">&quot;right&quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">right</span><span class="p">))</span>
-</span><span class='line'>        <span class="n">left</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">right</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'>        <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'>        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-</span><span class='line'>            <span class="k">if</span> <span class="n">left</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">=</span> <span class="n">right</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
-</span><span class='line'>                <span class="n">array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">left</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-</span><span class='line'>                <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
-</span><span class='line'>            <span class="k">else</span><span class="p">:</span>
-</span><span class='line'>                <span class="n">array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">right</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
-</span><span class='line'>                <span class="n">j</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span>
-</span><span class='line'>    <span class="k">elif</span> <span class="p">((</span><span class="n">r</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">):</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">array</span><span class="p">[</span><span class="n">p</span><span class="p">]):</span>
-</span><span class='line'>            <span class="n">i</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
-</span><span class='line'>            <span class="n">j</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
-</span><span class='line'>            <span class="n">array</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">j</span>
-</span><span class='line'>            <span class="n">array</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">mergeSort</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">if</span> <span class="n">p</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">r</span><span class="p">:</span>
-</span><span class='line'>            <span class="n">q</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="o">+</span><span class="n">r</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="mi">1</span><span class="p">:</span>
-</span><span class='line'>                <span class="n">sort</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="s">&quot;in left array&quot;</span><span class="p">)</span>
-</span><span class='line'>                <span class="n">sort</span><span class="p">(</span><span class="n">q</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="s">&quot;right array&quot;</span><span class="p">)</span>
-</span><span class='line'>            <span class="n">merge</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">sort</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;root&quot;</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">array</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:python %}</p>
+
+<pre><code>def merge(array, p, q, r):
+"""The merge function"""
+    if ((r - p) &gt; 1):
+        left = array[p:q+1]
+        loggr("left" + str(left))
+        right = array[q+1:r+1]
+        loggr("right"+ str(right))
+        left.append('c')
+        right.append('c')
+        i = 0
+        j = 0
+        for k in range(p, r+1):
+            if left[i] &lt;= right[j]:
+                array[k] = left[i]
+                i = i + 1
+            else:
+                array[k] = right[j]
+                j = j + 1
+    elif ((r - p) == 1 ):
+        if (array[r] &lt; array[p]):
+            i = array[p]
+            j = array[r]
+            array[p] = j
+            array[r] = i
+
+
+
+def mergeSort(array):
+    def sort(p, r, msg):
+        if p &lt; r:
+            q = (p+r)/2
+            if (r - p) &gt; 1:
+                sort(p, q, "in left array")
+                sort(q+1, r, "right array")
+            merge(array, p, q, r)
+    sort(0, len(array)-1, "root")
+    return array
+</code></pre>
+
+<p>{% endcodeblock %}</p>
 
 <p>Quick sort and its probabilistic guarantee of fast enough run time strikes me as the most
 mathematically perverse form of black magic. Beautiful in the inherent underlying fabric

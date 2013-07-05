@@ -7,8 +7,8 @@
 	<meta name="author" content="Peter de Croos">
 
 	
-	<meta name="description" content="Its been a few months since I&#8217;ve started using backbone on my personal projects.
-Its a great library for rolling out MVC structure into your &hellip;">
+	<meta name="description" content="I like Backbone.js alot. it&#8217;s a fantastic utlity library for building your own
+best of breed javascript applications.Its much more &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -73,6 +73,179 @@ Its a great library for rolling out MVC structure into your &hellip;">
 </header>
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2013/07/05/thorax-is-awesome/">Thorax Is Awesome</a></h1>
+	<div class="entry-content">
+		<p>I like Backbone.js alot. it&#8217;s a fantastic utlity library for building your own
+best of breed javascript applications.Its much more configurable than angular.js
+or ember.js. (both of which make alot of assumptions about the nature of your app
+which may or may not lead to alot of pain when working with a legacy codebase.) while
+you certainly won&#8217;t be cranking out apps as quickly as you would in more magical frameworksm
+Backbone gives you enough to get started but stays slim in features to avoid stepping
+on your toes. Backbone is the fixed gear bike of frontend javascript frameworks.</p>
+
+<p>While I reccomend anyone new to backbone build a few projects to learn it. In practice,
+I don&#8217;t reccomend using backbone solely if you are building out a full mvc system. Its missing
+a few really important features that you would have to implement yourself.</p>
+
+<h2>Enter Thorax</h2>
+
+<p>In the world of backbone extensions, Marionette, Thorax, and Chaplain. I haven&#8217;t looked at
+chapplain and I found Marionette a lil heavy for my needs. Thorax on the other hand was a
+breath of fresh air. One big pro is I found was its built in integration of
+<a href="http://handlebarsjs.com">handlebars.js</a> templates.</p>
+
+<h4>Out of the box render() that works</h4>
+
+<p>Backbone.View&#8217;s default render method is a noop(), (ie: function() {}).
+Backbone&#8217;s author&#8217;s intend for you to write your own render function which
+sets its instance&#8217;s <em>el</em> property to your view&#8217;s generated represntation of
+the model&#8217;s data. Backbone avoids adding in this feature to keep it agnostic to
+your templating system.</p>
+
+<p>Since Thorax makes the decision of using handlebars, it can give us a default render()
+method thats usable. Instead of a noop(), Thorax.View.render() by default, constucts a
+constext object containing all the <em>properties</em> of the view instance and the attributes
+of the model.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//render function, this is what a Thorax render does, </span>
+</span><span class='line'><span class="c1">// *this* resolves to the thorax instance</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">render</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//get the attributes of the property</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">properties</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span> <span class="kd">var</span> <span class="nx">property</span> <span class="k">in</span> <span class="k">this</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">properties</span><span class="p">[</span><span class="nx">property</span><span class="p">]</span> <span class="o">=</span> <span class="k">this</span><span class="p">[</span><span class="nx">property</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>  <span class="c1">//underscore.js&#39;s extend</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">properties</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">instanceProperties</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">attributes</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="nx">properties</span><span class="p">));</span>
+</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>By default, properties of the view insance get passed to the template
+but not the functions. What if we want to overide this?</p>
+
+<p>In the past, I would write view helpers in order to render attributes that required computation.
+There&#8217;s a more elegant way using the <em>defineProperty</em> function.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">peter</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Thorax</span><span class="p">.</span><span class="nx">Model</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">firstName</span><span class="o">:</span> <span class="s1">&#39;Peter&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">lastName</span><span class="o">:</span>  <span class="s1">&#39;de Croos&#39;</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">PersonView</span> <span class="o">=</span> <span class="nx">Thorax</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">template</span><span class="o">:</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span><span class="nx">TemplateSource</span><span class="p">),</span>
+</span><span class='line'>    <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>          <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;firstName&#39;</span><span class="p">)</span><span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;lastName&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="nx">enumerable</span><span class="o">:</span> <span class="kc">true</span>
+</span><span class='line'>      <span class="p">});</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">peterView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PersonView</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">model</span><span class="o">:</span> <span class="nx">peter</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>By default, properties defined by <em>defineProperty</em> are not enumerable.</p>
+
+<p>IE: they won&#8217;t show up when you do the <em>for (property in this) {}</em>, Since
+thats how thorax&#8217;s render view gets at the attributes, it won&#8217;t show up in the template
+either. Luckily that is easy enough to fix by specifying the option
+<em>enumerable:true</em></p>
+
+<p>now we have a property we can expose in the template and when handlebars accesses that property,
+the fullName function will be accessible in your handlebars templates as a read-only property
+without having to register a helper.</p>
+
+<h4>Child view management</h4>
+
+<p>Backbone does nothing to address embedded views. It expects you to write your own logic
+for handling child views into the render. As you can imagine, its kind of a pain.
+It sounds simple enough in practice but it means that you have to write in logic to check
+if a parent view is being removed and recursivly have it descend into all it child views to
+undelegate events from the dom. This is a major potential source of javascript memory leaks.
+Thorax provides some great helper functions for this. It just wins.</p>
+
+<p>Thorax.Views can be embedded in another view simply by adding it as a property of</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-05T13:45:00-07:00" pubdate data-updated="true">Jul 5<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/backbone/'>backbone</a>, <a class='category' href='/blog/categories/defineproperty/'>defineProperty</a>, <a class='category' href='/blog/categories/thorax/'>thorax</a>
+
+
+</div>
+	
+		<span class="comments"><a href="/blog/2013/07/05/thorax-is-awesome//index.html#disqus_thread">Comments</a></span>
+	
+</div></article>
 
 
     <article class="post">
