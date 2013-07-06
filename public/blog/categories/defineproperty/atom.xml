@@ -4,7 +4,7 @@
   <title><![CDATA[Category: defineProperty | console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/blog/categories/defineproperty/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2013-07-06T00:05:54-07:00</updated>
+  <updated>2013-07-06T14:14:33-07:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -529,9 +529,9 @@ the application instance Router has a method <em>navigate()</em> usually called 
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>The trigger true is needed by backbone for the router to trigger any associated actions.
-The browser by default writes to history when it document recieves the
+The browser by default writes to history when the document recieves the
 <a href="https://developer.mozilla.org/en-US/docs/Web/Reference/Events/popstate">popstate</a> event.
- It activates when you enter a page or hit the backwards or forward buttons.
+The browser triggers popstate automatically when you enter a page or hit the backwards or forward buttons.
 When you click back, the new url will load and the router which is listening
 for the popstate event on 'document' will perform the behavior associated with that url.</p>
 
