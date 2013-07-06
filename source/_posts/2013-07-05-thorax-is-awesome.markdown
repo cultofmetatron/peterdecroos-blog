@@ -305,9 +305,9 @@ the application instance Router has a method *navigate()* usually called by
 {% endcodeblock %}
 
 The trigger true is needed by backbone for the router to trigger any associated actions.
-The browser by default writes to history when it document recieves the
+The browser by default writes to history when the document recieves the
 [popstate](https://developer.mozilla.org/en-US/docs/Web/Reference/Events/popstate) event.
- It activates when you enter a page or hit the backwards or forward buttons.
+The browser triggers popstate automatically when you enter a page or hit the backwards or forward buttons.
 When you click back, the new url will load and the router which is listening
 for the popstate event on 'document' will perform the behavior associated with that url.
 
