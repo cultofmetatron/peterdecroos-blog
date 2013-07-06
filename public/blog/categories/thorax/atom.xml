@@ -4,7 +4,7 @@
   <title><![CDATA[Category: thorax | console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/blog/categories/thorax/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2013-07-05T16:45:15-07:00</updated>
+  <updated>2013-07-06T00:00:29-07:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -18,123 +18,550 @@
     <link href="http://blog.peterdecroos.com/blog/2013/07/05/thorax-is-awesome/"/>
     <updated>2013-07-05T13:45:00-07:00</updated>
     <id>http://blog.peterdecroos.com/blog/2013/07/05/thorax-is-awesome</id>
-    <content type="html"><![CDATA[<p>I like Backbone.js alot. it's a fantastic utlity library for building your own
-best of breed javascript applications.Its much more configurable than angular.js
-or ember.js. (both of which make alot of assumptions about the nature of your app
-which may or may not lead to alot of pain when working with a legacy codebase.) while
-you certainly won't be cranking out apps as quickly as you would in more magical frameworksm
-Backbone gives you enough to get started but stays slim in features to avoid stepping
+    <content type="html"><![CDATA[<p>I like Backbone.js a lot. It's a fantastic utlity library for building your own
+best of breed javascript applications. It is much more configurable than Angular
+or Ember - both of which make numerous assumptions about the nature of your app,
+which may or may not lead to frustration when working with a legacy codebase. While
+you certainly won't be cranking out apps as quickly as you would in more magical frameworks,
+Backbone gives you enough to get started. It stays slim in features to avoid stepping
 on your toes. Backbone is the fixed gear bike of frontend javascript frameworks.</p>
 
-<p>While I reccomend anyone new to backbone build a few projects to learn it. In practice,
-I don't reccomend using backbone solely if you are building out a full mvc system. Its missing
+<p>I recommend anyone new to Backbone build a few projects to learn it. In practice,
+I don't recommend using Backbone alone for building out a full mvc system. Its missing
 a few really important features that you would have to implement yourself.</p>
 
 <h2>Enter Thorax</h2>
 
-<p>In the world of backbone extensions, Marionette, Thorax, and Chaplain. I haven't looked at
-chapplain and I found Marionette a lil heavy for my needs. Thorax on the other hand was a
-breath of fresh air. One big pro is I found was its built in integration of
-<a href="http://handlebarsjs.com">handlebars.js</a> templates.</p>
+<p>In the world of Backbone extensions, there are three major players, Marionette, Thorax, and
+Chaplain. I haven't looked at Chaplain and I found Marionette heavy for my needs.
+Thorax on the other hand, was a breath of fresh air. I especially loved the
+<a href="http://handlebarsjs.com">handlebars.js</a> templates integration.</p>
+
+<p>In the following posts, I will outline some of the major benefits of using Thorax.</p>
+
+<ul>
+<li>Out of the box render() that works</li>
+<li>Child view management</li>
+<li>Layout Views</li>
+<li>The MVC in Backbone's MVC</li>
+</ul>
+
 
 <h4>Out of the box render() that works</h4>
 
 <p>Backbone.View's default render method is a noop(), (ie: function() {}).
 Backbone's author's intend for you to write your own render function which
-sets its instance's <em>el</em> property to your view's generated represntation of
+sets its instance's <em>el</em> property to your view's generated representation of
 the model's data. Backbone avoids adding in this feature to keep it agnostic to
 your templating system.</p>
 
-<p>Since Thorax makes the decision of using handlebars, it can give us a default render()
-method thats usable. Instead of a noop(), Thorax.View.render() by default, constucts a
-constext object containing all the <em>properties</em> of the view instance and the attributes
-of the model.</p>
+<blockquote><p>Note: Handlebars</p>
 
-<p>{% codeblock lang:javascript %}</p>
+<p>Handlebars is an html templating language for javascript.</p></blockquote>
 
-<p>//render function, this is what a Thorax render does,
-// <em>this</em> resolves to the thorax instance</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">h1</span><span class="o">&gt;</span><span class="p">{{</span> <span class="nx">value</span> <span class="p">}}</span><span class="o">&lt;</span><span class="err">/h1&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="p">{{</span><span class="err">#</span><span class="k">if</span> <span class="nx">foo</span><span class="p">}}{{</span><span class="nx">foobar</span><span class="p">}}{{</span><span class="err">/if}}&gt;.</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<p>var render = function() {
-  //get the attributes of the property
-  var properties = {};
-  for ( var property in this) {</p>
+<h3>Handlebars</h3>
 
-<pre><code>properties[property] = this[property];
-</code></pre>
+<p>This handlebars code is fed into Handlebars.compile() which returns a template function.
+This function is then passed a "context" object. example:</p>
 
-<p>  };
-  //underscore.js's extend
-  if (this.model) {</p>
+<p> <div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="p">{</span>
+</span><span class='line'>  <span class="nx">value</span><span class="o">:</span> <span class="s2">&quot;hello there&quot;</span>
+</span><span class='line'>  <span class="nx">foo</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">foobar</span><span class="o">:</span> <span class="s2">&quot;hello Douglas&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<pre><code>properties = _.extend(instanceProperties, this.model.attributes);
-</code></pre>
+<p>and generates a string of html that you can inject into the dom.</p>
 
-<p>  };
-  this.$el.html(this.template(properties));
-  return this;
-}
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;h1&gt;</span>hello there<span class="nt">&lt;/h1&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;p&gt;</span>hello Douglas<span class="nt">&lt;/p&gt;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;p&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Since Thorax makes the decision of using Handlebars, it can give us a default render()
+method that's usable rather than a noop(). Thorax.View.render() constucts a
+context object containing all of the <em>properties</em> of the view instance and the attributes
+of the model which is passed into the Handlebars template function so that it's available
+in the rendered view.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">//render function, this is what a Thorax render does,</span>
+</span><span class='line'><span class="c1">// &lt;em&gt;this&lt;/em&gt; resolves to the thorax instance&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">render</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//get the attributes of the property</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">viewProperties</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span> <span class="kd">var</span> <span class="nx">property</span> <span class="k">in</span> <span class="k">this</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">viewProperties</span><span class="p">[</span><span class="nx">property</span><span class="p">]</span> <span class="o">=</span> <span class="k">this</span><span class="p">[</span><span class="nx">property</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
+</span><span class='line'>  <span class="c1">//underscore.js&#39;s extend</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">viewProperties</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">viewProperties</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">attributes</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="nx">viewProperties</span><span class="p">));</span>
+</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>By default, properties of the view insance get passed to the template
 but not the functions. What if we want to overide this?</p>
 
 <p>In the past, I would write view helpers in order to render attributes that required computation.
-There's a more elegant way using the <em>defineProperty</em> function.</p>
+There's a more elegant way using the
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty">defineProperty</a> function.</p>
 
-<p>{% codeblock lang:javascript %}
-  var peter = new Thorax.Model({</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">peter</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Thorax</span><span class="p">.</span><span class="nx">Model</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">firstName</span><span class="o">:</span> <span class="s1">&#39;Peter&#39;</span><span class="p">,</span>
+</span><span class='line'><span class="nx">lastName</span><span class="o">:</span>  <span class="s1">&#39;de Croos&#39;</span><span class="p">,</span>
+</span><span class='line'><span class="nx">githubHandle</span><span class="o">:</span> <span class="s1">&#39;Cultofmetatron&#39;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">PersonView</span> <span class="o">=</span> <span class="nx">Thorax</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">template</span><span class="o">:</span>
+</span><span class='line'>  <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span><span class="s2">&quot;we can call</span>
+</span><span class='line'><span class="s2">           {{firstName}}, </span>
+</span><span class='line'><span class="s2">           {{lastName}} and </span>
+</span><span class='line'><span class="s2">           {{fullName}}&quot;</span><span class="p">),</span>
+</span><span class='line'><span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;fullName&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;firstName&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;lastName&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">enumerable</span><span class="o">:</span> <span class="kc">true</span> <span class="c1">// see note below</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">peterView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PersonView</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">model</span><span class="o">:</span> <span class="nx">peter</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<pre><code>firstName: 'Peter',
-lastName:  'de Croos'
-</code></pre>
+<blockquote><p><em>Technical note:</em> By default, properties defined by <em>defineProperty</em> are not enumerable.</p>
 
-<p>  });</p>
-
-<p>  var PersonView = Thorax.View.extend({</p>
-
-<pre><code>template: Handlebars.compile(TemplateSource),
-initialize: function() {
-  Object.defineProperty(this, 'fullname', {
-    get: function() {
-      return this.model.get('firstName')+ ' ' + this.model.get('lastName');
-    },
-    enumerable: true
-  });
-}
-</code></pre>
-
-<p>  });</p>
-
-<p>  var peterView = new PersonView({</p>
-
-<pre><code>model: peter
-</code></pre>
-
-<p>  });
-{% endcodeblock %}</p>
-
-<p>By default, properties defined by <em>defineProperty</em> are not enumerable.</p>
-
-<p>IE: they won't show up when you do the <em>for (property in this) {}</em>, Since
+<p>IE: They won't show up when you do the <em>for (property in this) {}</em>. Because
 thats how thorax's render view gets at the attributes, it won't show up in the template
 either. Luckily that is easy enough to fix by specifying the option
-<em>enumerable:true</em></p>
-
-<p>now we have a property we can expose in the template and when handlebars accesses that property,
-the fullName function will be accessible in your handlebars templates as a read-only property
-without having to register a helper.</p>
+<em>enumerable:true</em></p></blockquote>
 
 <h4>Child view management</h4>
 
 <p>Backbone does nothing to address embedded views. It expects you to write your own logic
-for handling child views into the render. As you can imagine, its kind of a pain.
-It sounds simple enough in practice but it means that you have to write in logic to check
+for handling child views in the render function. As you can imagine, it is kind of a pain.
+It sounds simple enough in theory, but in practice it means that you have to write code to check
 if a parent view is being removed and recursivly have it descend into all it child views to
 undelegate events from the dom. This is a major potential source of javascript memory leaks.
 Thorax provides some great helper functions for this. It just wins.</p>
 
-<p>Thorax.Views can be embedded in another view simply by adding it as a property of</p>
+<p>Thorax.Views can be embedded in another view simply by adding the subview as a property.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">blogModel</span> <span class="o">=</span> <span class="nx">Thorax</span><span class="p">.</span><span class="nx">Model</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;console.log(this.thought)&#39;</span><span class="p">,</span>
+</span><span class='line'><span class="nx">post</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Thorax</span><span class="p">.</span><span class="nx">Model</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Thorax is awesome&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;maximum callstack exeeded&quot;</span>
+</span><span class='line'><span class="p">})</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">PostView</span> <span class="o">=</span> <span class="nx">Thorax</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">template</span><span class="o">:</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span><span class="s1">&#39;&amp;lt;h2&amp;gt;{{title}}&amp;lt;/h2&amp;gt;&amp;lt;p&amp;gt;{{content}}&amp;lt;/p&amp;gt;&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">blogView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">BlogView</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">template</span><span class="o">:</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span><span class="s2">&quot;&amp;lt;h1&amp;gt;{{name}}&amp;lt;/h1&amp;gt;{{view postView}}&quot;</span><span class="p">),</span>
+</span><span class='line'><span class="nx">model</span><span class="o">:</span> <span class="nx">blogModel</span><span class="p">,</span>
+</span><span class='line'><span class="nx">postView</span><span class="o">:</span> <span class="k">new</span> <span class="nx">PostView</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;post&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="p">})</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>As you can see, it was as easy as embedding  {{view postView }}
+inside the template and Thorax takes of care of yielding control of that region to the
+child view.</p>
+
+<h4>Layout Views</h4>
+
+<p>Let me just say that layout views are really awesome. A layout view is
+a view with the sole purpose being a container which can hold whatever
+view/model combo fits the current context.</p>
+
+<h5>The MVC in Backbone's MVC</h5>
+
+<p>There's a Backbone.Model and a Backbone.View but where is Backbone.Controller? (hint: there isn't one)</p>
+
+<p>Currently Marrionette augments Backbone with a Controller object but
+Thorax does nothing of the sort. I guess the real question is, where does a controller fit?</p>
+
+<p>Philosphically, MVC stands for a seperation of concerns between</p>
+
+<ol>
+<li>Models: the data containing the application logic we are modelling on the computer</li>
+<li>Views: Objects that manage the presentation of the models. This includes binding
+event handlers and rerendering when the underlying model(s) change.</li>
+<li>Controllers: Objects that take care of managing what view and model are relevant.</li>
+</ol>
+
+
+<p>In the Rails world, the architectural philosphy revolves around the concept
+of skinny model/fat controller. The brunt of the code for manipulating the models should
+be inside the instance methods in the models themeselves and the controller interacts with it
+through an api.</p>
+
+<p>When we really get down to it, controllers perform a few functions.</p>
+
+<ol>
+<li>Watch out for some event that should trigger a change in view and/or model.</li>
+<li>Manage the creation of new view instances to represent new or altered models.</li>
+<li>Render html and insert it into the DOM.</li>
+</ol>
+
+
+<p>Our controller will handle only the details of getting the proper model and binding
+it to a view so that it can be rendered.</p>
+
+<p>Lets create a function PostController that does nothing more than lookup a
+model by its id and creates a post view.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">postController</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">postId</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//for info on Thorax.Views, Thorax.Models and Thorax.Collections,</span>
+</span><span class='line'>  <span class="c1">//see the note below</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">postView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Thorax</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">FullPagePostView</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">model</span><span class="o">:</span> <span class="nx">Thorax</span><span class="p">.</span><span class="nx">Collections</span><span class="p">.</span><span class="nx">posts</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">postId</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">postView</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<blockquote><p> <strong>Note</strong> About Thorax Registries</p>
+
+<p> Thorax provides a Registry: a series of hashes
+ where you can store the Constructor Functions for your
+ extended models and views.</p>
+
+<p> For more information visit <a href="http://thoraxjs.org/api.html#registry">The throax docs</a></p></blockquote>
+
+<p>Now we have a basic controller that handles cases 2 and 3 of our list. We still need to take care
+of figuring out how we want to determine when this controller gets called. In the projects
+I have worked on, I've solved this problem using the router.</p>
+
+<p>Thorax does nothing special with the router so we will use Backbone.Router as is. It will manage one
+Layout view, a special Thorax view made for holding other views.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//router.js</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">layoutContainer</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">callController</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">controller</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">//arguments is used to shift responsibilty of knowing the </span>
+</span><span class='line'><span class="c1">//amount of paramaters to the controller</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="nx">controller</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'><span class="nx">layoutContainer</span><span class="p">.</span><span class="nx">setView</span><span class="p">(</span><span class="nx">view</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>The function <em>callController</em> takes a controller, passes along
+the arguments given to it by the router and takes care of the
+boiler plate of creating a view and setting it into the container.
+<em>layoutContainer.setView()</em> takes care of undelegating events of
+all elements attached to the previous view (if there was a previous view)
+as it swaps in the html of the new view.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//continued from above</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">Router</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Router</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">layoutContainer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Thorax</span><span class="p">.</span><span class="nx">LayoutView</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;#AppLayout&#39;</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm">  this is the point in the html where our container will be </span>
+</span><span class='line'><span class="cm">  injected in. from here on out, the router and controller</span>
+</span><span class='line'><span class="cm">  system will take care of swappng out application views </span>
+</span><span class='line'><span class="cm">  within this container.</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'><span class="nx">layoutContainer</span><span class="p">.</span><span class="nx">appendTo</span><span class="p">(</span><span class="s1">&#39;#entry-point&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;popstate&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">routes</span><span class="o">:</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="s1">&#39;posts/:postId&#39;</span><span class="o">:</span> <span class="s1">&#39;postRoute&#39;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">postRoute</span><span class="o">:</span> <span class="nx">callController</span><span class="p">(</span><span class="nx">postController</span><span class="p">)</span>
+</span><span class='line'><span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>This is a pretty straight forward setup with one possible new thing. So you
+probably noticed the <em>$(document).trigger('popstate')</em>. In standard backbone,
+the application instance Router has a method <em>navigate()</em> usually called by</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="nx">router</span><span class="p">.</span><span class="nx">navigate</span><span class="p">(</span><span class="s1">&#39;path/to/route&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">trigger</span><span class="o">:</span> <span class="kc">true</span> <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>The trigger true is needed by backbone for the router to trigger any associated actions.
+The browser by default writes to history when it document recieves the
+<a href="https://developer.mozilla.org/en-US/docs/Web/Reference/Events/popstate">popstate</a> event.
+ It activates when you enter a page or hit the backwards or forward buttons.
+When you click back, the new url will load and the router which is listening
+for the popstate event on 'document' will perform the behavior associated with that url.</p>
+
+<p>By having the <em>$(document).trigger('popstate')</em> at the end of the initialization, we guarantee
+that once the router is finished initializing, it will read in the url and trigger the appropriate
+context for the app for the url. This is great if we want multiple url entry points through
+which the user enters the app. The user gets the same javascript no matter what url of the
+website they visit. The app takes care of loading the right content based on the url.</p>
+
+<p>Finally, the template option that was passed into the instantiation of layoutView is optional.
+By default, Thorax wraps the layout in a div tag. We can customize the layoutView by giving it a template
+and using the layout-element helper in that template.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">id=</span><span class="s">&quot;appLayout&quot;</span> <span class="na">type=</span><span class="s">&quot;handlebars/template&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>   <span class="p">{{</span><span class="nx">layout</span><span class="o">-</span><span class="nx">element</span> <span class="nx">tag</span><span class="o">=</span><span class="s2">&quot;div&quot;</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;currentContext&quot;</span> <span class="kr">class</span><span class="o">=</span><span class="s2">&quot;container&quot;</span><span class="p">}}</span>
+</span><span class='line'><span class="nt">&lt;/script&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;p&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 ]]></content>
   </entry>
   
