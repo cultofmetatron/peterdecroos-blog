@@ -326,8 +326,3 @@ and using the layout-element helper in that template.
   {% raw %} {{layout-element tag="div" id="currentContext" class="container"}} {% endraw %}
 </script>
 {% endcodeblock %}
-
-
-
-
-
