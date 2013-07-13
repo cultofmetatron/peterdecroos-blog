@@ -416,7 +416,7 @@ Layout view, a special Thorax view made for holding other views.</p>
 </span><span class='line'>  <span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>    <span class="c1">//arguments is used to shift responsibilty of knowing the </span>
 </span><span class='line'>    <span class="c1">//amount of paramaters to the controller</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="nx">controller</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="nx">controller</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
 </span><span class='line'>    <span class="nx">layoutContainer</span><span class="p">.</span><span class="nx">setView</span><span class="p">(</span><span class="nx">view</span><span class="p">);</span>
 </span><span class='line'>  <span class="p">};</span>
 </span><span class='line'><span class="p">};</span>

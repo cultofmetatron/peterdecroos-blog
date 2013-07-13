@@ -4,7 +4,7 @@
   <title><![CDATA[console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2013-07-12T18:57:07-07:00</updated>
+  <updated>2013-07-12T19:00:27-07:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -360,7 +360,7 @@ Layout view, a special Thorax view made for holding other views.</p>
 </span><span class='line'>  <span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>    <span class="c1">//arguments is used to shift responsibilty of knowing the </span>
 </span><span class='line'>    <span class="c1">//amount of paramaters to the controller</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="nx">controller</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="nx">controller</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
 </span><span class='line'>    <span class="nx">layoutContainer</span><span class="p">.</span><span class="nx">setView</span><span class="p">(</span><span class="nx">view</span><span class="p">);</span>
 </span><span class='line'>  <span class="p">};</span>
 </span><span class='line'><span class="p">};</span>
