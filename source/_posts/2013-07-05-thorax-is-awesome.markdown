@@ -259,7 +259,7 @@ var callController = function(controller) {
   return function() {
     //arguments is used to shift responsibilty of knowing the 
     //amount of paramaters to the controller
-    var view = controller.call(this, arguments);
+    var view = controller.apply(this, arguments);
     layoutContainer.setView(view);
   };
 };
