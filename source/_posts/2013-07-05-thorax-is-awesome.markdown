@@ -210,7 +210,7 @@ event handlers and rerendering when the underlying model(s) change.
   3. Controllers: Objects that take care of managing what view and model are relevant.
 
 In the Rails world, the architectural philosphy revolves around the concept
-of skinny model/fat controller. The brunt of the code for manipulating the models should 
+of skinny controller/fat Model. The brunt of the code for manipulating the models should 
 be inside the instance methods in the models themeselves and the controller interacts with it
 through an api. 
 
@@ -259,7 +259,7 @@ var callController = function(controller) {
   return function() {
     //arguments is used to shift responsibilty of knowing the 
     //amount of paramaters to the controller
-    var view = controller(arguments);
+    var view = controller.call(this, arguments);
     layoutContainer.setView(view);
   };
 };
