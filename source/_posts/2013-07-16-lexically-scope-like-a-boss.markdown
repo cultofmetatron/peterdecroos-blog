@@ -3,7 +3,7 @@ layout: post
 title: "How to lexically scope like a boss"
 date: 2013-07-16 22:27
 comments: true
-categories: javascript scopong 
+categories: javascript scoping
 ---
 
 Lexical scoping is probably one of the most powerful features a programming
@@ -211,17 +211,16 @@ in the meantime, we can register functions to be called when the function is res
   //> "hello world"
 {% endcodeblock %}
 
-
-
-
-Yea its a wee bit contrived but it illustrates a point. By using a closure 
-and wrapping a bunch of data into this enclosed space, we can hide away some 
+Yea its a wee bit contrived but it illustrates a point. By using a closure to wrap a 
+bunch of data into this enclosed space, we can hide away some
 pretty sophisticated machinery that lets us invert the responsibilty of control. Now the 
 object maintains the state of the async call to the file and we register functions 
-that it will call when the async call is resolved.
+that it will call when the async call is resolved. This removes alot of overhead for managing
+async functions.
 
-On to something a bit more powerful. Traditionally, in node, we pass a callback into
-the third paramater 
+Traditionally, in node, we pass a callback into the third paramater. But what if we could apply
+the same principle and get an object we could pass along functions to and know it will take 
+care of running them when the file is available?
 
 {% codeblock lang:javascript %}
 var fileObject = function(fileName, encoding) {
@@ -252,14 +251,10 @@ var fileObject = function(fileName, encoding) {
     deps_always.forEach(function(fn) {
       fn();
     });
-
   });
-
   var queueFunction = function(list, fn) {
     list.push(fn);
   };
-
-
   var done = function(fn) {
     if (status === "done") {
       fn(result_data);
@@ -270,7 +265,6 @@ var fileObject = function(fileName, encoding) {
       return done;
     }
   };
-
   var fail = function(fn) {
     if (status === "error") {
       fn(result_error);
@@ -279,7 +273,6 @@ var fileObject = function(fileName, encoding) {
       queueFunction(deps_fail, fn);
     }
   };
-
   var always = function(fn) {
     if (status === "pending") {
       queueFunction(deps_always, fn);
@@ -287,13 +280,11 @@ var fileObject = function(fileName, encoding) {
       fn();
     }
   };
-
   var ret = {
     done: done,
     fail: fail,
     always: always
   };
-
   //this exposes the status as a readonly property
   Object.defineProperty(ret, 'status', {
     get: function() {
@@ -306,8 +297,9 @@ var fileObject = function(fileName, encoding) {
 };
 {% endcodeblock %}
 
-
-
+Hey that wasn't so bad. We return an object of three functions and 
+it will take care of running the appropriate functions based on the
+status of the object's internal async operation when its resolved.
 
 {% codeblock lang:javascript %}
 
@@ -330,6 +322,9 @@ newFile.always(function() {
 });
 
 {% endcodeblock %}
+
+In short, lexical scoping and closures are pretty damn awesome.
+
 
 
 

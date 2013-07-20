@@ -384,14 +384,16 @@ in the meantime, we can register functions to be called when the function is res
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Yea its a wee bit contrived but it illustrates a point. By using a closure
-and wrapping a bunch of data into this enclosed space, we can hide away some
+<p>Yea its a wee bit contrived but it illustrates a point. By using a closure to wrap a
+bunch of data into this enclosed space, we can hide away some
 pretty sophisticated machinery that lets us invert the responsibilty of control. Now the
 object maintains the state of the async call to the file and we register functions
-that it will call when the async call is resolved.</p>
+that it will call when the async call is resolved. This removes alot of overhead for managing
+async functions.</p>
 
-<p>On to something a bit more powerful. Traditionally, in node, we pass a callback into
-the third paramater</p>
+<p>Traditionally, in node, we pass a callback into the third paramater. But what if we could apply
+the same principle and get an object we could pass along functions to and know it will take
+care of running them when the file is available?</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -465,14 +467,6 @@ the third paramater</p>
 <span class='line-number'>70</span>
 <span class='line-number'>71</span>
 <span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">fileObject</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fileName</span><span class="p">,</span> <span class="nx">encoding</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">);</span>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">status</span> <span class="o">=</span> <span class="s2">&quot;pending&quot;</span><span class="p">;</span>
@@ -501,14 +495,10 @@ the third paramater</p>
 </span><span class='line'>    <span class="nx">deps_always</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>      <span class="nx">fn</span><span class="p">();</span>
 </span><span class='line'>    <span class="p">});</span>
-</span><span class='line'>
 </span><span class='line'>  <span class="p">});</span>
-</span><span class='line'>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">queueFunction</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">list</span><span class="p">,</span> <span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="nx">list</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">fn</span><span class="p">);</span>
 </span><span class='line'>  <span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">done</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s2">&quot;done&quot;</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>      <span class="nx">fn</span><span class="p">(</span><span class="nx">result_data</span><span class="p">);</span>
@@ -519,7 +509,6 @@ the third paramater</p>
 </span><span class='line'>      <span class="k">return</span> <span class="nx">done</span><span class="p">;</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>  <span class="p">};</span>
-</span><span class='line'>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">fail</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>      <span class="nx">fn</span><span class="p">(</span><span class="nx">result_error</span><span class="p">);</span>
@@ -528,7 +517,6 @@ the third paramater</p>
 </span><span class='line'>      <span class="nx">queueFunction</span><span class="p">(</span><span class="nx">deps_fail</span><span class="p">,</span> <span class="nx">fn</span><span class="p">);</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>  <span class="p">};</span>
-</span><span class='line'>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">always</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s2">&quot;pending&quot;</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>      <span class="nx">queueFunction</span><span class="p">(</span><span class="nx">deps_always</span><span class="p">,</span> <span class="nx">fn</span><span class="p">);</span>
@@ -536,13 +524,11 @@ the third paramater</p>
 </span><span class='line'>      <span class="nx">fn</span><span class="p">();</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>  <span class="p">};</span>
-</span><span class='line'>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="p">{</span>
 </span><span class='line'>    <span class="nx">done</span><span class="o">:</span> <span class="nx">done</span><span class="p">,</span>
 </span><span class='line'>    <span class="nx">fail</span><span class="o">:</span> <span class="nx">fail</span><span class="p">,</span>
 </span><span class='line'>    <span class="nx">always</span><span class="o">:</span> <span class="nx">always</span>
 </span><span class='line'>  <span class="p">};</span>
-</span><span class='line'>
 </span><span class='line'>  <span class="c1">//this exposes the status as a readonly property</span>
 </span><span class='line'>  <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nx">ret</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="p">{</span>
 </span><span class='line'>    <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -556,7 +542,9 @@ the third paramater</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-
+<p>Hey that wasn&#8217;t so bad. We return an object of three functions and
+it will take care of running the appropriate functions based on the
+status of the object&#8217;s internal async operation when its resolved.</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -595,7 +583,7 @@ the third paramater</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-
+<p>In short, lexical scoping and closures are pretty damn awesome.</p>
 </div>
 
 
@@ -616,7 +604,7 @@ the third paramater</p>
 	<div class="tags">
 
 
-	<a class='category' href='/blog/categories/javascript/'>javascript</a>, <a class='category' href='/blog/categories/scopong/'>scopong</a>
+	<a class='category' href='/blog/categories/javascript/'>javascript</a>, <a class='category' href='/blog/categories/scoping/'>scoping</a>
 
 
 </div>
