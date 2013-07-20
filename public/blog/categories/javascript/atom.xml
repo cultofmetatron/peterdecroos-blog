@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2013-07-12T19:00:27-07:00</updated>
+  <updated>2013-07-20T02:36:04-07:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -12,6 +12,369 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[How to lexically scope like a boss]]></title>
+    <link href="http://blog.peterdecroos.com/blog/2013/07/16/lexically-scope-like-a-boss/"/>
+    <updated>2013-07-16T22:27:00-07:00</updated>
+    <id>http://blog.peterdecroos.com/blog/2013/07/16/lexically-scope-like-a-boss</id>
+    <content type="html"><![CDATA[<p>Lexical scoping is probably one of the most powerful features a programming
+language can have. Today, I'm going to show you how to use lexical scoping to
+create powerful abstractions. I will begin by introducing the concept of scope.
+From there I will introduce a few rules for figuing out the scope of your variables
+in javascript and then introduce the concept of a closure and how it will make you
+positivly badass at javascript.</p>
+
+<h2>what is a scope?</h2>
+
+<p>I'm assuming you have written code before. Hell, I'd dare assume you've written a <em>var.</em></p>
+
+<p>{% codeblock lang:javascript %}
+var variableName = "variable value";
+{% endcodeblock %}</p>
+
+<p>What does it mean to use the <em>var</em> keyword? As you may know, good javascript has you
+prepend all your variables with var. Most will also advocate wrapping all your code in
+an immediatly invoked function.</p>
+
+<p>{% codeblock lang:javascript %}
+//this is being declared in the global scope.
+//its functionally equivilant to window.foo or just plain foo
+var foo = "super bar";</p>
+
+<p>(function() {
+  var foo = "inner bar";
+  console.log('this foo refers to the foo inside this function ', foo);
+})();
+/<em> I don't always create inline annonymous functions, but when I do, I
+immediatly invoke them. Live dynamically my friends &lt;3 </em>/</p>
+
+<p>console.log('this one will print the original number ', foo);</p>
+
+<p>{% endcodeblock %}</p>
+
+<p>lets start with this relativly simple example to begin growing some understanding.
+Internally scopes are represented using a tree(in simple cases, jsut a linked list).
+At each node in the tree is a dictionary of values that we refer to using the variable
+names. When we refer to foo, the interpreter (or the compiler at compile time) will look for
+it in the most immediate scope. If it doesn't find a value there, it will look up the scope
+tree at each point until it finds a node with a value and uses it for the current instruction.</p>
+
+<p>So lets look at that previous code sample. If there wasn't a <em>var foo</em> at the top of the function,
+The interpreter would look for scope[foo] and find that it isn't there. It would then look for an
+entry named <em>foo</em> in the current scope's parent. In this case, thats the global scope where
+there is an entry foo and it refers to the value "super bar."</p>
+
+<h2>creating scopes and determining the current scope's parent.</h2>
+
+<p>The rules for creating scopes differ between languages. In Javascript, we start new scopes with a
+function.</p>
+
+<p>{% codeblock lang:javascript %}
+var foo = "global scope";
+var goo = "ber";
+(function() {
+  var foo = "inner scope";
+  (function() {</p>
+
+<pre><code>var foo = "super inner scope bro!";
+</code></pre>
+
+<p>  })();
+})();
+{% endcodeblock%}</p>
+
+<p>This creates a tree with three nodes we can visualize represent
+in pseudo coffeescript.</p>
+
+<p>{% codeblock lang:coffeescript %}
+ scope_chain = global:</p>
+
+<pre><code>              variables:
+                foo: "global scope";
+                goo: "ber"
+              children:
+                inner_scope:
+                  variables:
+                    foo: "inner scope"
+                  children:
+                    super_inner_scope:
+                      variables:
+                        foo : "super inner scope bro!"
+</code></pre>
+
+<p>{% endcodeblock%}</p>
+
+<p>As you can see, we have three nodes and there are variables that are available
+at each node. If you try to access a variable. The interpreter will look up the nodes
+until it finds an entry that matches.</p>
+
+<p>Lets go deeper. How about we not even bother with immediatly invoking the function.
+How would that work?</p>
+
+<p>The simple answer is that it changes nothing. The scope chain rules are consistent. The only difference
+is that we now have two ways variables can enter the scope created in this inner function and we
+delay the instantiation of the scopes till later.</p>
+
+<p>{% codeblock lang:javascript %}
+  //scope A
+  var binder = function(st) {</p>
+
+<pre><code>//scope B
+var state = st
+return {
+  set: function(newState) {
+    //scope C
+    state = newState;
+    return state;
+  },
+  get: function() {
+    //scope E
+    return state;
+  }
+}
+</code></pre>
+
+<p>  }
+{% endcodeblock%}</p>
+
+<p>Scope order is created Lexically. Each new function definition in the source (ie: text, hence the lexical)
+is being read into the interpreter as a place to mark a new node in the scope chain on invocation.
+I mentioned that the scope datastructure resembles a tree because both Scope C and E
+belong to B as siblings. B in turn, belongs to A.</p>
+
+<p>None of these functions are being invoked. The scope is locked to A -> B, B-> C, B->E
+Things get hairier when we invoke them.</p>
+
+<p>{% codeblock lang:javascript %}
+  //scope A
+  var b1 = binder(5);
+  b1.get();   // => 5
+  b1.set(2); // => 2
+  b1.get(); // => 2</p>
+
+<p>{% endcodeblock%}</p>
+
+<p>How on earth is this function maintaining state? Well its quite elementary.
+the Binder, on invocation, takes the argument 5 and creates a scope. According to the
+rules set forward in the source code of binder. Now 2 is in Scope B and being asigned to
+the variable "state" we have instantiated in scope B. We then return the object back which
+has two functions and thus two child scopes of B which we return back to Scope A.</p>
+
+<p>Ok now its getting weird. So now when we call b1.get(), we invoking a function from scope A
+which internally has a scope C and returns a value from scope B back into scope A. Think of it
+like a closed loop of scopes. ie: a closure. ;)</p>
+
+<p>This is pretty powerful. b1.set() does something similar only its injecting a variable from scope
+A containing 2 into scope E where it is assigned to a variable in scope B and subsuquently returned.
+B1.get(), on its next invocation returns the same value stored in that variable from the same scope
+into scope A, the top level context.</p>
+
+<p>This is pretty damn powerful. We can use this to create objects with completely encapsulated state
+which gives us a leg up when trying to wrangle asynchrounous processes.</p>
+
+<p>To give an example, here's an example of a function that runs the function after a delay.
+in the meantime, we can register functions to be called when the function is resolved.</p>
+
+<p>{% codeblock lang:javascript %}</p>
+
+<p>  //scope A
+  var delay = function(fn, args, timeout) {</p>
+
+<pre><code>//Scope B
+var status = "pending"; //how we track what the status of the internal state is
+var result; //where we are going to store the result of calling fn.
+var deps = []; //where we store registered callbacks.
+
+setTimeout(function() {
+  //Scope C
+  /* the scope chain from here is A -&gt; B-&gt; C
+  var result = fn.apply(this, args); //call the function
+  status = "done";
+  //we run through all the functions in deps and run them one
+  //by one.
+  deps.forEach(function(dep) {
+    //Scope D
+    dep.call(this, result);
+  });
+}, timeout);
+
+//the two objects being returned have access to this scope
+//which allows us to invoke them to affect this internal 
+//environmental.
+return {
+  done: function(func) {
+    //Scope E
+    //A -&gt; B -&gt; C
+    if (status === "pending") {
+      deps.push(func);
+    }
+    if (status === "done") {
+      func(result);
+    }
+  }
+}
+</code></pre>
+
+<p>  }</p>
+
+<p>  var promise = delay(function(msg) {</p>
+
+<pre><code>//Scope F
+return msg + " world";
+</code></pre>
+
+<p>  }, ["hello"], 3000);</p>
+
+<p>  //by passing this function to done, you guarantee that
+  //when the function passed into delay is called, it will pass
+  //the result into the function passed in here.
+  promise.done(function(result) {</p>
+
+<pre><code>//Scope G
+console.log(result);
+</code></pre>
+
+<p>  });</p>
+
+<p>  //3000 milliseconds later
+  //> "hello world"
+{% endcodeblock %}</p>
+
+<p>Yea its a wee bit contrived but it illustrates a point. By using a closure
+and wrapping a bunch of data into this enclosed space, we can hide away some
+pretty sophisticated machinery that lets us invert the responsibilty of control. Now the
+object maintains the state of the async call to the file and we register functions
+that it will call when the async call is resolved.</p>
+
+<p>On to something a bit more powerful. Traditionally, in node, we pass a callback into
+the third paramater</p>
+
+<p>{% codeblock lang:javascript %}
+var fileObject = function(fileName, encoding) {
+  var fs = require('fs');
+  var status = "pending";
+  var result_data;
+  var result_error;
+  var deps_success = [];
+  var deps_fail = [];
+  var deps_always = [];</p>
+
+<p>  encod = encoding || 'utf8';</p>
+
+<p>  fs.readFile(fileName, encoding ,function(err, data) {</p>
+
+<pre><code>result_data = data;
+result_error = err;
+if (!result_error) {
+  deps_success.forEach(function(fn) {
+    fn(result_data);
+  });
+  status = "success";
+} else {
+  deps_fail.forEach(function(fn) {
+    fn(result_error);
+  });
+  status = "error";
+}
+deps_always.forEach(function(fn) {
+  fn();
+});
+</code></pre>
+
+<p>  });</p>
+
+<p>  var queueFunction = function(list, fn) {</p>
+
+<pre><code>list.push(fn);
+</code></pre>
+
+<p>  };</p>
+
+<p>  var done = function(fn) {</p>
+
+<pre><code>if (status === "done") {
+  fn(result_data);
+  return done;
+}
+if (status === 'pending') {
+  queueFunction(deps_success, fn);
+  return done;
+}
+</code></pre>
+
+<p>  };</p>
+
+<p>  var fail = function(fn) {</p>
+
+<pre><code>if (status === "error") {
+  fn(result_error);
+}
+if (status === "pending") {
+  queueFunction(deps_fail, fn);
+}
+</code></pre>
+
+<p>  };</p>
+
+<p>  var always = function(fn) {</p>
+
+<pre><code>if (status === "pending") {
+  queueFunction(deps_always, fn);
+} else {
+  fn();
+}
+</code></pre>
+
+<p>  };</p>
+
+<p>  var ret = {</p>
+
+<pre><code>done: done,
+fail: fail,
+always: always
+</code></pre>
+
+<p>  };</p>
+
+<p>  //this exposes the status as a readonly property
+  Object.defineProperty(ret, 'status', {</p>
+
+<pre><code>get: function() {
+  return status;
+},
+enumerable: true
+</code></pre>
+
+<p>  });</p>
+
+<p>  return ret;
+};
+{% endcodeblock %}</p>
+
+<p>{% codeblock lang:javascript %}</p>
+
+<p>var newFile = fileObject('./hello.txt');</p>
+
+<p>newFile.done(function(data) {
+  console.log('two ' + data);
+});</p>
+
+<p>newFile.done(function(data) {
+  console.log('one ' + data);
+});</p>
+
+<p>newFile.fail(function(err) {
+  console.log('the file errored out. returned: ' + err);
+});</p>
+
+<p>newFile.always(function() {
+  console.log('this always gets called');
+});</p>
+
+<p>{% endcodeblock %}</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Backbone, a short primer - Part 1: Models and Events]]></title>
@@ -49,21 +412,13 @@ exist at all.</p>
 <p>Backbone.Model is a storage container where we can add and remove
 items via <em>set</em> and <em>get</em> attributes.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">newModel</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">();</span>
-</span><span class='line'>  <span class="nx">newModel</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="nx">bar</span><span class="p">);</span>
-</span><span class='line'>  <span class="nx">newModel</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">)</span> <span class="c1">// =&gt; &#39;bar&#39;&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}</p>
+
+<p>  var newModel = new Backbone.Model();
+  newModel.set('foo', bar);
+  newModel.get('foo') // => 'bar'</p>
+
+<p>{% endcodeblock %}</p>
 
 <p>You may be wondering why you don't use <em>newModel.foo = 'bar'?</em>
 The real power in backbone is in the
@@ -83,79 +438,43 @@ that may be specific to our particular subclass of Backbone.Model. For instance,
 lets create a Comments model which may contain a username, content, rating
 and timestamp.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">Comment</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">//defaults are self explanatory</span>
-</span><span class='line'><span class="nx">defaults</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">rating</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-</span><span class='line'><span class="p">},</span>
-</span><span class='line'><span class="cm">/*</span>
-</span><span class='line'><span class="cm"> * initialize runs whenever new is called, it takes care of</span>
-</span><span class='line'><span class="cm"> * setting up __super in the inheritance chain</span>
-</span><span class='line'><span class="cm"> * there is also &#39;constructor&#39; which overides the contructor entirely</span>
-</span><span class='line'><span class="cm"> * leaving you to manually impliment the prototype chaining.</span>
-</span><span class='line'><span class="cm"> * ie: only use constructor if you know what you are doing.</span>
-</span><span class='line'><span class="cm">*/</span>
-</span><span class='line'><span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="nx">getCurrentUser</span><span class="p">());</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;timestamp&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">());</span>
-</span><span class='line'><span class="p">},</span>
-</span><span class='line'><span class="nx">upvote</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">)</span><span class="o">++</span><span class="p">);</span>
-</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="err">/&lt;em&gt; now we initialize the model passing in values in an object. &lt;/em&gt;/&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">newComment</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Comment</span><span class="p">({</span>
-</span><span class='line'><span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;backbone needs a library for reactive databindings&quot;</span><span class="p">,</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">newComment</span><span class="p">.</span><span class="nx">upvote</span><span class="p">().</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">);</span> <span class="c1">// =&gt; 1&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+  var Comment = Backbone.Model.extend({</p>
+
+<pre><code>//defaults are self explanatory
+defaults: {
+  rating: 0,
+},
+/*
+ * initialize runs whenever new is called, it takes care of
+ * setting up __super in the inheritance chain
+ * there is also 'constructor' which overides the contructor entirely
+ * leaving you to manually impliment the prototype chaining.
+ * ie: only use constructor if you know what you are doing.
+*/
+initialize: function() {
+  this.set('owner', getCurrentUser());
+  this.set('timestamp', new Date());
+},
+upvote: function() {
+  this.set('rating', this.get('rating')++);
+  return this;
+}
+</code></pre>
+
+<p>  });</p>
+
+<p>  /<em> now we initialize the model passing in values in an object. </em>/</p>
+
+<pre><code>var newComment = new Comment({
+content: "backbone needs a library for reactive databindings",
+</code></pre>
+
+<p>  });</p>
+
+<p>  newComment.upvote().get('rating'); // => 1</p>
+
+<p>{% endcodeblock %}</p>
 
 <p>Here we've set up a basic backbone model for setting representing a comment.
 In defaults, we put in an object of default attributes. You may be wondering why I
@@ -164,31 +483,20 @@ set up the owner and timestamp attributes in <em>initialize.</em></p>
 <p>The defaults object and anything inside it is evaluated into a static object
 inside the extend function call. Thus, if you were to try this</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'> <span class="kd">var</span> <span class="nx">Comment</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">//defaults are self explanatory</span>
-</span><span class='line'><span class="nx">defaults</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">rating</span>    <span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-</span><span class='line'>  <span class="nx">owner</span>     <span class="o">:</span> <span class="nx">getCurrentUser</span><span class="p">();</span>
-</span><span class='line'>  <span class="nx">timestamp</span> <span class="o">:</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">()</span> <span class="p">})();</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="p">...</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span> <span class="p">})</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+ var Comment = Backbone.Model.extend({</p>
+
+<pre><code>//defaults are self explanatory
+defaults: {
+  rating    : 0,
+  owner     : getCurrentUser();
+  timestamp : (function() { return new Date() })();
+}
+...
+</code></pre>
+
+<p> })
+{% endcodeblock %}</p>
 
 <p>you would find that every instance will have the same timestamp. To get around this,
 I have the functionality for those defaults set to run in initialize.</p>
@@ -205,51 +513,28 @@ to the model. Unlike the dom, we have to explicitly set up our own event bubblin
 <p>To set up your own event delegation, you have to set up a listener in the parent model to listen for
 events in the attribute model.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">CommentHolder</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="cm">/* We set up event listeners here</span>
-</span><span class='line'><span class="cm">    the first argument is message being fired</span>
-</span><span class='line'><span class="cm">    the second is the function to be invoked</span>
-</span><span class='line'><span class="cm">    the third is the context for function to be called in</span>
-</span><span class='line'><span class="cm">  */</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">bubble</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
-</span><span class='line'><span class="p">},</span>
-</span><span class='line'><span class="nx">bubble</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">// apply is used to propegate all possible arguments</span>
-</span><span class='line'>  <span class="c1">// that can be coming form multiple events.</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span> <span class="c1">//trigger is a backbone function</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">})</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}</p>
+
+<p>  var CommentHolder = Backbone.Model.extend({</p>
+
+<pre><code>initialize: function() {
+  /* We set up event listeners here
+    the first argument is message being fired
+    the second is the function to be invoked
+    the third is the context for function to be called in
+  */
+  this.get('comment').on('all', this.bubble, this);
+},
+bubble: function() {
+  // apply is used to propegate all possible arguments
+  // that can be coming form multiple events.
+  this.trigger.apply(this, arguments); //trigger is a backbone function
+}
+</code></pre>
+
+<p>  })</p>
+
+<p>{% endcodeblock %}</p>
 
 <p><a href="http://backbonejs.org/#Events-catalog">'all'</a> is a backbone defined catch all event
 that sends along the name of the event as the first argument. The model will listen
@@ -338,165 +623,90 @@ lightweight, you could concievably run hundreds on your system at the same time.
     <id>http://blog.peterdecroos.com/blog/2013/02/14/quicksort</id>
     <content type="html"><![CDATA[<p>Here's a basic Quicksort algorithm. You can call this code using Node.js</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">Sort</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./quicksort.js&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="nx">list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">];</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">sorted</span> <span class="o">=</span> <span class="nx">Sort</span><span class="p">(</span><span class="nx">list</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+var Sort = require('./quicksort.js');
+list = [3, 4, 5,2, 5];
+var sorted = Sort(list, function(a, b) {</p>
+
+<pre><code>if (a &gt; b) {
+    return 1;
+} else if (a === b) {
+    return 0;
+} else {
+    return -1;
+}
+</code></pre>
+
+<p>});
+{% endcodeblock %}</p>
 
 <p>have fun and hope this proves useful to somebody!</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//quicksort.js</span>
-</span><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">list1</span><span class="p">,</span> <span class="nx">compareFunction</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">list</span> <span class="o">=</span> <span class="nx">list1</span><span class="p">;</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">cmp</span> <span class="o">=</span> <span class="nx">compareFunction</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">swap</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">j</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="cm">/* swaps the indexer A[i] and A[j] */</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">_i</span> <span class="o">=</span> <span class="nx">list</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">_j</span> <span class="o">=</span> <span class="nx">list</span><span class="p">[</span><span class="nx">j</span><span class="p">];</span>
-</span><span class='line'>    <span class="nx">list</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="o">=</span> <span class="nx">_i</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">list</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">_j</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">partition</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="cm">/* the partition function goes through the array</span>
-</span><span class='line'><span class="cm">     *  list[</span>
-</span><span class='line'><span class="cm">     */</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="nx">r</span><span class="p">;</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">p</span><span class="p">;</span> <span class="c1">//on intiial pass, p is 0</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="cm">/* for each entry i where A[i] is less than A[r-1]</span>
-</span><span class='line'><span class="cm">     * where r-1 is the index of the Penultimate item</span>
-</span><span class='line'><span class="cm">     */</span>
-</span><span class='line'>    <span class="c1">//from j = 0 to j = r-1</span>
-</span><span class='line'>    <span class="c1">//exchange A[i] and A[j] if A[j] &amp;gt; A[r]</span>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">j</span> <span class="o">=</span> <span class="nx">p</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span> <span class="nx">r</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">//console.log(&quot;lets try this &quot;, list);</span>
-</span><span class='line'>        <span class="c1">//console.log(&quot;i : &quot; + i + &quot; j : &quot; + j);</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">cmp</span><span class="p">(</span><span class="nx">list</span><span class="p">[</span><span class="nx">j</span><span class="p">],</span><span class="nx">list</span><span class="p">[</span><span class="nx">r</span><span class="p">])</span> <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="o">=</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="c1">//swap them!! and then increment i</span>
-</span><span class='line'>            <span class="nx">swap</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">j</span><span class="p">);</span>
-</span><span class='line'>            <span class="nx">i</span><span class="o">++</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">swap</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">r</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nx">i</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">quickSort</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">p</span> <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span> <span class="nx">r</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">q</span> <span class="o">=</span> <span class="nx">partition</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">r</span><span class="p">);</span>
-</span><span class='line'>        <span class="nx">quickSort</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>        <span class="nx">quickSort</span><span class="p">(</span><span class="nx">q</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">initialize</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">quickSort</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">list1</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="c1">//compute the sorted value</span>
-</span><span class='line'><span class="nx">initialize</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">return</span> <span class="nx">list1</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+//quicksort.js
+module.exports = function(list1, compareFunction) {</p>
+
+<pre><code>var list = list1;
+var cmp = compareFunction;
+
+var swap = function(i, j) {
+    /* swaps the indexer A[i] and A[j] */
+    var _i = list[i];
+    var _j = list[j];
+    list[j] = _i;
+    list[i] = _j;
+}
+
+var partition = function(p, r) {
+    /* the partition function goes through the array
+     *  list[
+     */
+    var r = r;
+    var i = p; //on intiial pass, p is 0
+
+    /* for each entry i where A[i] is less than A[r-1]
+     * where r-1 is the index of the Penultimate item
+     */
+    //from j = 0 to j = r-1
+    //exchange A[i] and A[j] if A[j] &gt; A[r]
+    for (var j = p; j &lt; r; j++) {
+        //console.log("lets try this ", list);
+        //console.log("i : " + i + " j : " + j);
+        if (cmp(list[j],list[r]) &lt;= 0 ) {
+            //swap them!! and then increment i
+            swap(i, j);
+            i++;
+        }
+    }
+
+    swap(i, r);
+    return i;
+
+
+}
+
+var quickSort = function(p, r) {
+    if (p &lt; r) {
+        q = partition(p, r);
+        quickSort(p, q - 1);
+        quickSort(q + 1, r)
+
+    }
+
+}
+
+var initialize = function() {
+    quickSort(0, list1.length-1);
+
+}
+//compute the sorted value
+initialize();
+
+return list1;
+</code></pre>
+
+<p>}
+{% endcodeblock %}</p>
 ]]></content>
   </entry>
   
