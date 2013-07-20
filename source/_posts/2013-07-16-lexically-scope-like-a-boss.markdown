@@ -9,7 +9,7 @@ categories: javascript scoping
 Lexical scoping is probably one of the most powerful features a programming
 language can have. Today, I'm going to show you how to use lexical scoping to 
 create powerful abstractions. I will begin by introducing the concept of scope. 
-From there I will introduce a few rules for figuing out the scope of your variables
+From there I will introduce a few rules for figuring out the scope of your variables
 in javascript and then introduce the concept of a closure and how it will make you
 positivly badass at javascript.
 
@@ -68,7 +68,7 @@ var goo = "ber";
 })();
 {% endcodeblock%}
 
-This creates a tree with three nodes we can visualize represent
+This creates a tree with three nodes we can visualy represent
 in pseudo coffeescript.
 
 {% codeblock lang:coffeescript %}
@@ -133,23 +133,26 @@ Things get hairier when we invoke them.
 
 {% endcodeblock%}
 
-How on earth is this function maintaining state? Well its quite elementary.
-the Binder, on invocation, takes the argument 5 and creates a scope. According to the
-rules set forward in the source code of binder. Now 2 is in Scope B and being asigned to 
-the variable "state" we have instantiated in scope B. We then return the object back which 
-has two functions and thus two child scopes of B which we return back to Scope A. 
+How on earth is this function maintaining state? The Binder, on invocation, takes the argument 5 
+and creates a scope according to the rules set forward in the source code of binder. 
 
-Ok now its getting weird. So now when we call b1.get(), we invoking a function from scope A
-which internally has a scope C and returns a value from scope B back into scope A. Think of it 
-like a closed loop of scopes. ie: a closure. ;)
+Now, 2 is in Scope B and being assigned to the variable "state" we instantiated in scope B.
+We then return the object back. 
+
+The object we get back from calling binder()  has two functions and thus two child 
+scopes of B, (C, and D) which  we return back to Scope A. via the return.
+
+Now it gets weird. When we call b1.get(), we invoke a function from scope A
+which internally has a scope C who's parent scope is scope B. It thus returns a value from scope B 
+back into scope A. Think of it like a closed loop of scopes. ie: a closure. ;)
 
 This is pretty powerful. b1.set() does something similar only its injecting a variable from scope
 A containing 2 into scope E where it is assigned to a variable in scope B and subsuquently returned. 
 B1.get(), on its next invocation returns the same value stored in that variable from the same scope
 into scope A, the top level context.
-
-This is pretty damn powerful. We can use this to create objects with completely encapsulated state
-which gives us a leg up when trying to wrangle asynchrounous processes.
+ 
+We can use this to create objects with completely encapsulated states.
+This gives us a leg up when trying to wrangle asynchrounous processes.
 
 To give an example, here's an example of a function that runs the function after a delay.
 in the meantime, we can register functions to be called when the function is resolved.
@@ -211,16 +214,17 @@ in the meantime, we can register functions to be called when the function is res
   //> "hello world"
 {% endcodeblock %}
 
-Yea its a wee bit contrived but it illustrates a point. By using a closure to wrap a 
+Yeah its a wee bit contrived but it illustrates a point. By using a closure to wrap a 
 bunch of data into this enclosed space, we can hide away some
-pretty sophisticated machinery that lets us invert the responsibilty of control. Now the 
+pretty sophisticated machinery to invert the responsibilty of control. Now the 
 object maintains the state of the async call to the file and we register functions 
 that it will call when the async call is resolved. This removes alot of overhead for managing
 async functions.
 
-Traditionally, in node, we pass a callback into the third paramater. But what if we could apply
-the same principle and get an object we could pass along functions to and know it will take 
-care of running them when the file is available?
+In Node.js, we pass a callback into the third paramater  for the standard library functions. 
+
+What if we could apply the same principle and get an object we could pass along functions to 
+and know it will take care of running them when the file is available?
 
 {% codeblock lang:javascript %}
 var fileObject = function(fileName, encoding) {
@@ -297,7 +301,7 @@ var fileObject = function(fileName, encoding) {
 };
 {% endcodeblock %}
 
-Hey that wasn't so bad. We return an object of three functions and 
+Hey, that wasn't so bad. We return an object of three functions and 
 it will take care of running the appropriate functions based on the
 status of the object's internal async operation when its resolved.
 
