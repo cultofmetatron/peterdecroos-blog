@@ -54,7 +54,7 @@ The interpreter would look for scope[foo] and find that it isn't there. It would
 entry named *foo* in the current scope's parent. That is the global scope where
 the variable foo exists. It refers to the value "super bar."
 
-##Creating scopes and determining the current scope's parent.
+##Creating scopes and determining the current scope's parent
 The rules for creating scopes differ between languages. In Javascript, we start new scopes with a
 function.
 
@@ -69,8 +69,8 @@ var goo = "ber";
 })();
 {% endcodeblock%}
 
-This creates a tree with three nodes we can visualy represent
-in pseudo coffeescript.
+This creates a tree with three nodes we can visually represent
+in pseudo-coffeescript.
 
 {% codeblock lang:coffeescript %}
  scope_chain = global:
@@ -88,15 +88,20 @@ in pseudo coffeescript.
 {% endcodeblock%}
 
 As you can see, we have three nodes and there are variables that are available 
-at each node. If you try to access a variable. The interpreter will look up the nodes
+at each node. If you try to access a variable, the interpreter will look up the nodes
 until it finds an entry that matches.
 
 Lets go deeper. How about we not even bother with immediatly invoking the function.
 How would that work?
 
 The simple answer is that it changes nothing. The scope chain rules are consistent. The only difference
-is that we now have two ways variables can enter the scope created in this inner function and we
-delay the instantiation of the scopes till later.
+is that we now have two ways variables can enter the scope. 
+
+  1. through the scope tree, variables in parent scopes are available.
+  2. when variables are injected in via the function arguments which can be 
+  pulled from some other scope where we invoke the function.
+
+We delay the instantiation of the scopes until they are invoked later in the program.
 
 {% codeblock lang:javascript %}
   //scope A

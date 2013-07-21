@@ -139,7 +139,7 @@ The interpreter would look for scope[foo] and find that it isn&#8217;t there. It
 entry named <em>foo</em> in the current scope&#8217;s parent. That is the global scope where
 the variable foo exists. It refers to the value &#8220;super bar.&#8221;</p>
 
-<h2>Creating scopes and determining the current scope&#8217;s parent.</h2>
+<h2>Creating scopes and determining the current scope&#8217;s parent</h2>
 
 <p>The rules for creating scopes differ between languages. In Javascript, we start new scopes with a
 function.</p>
@@ -163,8 +163,8 @@ function.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>This creates a tree with three nodes we can visualy represent
-in pseudo coffeescript.</p>
+<p>This creates a tree with three nodes we can visually represent
+in pseudo-coffeescript.</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -194,15 +194,23 @@ in pseudo coffeescript.</p>
 
 
 <p>As you can see, we have three nodes and there are variables that are available
-at each node. If you try to access a variable. The interpreter will look up the nodes
+at each node. If you try to access a variable, the interpreter will look up the nodes
 until it finds an entry that matches.</p>
 
 <p>Lets go deeper. How about we not even bother with immediatly invoking the function.
 How would that work?</p>
 
 <p>The simple answer is that it changes nothing. The scope chain rules are consistent. The only difference
-is that we now have two ways variables can enter the scope created in this inner function and we
-delay the instantiation of the scopes till later.</p>
+is that we now have two ways variables can enter the scope.</p>
+
+<ol>
+<li>through the scope tree, variables in parent scopes are available.</li>
+<li>when variables are injected in via the function arguments which can be
+pulled from some other scope where we invoke the function.</li>
+</ol>
+
+
+<p>We delay the instantiation of the scopes until they are invoked later in the program.</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>

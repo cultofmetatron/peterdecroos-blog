@@ -4,7 +4,7 @@
   <title><![CDATA[Category: scoping | console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/blog/categories/scoping/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2013-07-21T12:29:41-07:00</updated>
+  <updated>2013-07-21T12:35:20-07:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -80,7 +80,7 @@ The interpreter would look for scope[foo] and find that it isn't there. It would
 entry named <em>foo</em> in the current scope's parent. That is the global scope where
 the variable foo exists. It refers to the value "super bar."</p>
 
-<h2>Creating scopes and determining the current scope's parent.</h2>
+<h2>Creating scopes and determining the current scope's parent</h2>
 
 <p>The rules for creating scopes differ between languages. In Javascript, we start new scopes with a
 function.</p>
@@ -109,8 +109,8 @@ function.</p>
 </span><span class='line'><span class="p">})();</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<p>This creates a tree with three nodes we can visualy represent
-in pseudo coffeescript.</p>
+<p>This creates a tree with three nodes we can visually represent
+in pseudo-coffeescript.</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -147,15 +147,23 @@ in pseudo coffeescript.</p>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>As you can see, we have three nodes and there are variables that are available
-at each node. If you try to access a variable. The interpreter will look up the nodes
+at each node. If you try to access a variable, the interpreter will look up the nodes
 until it finds an entry that matches.</p>
 
 <p>Lets go deeper. How about we not even bother with immediatly invoking the function.
 How would that work?</p>
 
 <p>The simple answer is that it changes nothing. The scope chain rules are consistent. The only difference
-is that we now have two ways variables can enter the scope created in this inner function and we
-delay the instantiation of the scopes till later.</p>
+is that we now have two ways variables can enter the scope.</p>
+
+<ol>
+<li>through the scope tree, variables in parent scopes are available.</li>
+<li>when variables are injected in via the function arguments which can be
+pulled from some other scope where we invoke the function.</li>
+</ol>
+
+
+<p>We delay the instantiation of the scopes until they are invoked later in the program.</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
