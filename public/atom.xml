@@ -4,7 +4,7 @@
   <title><![CDATA[console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2013-07-20T17:39:53-07:00</updated>
+  <updated>2013-07-21T12:29:41-07:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -18,14 +18,15 @@
     <link href="http://blog.peterdecroos.com/blog/2013/07/16/lexically-scope-like-a-boss/"/>
     <updated>2013-07-16T22:27:00-07:00</updated>
     <id>http://blog.peterdecroos.com/blog/2013/07/16/lexically-scope-like-a-boss</id>
-    <content type="html"><![CDATA[<p>Lexical scoping is probably one of the most powerful features a programming
-language can have. Today, I&#8217;m going to show you how to use lexical scoping to
+    <content type="html"><![CDATA[<p>Lexical scoping (scoping accordinng to location in source code) is probably one of
+the most powerful features a programming language can have.
+Today, I&#8217;m going to show you how to use lexical scoping to
 create powerful abstractions. I will begin by introducing the concept of scope.
 From there I will introduce a few rules for figuring out the scope of your variables
 in javascript and then introduce the concept of a closure and how it will make you
-positivly badass at javascript.</p>
+positivly badass at Javascript.</p>
 
-<h2>what is a scope?</h2>
+<h2>What is a scope?</h2>
 
 <p>I&#8217;m assuming you have written code before. Hell, I&#8217;d dare assume you&#8217;ve written a <em>var.</em></p>
 
@@ -61,23 +62,23 @@ an immediatly invoked function.</p>
 </span><span class='line'><span class="cm">/* I don&#39;t always create inline annonymous functions, but when I do, I</span>
 </span><span class='line'><span class="cm">immediatly invoke them. Live dynamically my friends &lt;3 */</span>
 </span><span class='line'>
-</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;this one will print the original number &#39;</span><span class="p">,</span> <span class="nx">foo</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;this one will print the top level: &#39;</span><span class="p">,</span> <span class="nx">foo</span><span class="p">);</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>lets start with this relativly simple example to begin growing some understanding.
-Internally scopes are represented using a tree(in simple cases, jsut a linked list).
-At each node in the tree is a dictionary of values that we refer to using the variable
-names. When we refer to foo, the interpreter (or the compiler at compile time) will look for
-it in the most immediate scope. If it doesn&#8217;t find a value there, it will look up the scope
-tree at each point until it finds a node with a value and uses it for the current instruction.</p>
+<p>Let&#8217;s start with this relativly simple example to begin growing some understanding.
+Internally, the interpreter/compiler represents scopes with a tree (in simple cases, just a linked list).
+At each node in the tree is a dictionary of values that we refer to with the variable
+names from your source code. When we refer to foo, the interpreter (or the compiler at compile time)
+will look for it in the most immediate scope. If it doesn&#8217;t find a value there, it will look
+up the scope tree until it finds a node with a matching key/val and uses it for the current instruction.</p>
 
-<p>So lets look at that previous code sample. If there wasn&#8217;t a <em>var foo</em> at the top of the function,
+<p>Look at that previous code sample. If there wasn&#8217;t a <em>var foo</em> at the top of the function,
 The interpreter would look for scope[foo] and find that it isn&#8217;t there. It would then look for an
-entry named <em>foo</em> in the current scope&#8217;s parent. In this case, thats the global scope where
-there is an entry foo and it refers to the value &#8220;super bar.&#8221;</p>
+entry named <em>foo</em> in the current scope&#8217;s parent. That is the global scope where
+the variable foo exists. It refers to the value &#8220;super bar.&#8221;</p>
 
-<h2>creating scopes and determining the current scope&#8217;s parent.</h2>
+<h2>Creating scopes and determining the current scope&#8217;s parent.</h2>
 
 <p>The rules for creating scopes differ between languages. In Javascript, we start new scopes with a
 function.</p>

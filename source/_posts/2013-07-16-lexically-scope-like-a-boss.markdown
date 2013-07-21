@@ -6,14 +6,15 @@ comments: true
 categories: javascript scoping
 ---
 
-Lexical scoping is probably one of the most powerful features a programming
-language can have. Today, I'm going to show you how to use lexical scoping to 
+Lexical scoping (scoping accordinng to location in source code) is probably one of 
+the most powerful features a programming language can have. 
+Today, I'm going to show you how to use lexical scoping to 
 create powerful abstractions. I will begin by introducing the concept of scope. 
 From there I will introduce a few rules for figuring out the scope of your variables
 in javascript and then introduce the concept of a closure and how it will make you
-positivly badass at javascript.
+positivly badass at Javascript.
 
-##what is a scope?
+##What is a scope?
 
 I'm assuming you have written code before. Hell, I'd dare assume you've written a *var.*
 
@@ -21,7 +22,7 @@ I'm assuming you have written code before. Hell, I'd dare assume you've written 
 var variableName = "variable value";
 {% endcodeblock %}
 
-What does it mean to use the *var* keyword? As you may know, good javascript has you 
+What does it mean to use the *var* keyword? As you may know, good javascript has you
 prepend all your variables with var. Most will also advocate wrapping all your code in
 an immediatly invoked function.
 
@@ -37,23 +38,23 @@ var foo = "super bar";
 /* I don't always create inline annonymous functions, but when I do, I
 immediatly invoke them. Live dynamically my friends <3 */
 
-console.log('this one will print the original number ', foo);
+console.log('this one will print the top level: ', foo);
 
 {% endcodeblock %}
 
-lets start with this relativly simple example to begin growing some understanding.
-Internally scopes are represented using a tree(in simple cases, jsut a linked list). 
-At each node in the tree is a dictionary of values that we refer to using the variable 
-names. When we refer to foo, the interpreter (or the compiler at compile time) will look for
-it in the most immediate scope. If it doesn't find a value there, it will look up the scope
-tree at each point until it finds a node with a value and uses it for the current instruction.
+Let's start with this relativly simple example to begin growing some understanding.
+Internally, the interpreter/compiler represents scopes with a tree (in simple cases, just a linked list). 
+At each node in the tree is a dictionary of values that we refer to with the variable 
+names from your source code. When we refer to foo, the interpreter (or the compiler at compile time) 
+will look for it in the most immediate scope. If it doesn't find a value there, it will look 
+up the scope tree until it finds a node with a matching key/val and uses it for the current instruction.
 
-So lets look at that previous code sample. If there wasn't a *var foo* at the top of the function,
+Look at that previous code sample. If there wasn't a *var foo* at the top of the function,
 The interpreter would look for scope[foo] and find that it isn't there. It would then look for an
-entry named *foo* in the current scope's parent. In this case, thats the global scope where
-there is an entry foo and it refers to the value "super bar."
+entry named *foo* in the current scope's parent. That is the global scope where
+the variable foo exists. It refers to the value "super bar."
 
-##creating scopes and determining the current scope's parent.
+##Creating scopes and determining the current scope's parent.
 The rules for creating scopes differ between languages. In Javascript, we start new scopes with a
 function.
 
