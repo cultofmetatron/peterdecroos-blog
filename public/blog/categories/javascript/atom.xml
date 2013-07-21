@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2013-07-20T15:00:34-07:00</updated>
+  <updated>2013-07-20T17:39:53-07:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -484,9 +484,9 @@ and know it will take care of running them when the file is available?</p>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">result_error</span><span class="p">;</span>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">deps_success</span> <span class="o">=</span> <span class="p">[];</span>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">deps_fail</span> <span class="o">=</span> <span class="p">[];</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">deps_always</span> <span class="o">=</span> <span class="p">[];</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">encod</span> <span class="o">=</span> <span class="nx">encoding</span> <span class="o">||</span> <span class="s1">&#39;utf8&#39;</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">deps_always</span> <span class="o">=</span> <span class="p">[];</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>  <span class="nx">encod</span> <span class="o">=</span> <span class="nx">encoding</span> <span class="o">||</span> <span class="s1">&#39;utf8&#39;</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">fs</span><span class="p">.</span><span class="nx">readFile</span><span class="p">(</span><span class="nx">fileName</span><span class="p">,</span> <span class="nx">encoding</span> <span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
 </span><span class='line'>
@@ -519,11 +519,11 @@ and know it will take care of running them when the file is available?</p>
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s2">&quot;done&quot;</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>  <span class="nx">fn</span><span class="p">(</span><span class="nx">result_data</span><span class="p">);</span>
-</span><span class='line'>  <span class="k">return</span> <span class="nx">done</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s1">&#39;pending&#39;</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>  <span class="nx">queueFunction</span><span class="p">(</span><span class="nx">deps_success</span><span class="p">,</span> <span class="nx">fn</span><span class="p">);</span>
-</span><span class='line'>  <span class="k">return</span> <span class="nx">done</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
 </span><span class='line'>
@@ -536,6 +536,7 @@ and know it will take care of running them when the file is available?</p>
 </span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s2">&quot;pending&quot;</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>  <span class="nx">queueFunction</span><span class="p">(</span><span class="nx">deps_fail</span><span class="p">,</span> <span class="nx">fn</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
 </span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
@@ -546,18 +547,15 @@ and know it will take care of running them when the file is available?</p>
 </span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
 </span><span class='line'>  <span class="nx">fn</span><span class="p">();</span>
 </span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
 </span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>  <span class="nx">ret</span><span class="p">.</span><span class="nx">done</span> <span class="o">=</span> <span class="nx">done</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">ret</span><span class="p">.</span><span class="nx">fail</span> <span class="o">=</span> <span class="nx">fail</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">ret</span><span class="p">.</span><span class="nx">always</span> <span class="o">=</span> <span class="nx">always</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">done</span><span class="o">:</span> <span class="nx">done</span><span class="p">,</span>
-</span><span class='line'><span class="nx">fail</span><span class="o">:</span> <span class="nx">fail</span><span class="p">,</span>
-</span><span class='line'><span class="nx">always</span><span class="o">:</span> <span class="nx">always</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
-</span><span class='line'>  <span class="c1">//this exposes the status as a readonly property</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="c1">//this exposes the status as a readonly property</span>
 </span><span class='line'>  <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nx">ret</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -569,7 +567,9 @@ and know it will take care of running them when the file is available?</p>
 </span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
-</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="p">};</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Hey, that wasn't so bad. We return an object of three functions and

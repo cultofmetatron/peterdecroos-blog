@@ -235,7 +235,7 @@ var fileObject = function(fileName, encoding) {
   var deps_success = [];
   var deps_fail = [];
   var deps_always = [];
-
+  var ret = {};
   encod = encoding || 'utf8';
 
   fs.readFile(fileName, encoding ,function(err, data) {
@@ -262,11 +262,11 @@ var fileObject = function(fileName, encoding) {
   var done = function(fn) {
     if (status === "done") {
       fn(result_data);
-      return done;
+      return ret;
     }
     if (status === 'pending') {
       queueFunction(deps_success, fn);
-      return done;
+      return ret;
     }
   };
   var fail = function(fn) {
@@ -276,6 +276,7 @@ var fileObject = function(fileName, encoding) {
     if (status === "pending") {
       queueFunction(deps_fail, fn);
     }
+    return ret;
   };
   var always = function(fn) {
     if (status === "pending") {
@@ -283,12 +284,13 @@ var fileObject = function(fileName, encoding) {
     } else {
       fn();
     }
+    return ret;
   };
-  var ret = {
-    done: done,
-    fail: fail,
-    always: always
-  };
+  ret.done = done;
+  ret.fail = fail;
+  ret.always = always;
+
+
   //this exposes the status as a readonly property
   Object.defineProperty(ret, 'status', {
     get: function() {
@@ -299,6 +301,7 @@ var fileObject = function(fileName, encoding) {
 
   return ret;
 };
+
 {% endcodeblock %}
 
 Hey, that wasn't so bad. We return an object of three functions and 
