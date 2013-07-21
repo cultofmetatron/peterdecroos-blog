@@ -97,8 +97,8 @@ How would that work?
 The simple answer is that it changes nothing. The scope chain rules are consistent. The only difference
 is that we now have two ways variables can enter the scope. 
 
-  1. through the scope tree, variables in parent scopes are available.
-  2. when variables are injected in via the function arguments which can be 
+  1. Through the scope tree, variables in parent scopes are available.
+  2. When variables are injected in via the function arguments which can be 
   pulled from some other scope where we invoke the function.
 
 We delay the instantiation of the scopes until they are invoked later in the program.
@@ -122,12 +122,12 @@ We delay the instantiation of the scopes until they are invoked later in the pro
   }
 {% endcodeblock%}
 
-Scope order is created Lexically. Each new function definition in the source (ie: text, hence the lexical) 
+Scope order is created lexically. Each new function definition in the source (ie: text, hence the lexical) 
 is being read into the interpreter as a place to mark a new node in the scope chain on invocation. 
 I mentioned that the scope datastructure resembles a tree because both Scope C and E 
 belong to B as siblings. B in turn, belongs to A.
 
-None of these functions are being invoked. The scope is locked to A -> B, B-> C, B->E
+None of these functions are being invoked but the scope lookup rules are locked to A -> B, B-> C, B->E
 Things get hairier when we invoke them.
 
 {% codeblock lang:javascript %}
@@ -156,12 +156,13 @@ This is pretty powerful. b1.set() does something similar only its injecting a va
 A containing 2 into scope E where it is assigned to a variable in scope B and subsuquently returned. 
 B1.get(), on its next invocation returns the same value stored in that variable from the same scope
 into scope A, the top level context.
- 
+
 We can use this to create objects with completely encapsulated states.
 This gives us a leg up when trying to wrangle asynchrounous processes.
 
-To give an example, here's an example of a function that runs the function after a delay.
-in the meantime, we can register functions to be called when the function is resolved.
+Here's an example of a function that runs a function passed as an argument after a delay.
+while we wait for the function to fire, 
+we can register functions to be called when the function is resolved.
 
 {% codeblock lang:javascript %}
 
@@ -175,7 +176,10 @@ in the meantime, we can register functions to be called when the function is res
     setTimeout(function() {
       //Scope C
       /* the scope chain from here is A -> B-> C
-      var result = fn.apply(this, args); //call the function
+      this simply calls teh function and allows us to pass in the
+      arguments as an array
+      */
+      result = fn.apply(this, args); //call the function
       status = "done";
       //we run through all the functions in deps and run them one
       //by one.
