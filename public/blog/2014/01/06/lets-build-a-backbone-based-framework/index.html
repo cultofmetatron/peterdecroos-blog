@@ -79,8 +79,7 @@ In that time I&#8217;ve used throax as well as building custom solutions in back
 
 <p>Last night, I live coded the creation of a demo backbone framework similar in features
 to Thorax. I&#8217;m going to walk you through how
-to show you some of the architectural problems I&#8217;ve solved in contructing
-a large scale framework.</p>
+I&#8217;ve solved architectural problems in contructing a large scale backbone framework.</p>
 
 <p><a href="https://github.com/cultofmetatron/backbone-framework-example">Fork or watch it here</a></p>
 
@@ -301,10 +300,178 @@ view&#8217;s model&#8217;s attributes available inside the templates.</p>
 render. The only interface we must follow is that the View have a model
 and a tpl which tells the View how to resolve this.template.</p>
 
-<p>Of course there&#8217;s a major component missing. Any good framework has a system
-for embedding subViews. Turns out its sort of tricky.</p>
+<p>Of course there&#8217;s a major component missing. Any good backbone framework
+has a way of embedding subViews. Turns out its sort of tricky.</p>
 
-<p>The Lifecycle of a Backbone app in this case is to listen to changes on</p>
+<p>The Lifecycle of a Backbone view in this case is to listen to changes on
+model and call render() which updates the view&#8217;s $el property. Thus its
+impossible to proceed until this.$el is completely demystified.</p>
+
+<h4>what is $el?</h4>
+
+<p>I&#8217;ve heard alot of confusion about the nature of &#8216;this.$el&#8217;. Typically, a Backbone
+View is a controller for a node. This node is a structure relevant to the
+document object model.</p>
+
+<p>you may be familiar with a dom object if you&#8217;ve used jquery.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">$body</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">);</span> <span class="c1">// =&gt; returns a jquery wrapped object</span>
+</span><span class='line'>  <span class="nx">$body</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1">//returns the wrapped object representing the body dom node.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In much the same way, a backbone view is a controller for a dom object.</p>
+
+<p>You may have seen the kickstart for a backbone app that involves doing a jquery
+lookup on a node and setting its html to your view&#8217;s $el property</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">$container</span> <span class="o">=</span>  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.container&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">$container</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">view</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">$el</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Assuming the render() method of the view returns &#8216;this&#8217;, then calling it before calling the
+$el property guarantees that the dom object managed by the view will be updated before being
+placed in the dom. When render() is called again, it updates the <em>contents</em> of that $el. The
+$container has a reference to $el stored in it thus ensuring that calling render() will change
+the webpage to reflect the latest state of the model.</p>
+
+<h4>Extending out Render() to support subViews.</h4>
+
+<p>With the afformentioned definition of $el in mind, The best way to embed a subview
+(with string based template engines, you do something else with dom based ones.) is to do an
+initial render of the dom node marking off somehow places to embed subviews. Then afterwards,
+go back through the $el and systematically embed $el for each subview in their respective places.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="c1">//updated render()</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">context</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>  <span class="nx">context</span><span class="p">.</span><span class="nx">_subView</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">viewName</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="s1">&#39;&lt;div class=&quot;subView view-&#39;</span> <span class="o">+</span> <span class="nx">viewName</span> <span class="o">+</span> <span class="s1">&#39;&quot;&gt;&lt;/div&gt;&#39;</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">attributes</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="c1">//pop it in the dom</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="nx">context</span><span class="p">));</span>
+</span><span class='line'>  <span class="c1">//notice we do this AFTER we rerender the new this.$el</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">subViews</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">subViews</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.subView&#39;</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">index</span><span class="p">,</span> <span class="nx">el</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">$el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">el</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">// view-</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">subView</span> <span class="o">=</span> <span class="nx">_</span><span class="p">(</span><span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">el</span><span class="p">.</span><span class="nx">classList</span><span class="p">)).</span><span class="nx">chain</span><span class="p">()</span>
+</span><span class='line'>      <span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">className</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="nx">className</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/^view-/</span><span class="p">));</span>
+</span><span class='line'>      <span class="p">},</span> <span class="k">this</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">className</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">className</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">},</span> <span class="k">this</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">.</span><span class="nx">value</span><span class="p">()[</span><span class="mi">0</span><span class="p">];</span> <span class="c1">//grab the first item</span>
+</span><span class='line'>    <span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">subViews</span><span class="p">[</span><span class="nx">subView</span><span class="p">].</span><span class="nx">render</span><span class="p">().</span><span class="nx">$el</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">},</span> <span class="k">this</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There&#8217;s a new things we&#8217;ve added to this version.</p>
+
+<ol>
+<li>There is now a &#8216;subView()&#8217; helper being passed into context, this will generate
+the slug that we will look for when embedding a subview.</li>
+<li>After the $el is rendered, we are searching for dom elements with class subview</li>
+<li>for each subView, we find the name of the subview we embed in there given as
+view-[viewName] and look it up in the view&#8217;s subViews key/val lookup object.
+Its a property of teh parent view.</li>
+</ol>
+
+
+<p>With this, we now have an easy way of supporting subviews.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="nx">childView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">application</span><span class="p">.</span><span class="nx">BaseView</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">tpl</span><span class="o">:</span> <span class="s1">&#39;child&#39;</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">parentView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">application</span><span class="p">.</span><span class="nx">BaseView</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">tpl</span><span class="o">:</span> <span class="s1">&#39;parent&#39;</span>
+</span><span class='line'>    <span class="nx">subViews</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">child</span><span class="o">:</span> <span class="nx">childView</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;div.container&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">parentView</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">$el</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In parentView&#8217;s template, its as simple as using out new subView helper</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>  <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/template&quot;</span> <span class="na">date-name=</span><span class="s">&quot;parent&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>      <span class="o">&lt;%=</span> <span class="nx">_subView</span><span class="p">(</span><span class="s1">&#39;child&#39;</span><span class="p">)</span> <span class="o">%&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/script&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/template&quot;</span> <span class="na">date-name=</span><span class="s">&quot;child&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">span</span><span class="o">&gt;</span> <span class="nx">hi</span> <span class="nx">I</span><span class="err">&#39;</span><span class="nx">m</span> <span class="nx">the</span> <span class="nx">child</span> <span class="nx">view</span><span class="o">!!</span> <span class="o">&lt;</span><span class="err">/span&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In the next installment in this series, we&#8217;ll build a base ControllerView class which we
+can use to render generic collections. Yes, they&#8217;ll be embedable as subviews in our BaseView.</p>
 </div>
 
 

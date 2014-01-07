@@ -11,8 +11,7 @@ In that time I've used throax as well as building custom solutions in backbone.
 
 Last night, I live coded the creation of a demo backbone framework similar in features 
 to Thorax. I'm going to walk you through how 
-to show you some of the architectural problems I've solved in contructing 
-a large scale framework.
+I've solved architectural problems in contructing a large scale backbone framework.
 
 [Fork or watch it here](https://github.com/cultofmetatron/backbone-framework-example)
 
@@ -157,10 +156,123 @@ Here's a great first start. Now any View that extends BaseView will have a
 render. The only interface we must follow is that the View have a model 
 and a tpl which tells the View how to resolve this.template.
 
-Of course there's a major component missing. Any good framework has a system 
-for embedding subViews. Turns out its sort of tricky.
+Of course there's a major component missing. Any good backbone framework 
+has a way of embedding subViews. Turns out its sort of tricky.
 
-The Lifecycle of a Backbone app in this case is to listen to changes on 
+The Lifecycle of a Backbone view in this case is to listen to changes on 
+model and call render() which updates the view's $el property. Thus its 
+impossible to proceed until this.$el is completely demystified.
+
+####what is $el?
+
+I've heard alot of confusion about the nature of 'this.$el'. Typically, a Backbone
+View is a controller for a node. This node is a structure relevant to the
+document object model.
+
+you may be familiar with a dom object if you've used jquery.
+
+{% codeblock lang:javascript %}
+  var $body = $('body'); // => returns a jquery wrapped object
+  $body[0] //returns the wrapped object representing the body dom node.
+{% endcodeblock %}
+
+In much the same way, a backbone view is a controller for a dom object.
+
+You may have seen the kickstart for a backbone app that involves doing a jquery
+lookup on a node and setting its html to your view's $el property
+
+{% codeblock lang:javascript %}
+  var $container =  $('.container');
+  $container.html(view.render().$el);
+{% endcodeblock %}
+
+Assuming the render() method of the view returns 'this', then calling it before calling the
+$el property guarantees that the dom object managed by the view will be updated before being 
+placed in the dom. When render() is called again, it updates the *contents* of that $el. The
+$container has a reference to $el stored in it thus ensuring that calling render() will change
+the webpage to reflect the latest state of the model.
+
+####Extending out Render() to support subViews.
+
+With the afformentioned definition of $el in mind, The best way to embed a subview 
+(with string based template engines, you do something else with dom based ones.) is to do an 
+initial render of the dom node marking off somehow places to embed subviews. Then afterwards,
+go back through the $el and systematically embed $el for each subview in their respective places.
+
+{% codeblock lang:javascript %}
+  //updated render()
+  this.$el.html('');
+  var context = {};
+  context._subView = function(viewName) {
+    return '<div class="subView view-' + viewName + '"></div>';
+  };
+  if (this.model) {
+    _.extend(context, this.model.attributes);
+  }
+  //pop it in the dom
+  this.$el.html(this.template(context));
+  //notice we do this AFTER we rerender the new this.$el
+  var subViews = this.subViews;
+  this.$el.find('.subView').each(_.bind(function(index, el) {
+    var $el = $(el);
+    // view-
+    var subView = _(Array.prototype.slice.call(el.classList)).chain()
+      .filter(function(className, index) {
+        return (className.match(/^view-/));
+      }, this)
+      .map(function(className) {
+        return className.slice(5);
+      }, this)
+      .value()[0]; //grab the first item
+    $el.html(subViews[subView].render().$el);
+  }, this));
+
+  return this;
+{% endcodeblock %}
+
+There's a new things we've added to this version. 
+
+  1. There is now a 'subView()' helper being passed into context, this will generate
+  the slug that we will look for when embedding a subview.
+  2. After the $el is rendered, we are searching for dom elements with class subview
+  3. for each subView, we find the name of the subview we embed in there given as
+  view-[viewName] and look it up in the view's subViews key/val lookup object. 
+  Its a property of teh parent view.
+
+With this, we now have an easy way of supporting subviews.
+
+{% codeblock lang:javascript %}
+  childView = new application.BaseView({
+    tpl: 'child'
+  });
+
+  var parentView = new application.BaseView({
+    tpl: 'parent'
+    subViews: {
+      child: childView
+    }
+  });
+
+  $('div.container').html(parentView.render().$el);
+
+{% endcodeblock %}
+
+In parentView's template, its as simple as using out new subView helper
+
+{% codeblock lang:html %}
+  <script type="text/template" date-name="parent">
+    <p>
+      <%= _subView('child') %>
+    </p>
+  </script>
+
+  <script type="text/template" date-name="child">
+    <span> hi I'm the child view!! </span>
+  </script>
+{% endcodeblock %}
+
+In the next installment in this series, we'll build a base ControllerView class which we
+can use to render generic collections. Yes, they'll be embedable as subviews in our BaseView.
 
 
 
