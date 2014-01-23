@@ -6,7 +6,7 @@ comments: true
 categories: generators promises
 ---
 
-Ecmascript 6 (harmony) is comming out soon and one of the most exciting features
+Ecmascript 6 (harmony) is coming out soon and one of the most exciting features
 it offers are generators. Generators are a minimalist flow control system that gives
 a much finer grained level of control than we were afforded up till now.
 
@@ -48,7 +48,7 @@ This example shows a more advanced example of bidirectional passing.
 {% codeblock lang:javascript %}
 var myGenerator = function *() {
   var firstWord = yield 5;
-  console.log(foo); //=> "hello"
+  console.log(firstWord); //=> "hello"
   var secondWord = yield 10;
   console.log(secondWord); //=> "world"
 };

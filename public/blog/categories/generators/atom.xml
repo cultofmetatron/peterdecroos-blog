@@ -4,7 +4,7 @@
   <title><![CDATA[Category: generators | console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/blog/categories/generators/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2014-01-22T18:39:05-08:00</updated>
+  <updated>2014-01-23T02:02:11-08:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -18,7 +18,7 @@
     <link href="http://blog.peterdecroos.com/blog/2014/01/22/javascript-generators-first-impressions/"/>
     <updated>2014-01-22T16:03:00-08:00</updated>
     <id>http://blog.peterdecroos.com/blog/2014/01/22/javascript-generators-first-impressions</id>
-    <content type="html"><![CDATA[<p>Ecmascript 6 (harmony) is comming out soon and one of the most exciting features
+    <content type="html"><![CDATA[<p>Ecmascript 6 (harmony) is coming out soon and one of the most exciting features
 it offers are generators. Generators are a minimalist flow control system that gives
 a much finer grained level of control than we were afforded up till now.</p>
 
@@ -92,7 +92,7 @@ of passing in an argument to it that will be returned by yield inside the genera
 <span class='line-number'>20</span>
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">myGenerator</span> <span class="o">=</span> <span class="kd">function</span> <span class="o">*</span><span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">firstWord</span> <span class="o">=</span> <span class="nx">yield</span> <span class="mi">5</span><span class="p">;</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">foo</span><span class="p">);</span> <span class="c1">//=&gt; &quot;hello&quot;</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">firstWord</span><span class="p">);</span> <span class="c1">//=&gt; &quot;hello&quot;</span>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">secondWord</span> <span class="o">=</span> <span class="nx">yield</span> <span class="mi">10</span><span class="p">;</span>
 </span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">secondWord</span><span class="p">);</span> <span class="c1">//=&gt; &quot;world&quot;</span>
 </span><span class='line'><span class="p">};</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
