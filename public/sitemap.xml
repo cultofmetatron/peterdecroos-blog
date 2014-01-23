@@ -41,15 +41,21 @@
         <lastmod>2014-01-06T16:14:54-08:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://blog.peterdecroos.com/blog/2014/01/22/javascript-generators-first-impressions/
+        </loc>
+        <lastmod>2014-01-22T18:38:52-08:00</lastmod>
+    </url>
+    <url>
         <loc>http://blog.peterdecroos.com/about-me/</loc>
         <lastmod>2013-06-30T19:59:17-07:00</lastmod>
     </url>
     <url>
         <loc>http://blog.peterdecroos.com/blog/archives/</loc>
-        <lastmod>2014-01-06T16:14:54-08:00</lastmod>
+        <lastmod>2014-01-22T18:38:52-08:00</lastmod>
     </url>
     <url>
         <loc>http://blog.peterdecroos.com/</loc>
-        <lastmod>2014-01-06T16:14:54-08:00</lastmod>
+        <lastmod>2014-01-22T18:38:52-08:00</lastmod>
     </url>
 </urlset>
