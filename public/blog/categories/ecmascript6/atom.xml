@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ecmascript6 | console.blog( this.thought )]]></title>
+  <link href="http://blog.peterdecroos.com/blog/categories/ecmascript6/atom.xml" rel="self"/>
+  <link href="http://blog.peterdecroos.com/"/>
+  <updated>2014-02-01T21:46:31-08:00</updated>
+  <id>http://blog.peterdecroos.com/</id>
+  <author>
+    <name><![CDATA[Peter de Croos]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[koa: zero to todo list]]></title>
+    <link href="http://blog.peterdecroos.com/blog/2014/02/01/koa-zero-to-todo-list/"/>
+    <updated>2014-02-01T17:12:00-08:00</updated>
+    <id>http://blog.peterdecroos.com/blog/2014/02/01/koa-zero-to-todo-list</id>
+    <content type="html"><![CDATA[<p>From the creators of express comes a brand new framework for node powered by
+the new ecmascript 6 generators syntax. <a href="http://koajs.com/">Koa</a> is an interesting
+reimagining of how we will be able to build web applications in javascript.</p>
+
+<h3>The old paradigm</h3>
+
+<p>In the standard node library, there is the 'http' module</p>
+]]></content>
+  </entry>
+  
+</feed>

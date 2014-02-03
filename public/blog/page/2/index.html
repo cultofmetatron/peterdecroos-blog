@@ -1,0 +1,412 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>console.blog( this.thought )</title>
+	<meta name="author" content="Peter de Croos">
+
+	
+	<meta name="description" content="I&#8217;m in a couple of weeks into Robert Sedgewick&#8217;s class on algorithms currently
+running on coursera. To round off the weekend
+I decided &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="console.blog( this.thought )" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">console.blog( this.thought )</a></h1>
+<nav id="main-nav"><ul class="main">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about-me">About</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/about-me">About</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:blog.peterdecroos.com">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+		<a class="github" href="https://github.com/cultofmetatron" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:blog.peterdecroos.com">
+	</form>
+</nav>
+
+</header>
+	
+	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/09/10/sorting-algorithms-in-python/">Sorting Algorithms in Python - Part 1</a></h1>
+	<div class="entry-content">
+		<p>I&#8217;m in a couple of weeks into Robert Sedgewick&#8217;s class on algorithms currently
+running on <a href="https://www.coursera.org/course/algs4partI">coursera</a>. To round off the weekend
+I decided to reimpliment some of the classic sortting algorithms in python.</p>
+
+<p>The compare function</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'>    <span class="k">def</span> <span class="nf">cmp</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">b</span><span class="p">):</span>
+</span><span class='line'>            <span class="k">return</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="k">elif</span> <span class="p">(</span><span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">):</span>
+</span><span class='line'>            <span class="k">return</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">swap</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">array</span><span class="p">):</span>
+</span><span class='line'>      <span class="n">swapv</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span class='line'>      <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+</span><span class='line'>      <span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">swapv</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">array</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">biggest</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+</span><span class='line'>      <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>      <span class="n">biggest_val</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span class='line'>      <span class="n">biggest_index</span> <span class="o">=</span> <span class="n">i</span>
+</span><span class='line'>      <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
+</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">biggest_val</span><span class="p">):</span>
+</span><span class='line'>              <span class="n">biggest_val</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span class='line'>              <span class="n">biggest_index</span> <span class="o">=</span> <span class="n">i</span>
+</span><span class='line'>          <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">(</span><span class="n">biggest_index</span><span class="p">,</span> <span class="n">biggest_val</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">minv</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">start_index</span><span class="p">):</span>
+</span><span class='line'>      <span class="n">i</span> <span class="o">=</span> <span class="n">start_index</span>
+</span><span class='line'>      <span class="n">min_val</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">start_index</span><span class="p">]</span>
+</span><span class='line'>      <span class="n">min_index</span> <span class="o">=</span> <span class="n">i</span>
+</span><span class='line'>      <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
+</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">min_val</span><span class="p">):</span>
+</span><span class='line'>              <span class="n">min_val</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span class='line'>              <span class="n">min_index</span> <span class="o">=</span> <span class="n">i</span>
+</span><span class='line'>          <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">(</span><span class="n">min_index</span><span class="p">,</span> <span class="n">min_val</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">min</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">minv</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Selection Sort</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'>   <span class="k">def</span> <span class="nf">selectionSort</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+</span><span class='line'>      <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>      <span class="n">array1</span> <span class="o">=</span> <span class="n">array</span>
+</span><span class='line'>      <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">array1</span><span class="p">)):</span>
+</span><span class='line'>          <span class="n">array1</span> <span class="o">=</span> <span class="n">swap</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">minv</span><span class="p">(</span><span class="n">array1</span><span class="p">,</span> <span class="n">i</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">array1</span><span class="p">)</span>
+</span><span class='line'>          <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">array1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Insertion sort is just a specialized case of shellsort so I created a base composite function that encapsulates the core of both algorithms.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'>   <span class="k">def</span> <span class="nf">gapSort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">gap</span><span class="p">):</span>
+</span><span class='line'>      <span class="sd">&quot;&quot;&quot;helper function to aid insertion sort and shell sort&quot;&quot;&quot;</span>
+</span><span class='line'>      <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>      <span class="n">array1</span> <span class="o">=</span> <span class="n">array</span>
+</span><span class='line'>      <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
+</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+</span><span class='line'>              <span class="n">j</span> <span class="o">=</span> <span class="n">i</span>
+</span><span class='line'>              <span class="k">while</span> <span class="p">((</span><span class="nb">cmp</span><span class="p">(</span><span class="n">array1</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">array1</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="n">gap</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">j</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">):</span>
+</span><span class='line'>                  <span class="c">#while object at i is less than the one before it</span>
+</span><span class='line'>                  <span class="n">swap</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="o">-</span><span class="n">gap</span><span class="p">,</span> <span class="n">array1</span><span class="p">)</span>
+</span><span class='line'>                  <span class="n">j</span> <span class="o">=</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span>
+</span><span class='line'>          <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">array1</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">insertionSort</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">gapSort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">shellSort</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+</span><span class='line'>      <span class="sd">&quot;&quot;&quot;sorts using the shellsort algorithm&quot;&quot;&quot;</span>
+</span><span class='line'>      <span class="n">vals</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="o">*</span><span class="n">h</span><span class="o">+</span><span class="mi">1</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">)][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'>      <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">vals</span><span class="p">:</span>
+</span><span class='line'>          <span class="n">array</span> <span class="o">=</span> <span class="n">gapSort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">array</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Finally, Merge sort; Running in N log(N), it is the only algorithms other than Quicksort
+worth using on large datasets.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'>   <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+</span><span class='line'>  <span class="sd">&quot;&quot;&quot;The merge function&quot;&quot;&quot;</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">((</span><span class="n">r</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+</span><span class='line'>          <span class="n">left</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">p</span><span class="p">:</span><span class="n">q</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'>          <span class="n">loggr</span><span class="p">(</span><span class="s">&quot;left&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">left</span><span class="p">))</span>
+</span><span class='line'>          <span class="n">right</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">q</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'>          <span class="n">loggr</span><span class="p">(</span><span class="s">&quot;right&quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">right</span><span class="p">))</span>
+</span><span class='line'>          <span class="n">left</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+</span><span class='line'>          <span class="n">right</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+</span><span class='line'>          <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>          <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>          <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+</span><span class='line'>              <span class="k">if</span> <span class="n">left</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">right</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+</span><span class='line'>                  <span class="n">array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">left</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span class='line'>                  <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span class='line'>              <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>                  <span class="n">array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">right</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+</span><span class='line'>                  <span class="n">j</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span class='line'>      <span class="k">elif</span> <span class="p">((</span><span class="n">r</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">):</span>
+</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">array</span><span class="p">[</span><span class="n">p</span><span class="p">]):</span>
+</span><span class='line'>              <span class="n">i</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+</span><span class='line'>              <span class="n">j</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+</span><span class='line'>              <span class="n">array</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">j</span>
+</span><span class='line'>              <span class="n">array</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">mergeSort</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+</span><span class='line'>      <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+</span><span class='line'>          <span class="k">if</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="n">r</span><span class="p">:</span>
+</span><span class='line'>              <span class="n">q</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="o">+</span><span class="n">r</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+</span><span class='line'>              <span class="k">if</span> <span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+</span><span class='line'>                  <span class="n">sort</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="s">&quot;in left array&quot;</span><span class="p">)</span>
+</span><span class='line'>                  <span class="n">sort</span><span class="p">(</span><span class="n">q</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="s">&quot;right array&quot;</span><span class="p">)</span>
+</span><span class='line'>              <span class="n">merge</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">sort</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;root&quot;</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">array</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Quick sort and its probabilistic guarantee of fast enough run time strikes me as the most
+mathematically perverse form of black magic. Beautiful in the inherent underlying fabric
+of its utility. I&#8217;ll cover that when I get to part 2.</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-10T00:11:00-07:00" pubdate data-updated="true">Sep 10<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/algorithms/'>algorithms</a>, <a class='category' href='/blog/categories/python/'>python</a>, <a class='category' href='/blog/categories/sorting/'>sorting</a>
+
+
+</div>
+	
+		<span class="comments"><a href="/blog/2012/09/10/sorting-algorithms-in-python//blog/page/2/index.html#disqus_thread">Comments</a></span>
+	
+</div></article>
+
+<nav id="pagenavi">
+    
+        <a href="/" class="prev">Prev</a>
+    
+    
+    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
+</nav></div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    Peter de Croos
+
+<div>
+<a href="https://angel.co/peter-de-croos?follow=1&type=User&id=277748"></a><script src="https://angel.co/javascripts/embed.js" type="text/javascript"></script>
+</div>
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'peterdecroosblog';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-33062340-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+
+
+</body>
+</html>

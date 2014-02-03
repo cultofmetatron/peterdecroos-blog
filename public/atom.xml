@@ -4,7 +4,7 @@
   <title><![CDATA[console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2014-01-23T02:02:11-08:00</updated>
+  <updated>2014-02-01T21:46:31-08:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -12,6 +12,21 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[koa: zero to todo list]]></title>
+    <link href="http://blog.peterdecroos.com/blog/2014/02/01/koa-zero-to-todo-list/"/>
+    <updated>2014-02-01T17:12:00-08:00</updated>
+    <id>http://blog.peterdecroos.com/blog/2014/02/01/koa-zero-to-todo-list</id>
+    <content type="html"><![CDATA[<p>From the creators of express comes a brand new framework for node powered by
+the new ecmascript 6 generators syntax. <a href="http://koajs.com/">Koa</a> is an interesting
+reimagining of how we will be able to build web applications in javascript.</p>
+
+<h3>The old paradigm</h3>
+
+<p>In the standard node library, there is the &#8216;http&#8217; module</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[javascript generators: first impressions]]></title>
