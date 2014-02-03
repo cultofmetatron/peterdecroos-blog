@@ -4,7 +4,7 @@
   <title><![CDATA[Category: node | console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/blog/categories/node/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2014-02-01T21:46:34-08:00</updated>
+  <updated>2014-02-02T18:31:53-08:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -26,10 +26,11 @@ which can be used to track the running program throughout its life cycle.</p>
 <p>The id this process is assigned is called a pid and it can be accessed from within
 node via process</p>
 
-<p>{% codeblock lang:javascript %}
-  var pid = process.pid;
-  console.log(pid);
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">pid</span> <span class="o">=</span> <span class="nx">process</span><span class="p">.</span><span class="nx">pid</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">pid</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p><em>Fun fact</em>: if you open another terminal and type "kill -9 (process pid)." You will
 have effectivly terminated the process in the other window by having the operating
@@ -52,22 +53,37 @@ information about the running node instance that we can use in our programs.</p>
 
 <p>specific to node.js is the ability to bind to occur at process events.</p>
 
-<p>{% codeblock lang:javascript %}
-  var runOnExit = function() {
-   console.log('...exiting');
-  };</p>
-
-<p>  process.on('exit', function() {</p>
-
-<pre><code>/* its important that you do not invoke
-* any asynchronous functions in here
-*/
-runOnExit();
-</code></pre>
-
-<p>  });</p>
-
-<p>{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">runOnExit</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;...exiting&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">};</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">process</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;exit&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="cm">/* its important that you do not invoke</span>
+</span><span class='line'><span class="cm">* any asynchronous functions in here</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'><span class="nx">runOnExit</span><span class="p">();</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>In the case of exit, the event loop terminates. The documentation specifically
 mentions events scheduled with setTimeout. Its important to note that this applies
@@ -103,49 +119,84 @@ exit it using <em>ctrl-c.</em></p>
 
 <p>We can overide the default behaviors for some of these signals.</p>
 
-<p>{% codeblock lang:javascript %}
-  console.log("to delete => kill -9 " +process.pid);
-  console.log("\n\n this is a a reinforced program, it will not easily die");</p>
-
-<p>  /* SIGINT is sent to your process when you type in CTR-C.</p>
-
-<pre><code> the operating system intercepts this command and relays
- it to your node instance. node's default response is to exit.
-</code></pre>
-
-<p>   */
-  process.on('SIGINT', function() {</p>
-
-<pre><code>console.log('you tried to press CTRL-C, go ahead, try again');
-</code></pre>
-
-<p>  });</p>
-
-<p>  process.on('SIGTSTP', function() {</p>
-
-<pre><code>console.log('LOL, nope - CTRL-Z won\'t save you!! either');
-</code></pre>
-
-<p>  });
-  //this keeps the program from exiting
-  var mainLoop = function() { setTimeout(mainLoop, 0); };
-  mainLoop();
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;to delete =&gt; kill -9 &quot;</span> <span class="o">+</span><span class="nx">process</span><span class="p">.</span><span class="nx">pid</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;\n\n this is a a reinforced program, it will not easily die&quot;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="cm">/* SIGINT is sent to your process when you type in CTR-C.&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">&lt;pre&gt;&lt;code&gt; the operating system intercepts this command and relays</span>
+</span><span class='line'><span class="cm"> it to your node instance. node&#39;s default response is to exit.</span>
+</span><span class='line'><span class="cm">&lt;/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">&lt;p&gt;   */</span>
+</span><span class='line'>  <span class="nx">process</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;SIGINT&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;you tried to press CTRL-C, go ahead, try again&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">process</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;SIGTSTP&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;LOL, nope - CTRL-Z won\&#39;t save you!! either&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span>
+</span><span class='line'>  <span class="c1">//this keeps the program from exiting</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">mainLoop</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">mainLoop</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="p">};</span>
+</span><span class='line'>  <span class="nx">mainLoop</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>A more realistic scenario would be a situation in which you need to
 write some files to the disk before kicking off the exit procedures.</p>
 
-<p>{% codeblock lang:javascript %}
-  process.on('SIGINT', function() {</p>
-
-<pre><code>console.log('writing to disk');
-saveData();
-return process.exit(0);
-</code></pre>
-
-<p>  });</p>
-
-<p>{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="nx">process</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;SIGINT&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;writing to disk&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">saveData</span><span class="p">();</span>
+</span><span class='line'><span class="k">return</span> <span class="nx">process</span><span class="p">.</span><span class="nx">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>You cannot overwrite the kill -9 signal. This is why certain programs can become corrupted
 when you kill-9 them. they are not given a chance to save state.</p>

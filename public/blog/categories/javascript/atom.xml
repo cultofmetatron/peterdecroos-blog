@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2014-02-01T21:46:34-08:00</updated>
+  <updated>2014-02-02T18:31:53-08:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -18,13 +18,320 @@
     <link href="http://blog.peterdecroos.com/blog/2014/02/01/koa-zero-to-todo-list/"/>
     <updated>2014-02-01T17:12:00-08:00</updated>
     <id>http://blog.peterdecroos.com/blog/2014/02/01/koa-zero-to-todo-list</id>
-    <content type="html"><![CDATA[<p>From the creators of express comes a brand new framework for node powered by
+    <content type="html"><![CDATA[<h2>Note: you need to run node 0.11 with --harmony to run the code.</h2>
+
+<p>From the creators of express comes a brand new framework for node powered by
 the new ecmascript 6 generators syntax. <a href="http://koajs.com/">Koa</a> is an interesting
 reimagining of how we will be able to build web applications in javascript.</p>
 
 <h3>The old paradigm</h3>
 
-<p>In the standard node library, there is the 'http' module</p>
+<p>In the standard node library, The 'http' module is used to create servers.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">server</span> <span class="o">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">res</span><span class="p">.</span><span class="nx">writeHead</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="o">:</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">});</span>
+</span><span class='line'>  <span class="c1">//server logic goes here</span>
+</span><span class='line'>  <span class="nx">res</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">server</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">3000</span><span class="p">,</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;listening on port 3000&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Express exposes a function that we can give to
+http.createServer as a callback. Express middleware is a set of functions that
+take 3 arguments, req, res and next. The middleware performs some operations, modifies
+either the request or response objects and passed down to the next middleware in the stack
+by calling next(). Its akin to a water flow model where the the response ends somewhere
+near the end of the middleware stack.</p>
+
+<h3>Enter Koa, The generators based framework</h3>
+
+<p>Like express, Koa works internatlly by generating a callback that can be passed to
+http.createServer().  Unlike Express, it uses generators to provide a much more fine grained
+model of control flow.</p>
+
+<p>A very basic koa app looks like this, lets make it serve up the contents of a file</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">koa</span>          <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;koa&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">Promise</span>      <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;bluebird&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">//creates promise yielding versions of fs</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">promisifyAll</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">));</span>
+</span><span class='line'><span class="c1">//create the koa instance</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">koa</span><span class="p">();</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="kd">function</span> <span class="o">*</span><span class="p">(</span><span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//here&#39;s an example middleware that logs to the console</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;timestamp: before request =&gt; &#39;</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nx">now</span><span class="p">());</span>
+</span><span class='line'>  <span class="nx">yield</span> <span class="nx">next</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;timestamp: after request  =&gt; &#39;</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nx">now</span><span class="p">());</span>
+</span><span class='line'><span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="kd">function</span> <span class="o">*</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">body</span> <span class="o">=</span> <span class="nx">yield</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileAsync</span><span class="p">(</span><span class="s1">&#39;./app.js&#39;</span><span class="p">,</span> <span class="s1">&#39;utf8&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">3000</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;now listening on port 3000&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Unlike Express, the middleware is written using generators.
+Downstream middleware in Koa flows upstream on return. Middleware
+yields down stream by explicitly calling 'yield next.'. Upon return, the control
+flow yields back up to where the upstream middleware yielded downstream.</p>
+
+<p>Where Express passes native node req and res obects through to each function, Koa
+manages a context where it encapsulates them behind an interface. They are still available
+thrugh the 'this' keyword as this.req and this.res. However, Its not reccomended in
+the docs that you work with these native objects. One could imagine calling this.res.end('')
+would throw a monkey wrench in the control flow. Instead you are suppossed to work through
+the this.response and this.request. Most of the methods are aliased directly to this. 'this.body'
+for example, is aliased to this.response.body.</p>
+
+<p>There does not yet appear to be a direct way to get
+to the request body. The co-body parser accesses the req.body directly so while the docs say
+don't do it, Koa is still young so you may have to get your hands dirty.</p>
+
+<h3>A Todo app in koa</h3>
+
+<p>Now that we've covered the basics, lets try something a little more complex. A todo
+List seems like a good thing no one has ever tried to make before in any technology ever!
+To simplify assumptions, lets just store the todos in memory.</p>
+
+<p>By itself, Koa is very minimalistic. It does not provide body parsing, sessions, or
+routing in the core. Unfortunatly Koa is still young so there just aren't that many
+npm modules for it just yet. A quick search on <a href="https://github.com/koajs/koa/wiki">the Koa website</a>
+shows that we do have the necessary modules for a basic todo.</p>
+
+<ol>
+<li><a href="https://github.com/koajs/route">koa-route</a>: for routing</li>
+<li><a href="https://github.com/visionmedia/co-body">co-body</a>: for parsing the body of post requests</li>
+<li><a href="https://github.com/koajs/static">koa-static</a>: for serving up static assets</li>
+</ol>
+
+
+<p>Here's the basic server side api
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//jshint esnext</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">koa</span>          <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;koa&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">staticServer</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;koa-static&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">//this allows us to parse the native req object to get the body</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">parse</span>        <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;co-body&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">router</span>       <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;koa-route&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">_</span>            <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;underscore&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">Promise</span>      <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;bluebird&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">path</span>         <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">promisifyAll</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">));</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">koa</span><span class="p">();</span>
+</span><span class='line'><span class="c1">//our very basic data store</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">todos</span> <span class="o">=</span> <span class="p">[];</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">//gets us unique ids</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">counter</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">count</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'><span class="k">return</span> <span class="nx">count</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
+</span><span class='line'><span class="p">})();</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">//serve up the public directory where we have all the assets</span>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">staticServer</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;public&#39;</span><span class="p">)));</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">router</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/todos&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="o">&lt;</span><span class="nx">em</span><span class="o">&gt;</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="err">/&lt;/em&gt;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">yield</span> <span class="nx">lets</span> <span class="nx">us</span> <span class="nx">pass</span> <span class="nx">asynchronous</span> <span class="nx">functions</span> <span class="nx">that</span> <span class="nx">pass</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">todo</span> <span class="o">=</span> <span class="p">(</span><span class="nx">yield</span> <span class="nx">parse</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="k">this</span><span class="p">));</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">todo</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">counter</span><span class="p">();</span>
+</span><span class='line'>  <span class="nx">todos</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">todo</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">body</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">todos</span><span class="p">);</span>
+</span><span class='line'><span class="p">}));</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">router</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/todos&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="o">*</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">body</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">todos</span><span class="p">);</span>
+</span><span class='line'><span class="p">}));</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">router</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="s1">&#39;/todos/:id&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="o">*</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">todos</span> <span class="o">=</span> <span class="nx">_</span><span class="p">(</span><span class="nx">todos</span><span class="p">).</span><span class="nx">reject</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">todo</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;what? &#39;</span><span class="p">,</span> <span class="nx">todo</span><span class="p">,</span> <span class="nx">id</span> <span class="p">);</span>
+</span><span class='line'><span class="k">return</span> <span class="nx">todo</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">},</span> <span class="k">this</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">body</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">todos</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">a</span> <span class="o">-</span> <span class="nx">b</span><span class="p">;}));</span>
+</span><span class='line'><span class="p">}));</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">3000</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;listening on port 3000&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><a href="https://github.com/cultofmetatron/koa-todo">Download the code on github</a>
+The github version includes frontend code.</p>
+
+<h4>A few things of note:</h4>
+
+<p>The 'yield' keyword ca do some interesting things. If we pass into it
+an asynchronous function that returns a thunk or promise, it will stop execution of
+the middleware and wait till it resolves. It then returns the value of the promse or thunk
+and resumes the generator. This is a hell of alot easier to read.</p>
+
+<h4>A word of caution</h4>
+
+<p>The 'yield' keyword lets us do some safe blocking but it isn't always the ideal solution.
+While the event loop itself isn't blocked by it the way futures can, it does block resuming
+of any operations that occur after it.</p>
+
+<p>For example, if we run three asyncronous operations top to bottom that do not depend on
+each other, like the following...</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="kd">function</span> <span class="o">*</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">yield</span> <span class="nx">async1</span><span class="p">();</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">yield</span> <span class="nx">async2</span><span class="p">();</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">yield</span> <span class="nx">async3</span><span class="p">();</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>This completely defeats the purpose of node's (almost automatic) concurrency. When we call
+async1, we are blocking until async2 runs. This is unoptimal. It would be better to get the promises
+for the three functions and yield on a merged promise.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="kd">function</span> <span class="o">*</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">async1</span><span class="p">();</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">async2</span><span class="p">();</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">async3</span><span class="p">();</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">yield</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">all</span><span class="p">([</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">]);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>I'm excited to cut my teeth on sme bigger problems. As the frameowrk matures, Its going to
+allow more fine grained control for how we write the next generation of web applications.</p>
 ]]></content>
   </entry>
   
@@ -65,14 +372,19 @@ from executing it as javascript, we add a type that is not 'text/javascript'.</p
 
 <p>I like to use "text/template."</p>
 
-<p>{% codeblock lang:html %}
-  <script type="text/template" data-name="templateName"></p>
-
-<pre><code>&lt;!-- template contents goes here --&gt;
-</code></pre>
-
-<p>  </script>
-{% endcodeblock%}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>  <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/template&quot;</span> <span class="na">data-name=</span><span class="s">&quot;templateName&quot;</span><span class="nt">&gt;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="o">!--</span> <span class="nx">template</span> <span class="nx">contents</span> <span class="nx">goes</span> <span class="nx">here</span> <span class="o">--&amp;</span><span class="nx">gt</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nt">&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Transforming these into working templates is fairly straightforward. For each
 script tag with type="text/template", run the template compiler over the html inside and
@@ -80,17 +392,25 @@ store it somewhere. In this case I add a data-name attribute which will be the k
 hash I store the compiled template in.</p>
 
 <p><a href="https://github.com/cultofmetatron/backbone-framework-example/blob/master/public/javascripts/init.js">/public/javascripts/init.js</a>
-{% codeblock lang:javascript %}
-  window.templates = {};
-  var $sources = $('script[type="text/template"]');
-  $sources.each(function(index, el) {</p>
-
-<pre><code>var $el = $(el);
-templates[$el.data('name')] = _.template($el.html());
-</code></pre>
-
-<p>  });
-{% endcodeblock %}</p>
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="nb">window</span><span class="p">.</span><span class="nx">templates</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">$sources</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;script[type=&quot;text/template&quot;]&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">$sources</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">index</span><span class="p">,</span> <span class="nx">el</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">$el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">el</span><span class="p">);</span>
+</span><span class='line'><span class="nx">templates</span><span class="p">[</span><span class="nx">$el</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">());</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>In this version, I chose to use express + jade, Of course writing underscore templates
 in jade seemed a little odd so I delegated those to jade's include statement. I know there
@@ -98,35 +418,63 @@ are projects like jade-browserify so maybe I'll eventually update this using jus
 
 <p><a href="https://github.com/cultofmetatron/backbone-framework-example/blob/master/views/layout.jade">/views/layout.jade</a></p>
 
-<p>{% codeblock lang:jade %}
-doctype html
-html
-  head</p>
-
-<pre><code>title= title
-link( rel="stylesheet", href='http://blog.peterdecroos.com/components/bootstrap/dist/css/bootstrap.css')
-link( rel="stylesheet", href='http://blog.peterdecroos.com/stylesheets/style.css')
-script( src="http://blog.peterdecroos.com/components/jquery/jquery.js")
-script( src="http://blog.peterdecroos.com/components/bootstrap/dist/js/bootstrap.js")
-script( src="http://blog.peterdecroos.com/components/underscore/underscore.js")
-script( src="http://blog.peterdecroos.com/components/backbone/backbone.js")
-script( src="http://blog.peterdecroos.com/javascripts/base.js")
-script( src="http://blog.peterdecroos.com/javascripts/application.js")
-</code></pre>
-
-<p>  body</p>
-
-<pre><code>block content
-script(type="text/template", data-name="main")
-  include templates/main.html
-script(type="text/template", data-name="header")
-  include templates/header.html
-script(type="text/template", data-name="menuLinks")
-  include templates/menulink.html
-script( src="http://blog.peterdecroos.com/javascripts/init.js") 
-</code></pre>
-
-<p>{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='jade'><span class='line'><span class="nt">doctype</span> html
+</span><span class='line'><span class="nt">html</span>
+</span><span class='line'>  <span class="nt">head</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;</span><span class="nt">pre</span>&gt;&lt;code&gt;title= title
+</span><span class='line'><span class="nt">link</span>( <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="err">,</span> <span class="na">href=</span><span class="s">&#39;http://blog.peterdecroos.com/components/bootstrap/dist/css/bootstrap.css&#39;</span>)
+</span><span class='line'><span class="nt">link</span>( <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="err">,</span> <span class="na">href=</span><span class="s">&#39;http://blog.peterdecroos.com/stylesheets/style.css&#39;</span>)
+</span><span class='line'><span class="nt">script</span>( <span class="na">src=</span><span class="s">&quot;http://blog.peterdecroos.com/components/jquery/jquery.js&quot;</span>)
+</span><span class='line'><span class="nt">script</span>( <span class="na">src=</span><span class="s">&quot;http://blog.peterdecroos.com/components/bootstrap/dist/js/bootstrap.js&quot;</span>)
+</span><span class='line'><span class="nt">script</span>( <span class="na">src=</span><span class="s">&quot;http://blog.peterdecroos.com/components/underscore/underscore.js&quot;</span>)
+</span><span class='line'><span class="nt">script</span>( <span class="na">src=</span><span class="s">&quot;http://blog.peterdecroos.com/components/backbone/backbone.js&quot;</span>)
+</span><span class='line'><span class="nt">script</span>( <span class="na">src=</span><span class="s">&quot;http://blog.peterdecroos.com/javascripts/base.js&quot;</span>)
+</span><span class='line'><span class="nt">script</span>( <span class="na">src=</span><span class="s">&quot;http://blog.peterdecroos.com/javascripts/application.js&quot;</span>)
+</span><span class='line'><span class="err">&lt;</span><span class="c">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>  body&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;</span><span class="nt">pre</span>&gt;&lt;code&gt;block content
+</span><span class='line'><span class="nt">script</span>(<span class="na">type=</span><span class="s">&quot;text/template&quot;</span><span class="err">,</span> <span class="na">data-name=</span><span class="s">&quot;main&quot;</span>)
+</span><span class='line'>  <span class="nt">include</span> templates/main.html
+</span><span class='line'><span class="nt">script</span>(<span class="na">type=</span><span class="s">&quot;text/template&quot;</span><span class="err">,</span> <span class="na">data-name=</span><span class="s">&quot;header&quot;</span>)
+</span><span class='line'>  <span class="nt">include</span> templates/header.html
+</span><span class='line'><span class="nt">script</span>(<span class="na">type=</span><span class="s">&quot;text/template&quot;</span><span class="err">,</span> <span class="na">data-name=</span><span class="s">&quot;menuLinks&quot;</span>)
+</span><span class='line'>  <span class="nt">include</span> templates/menulink.html
+</span><span class='line'><span class="nt">script</span>( <span class="na">src=</span><span class="s">&quot;http://blog.peterdecroos.com/javascripts/init.js&quot;</span>)
+</span><span class='line'><span class="err">&lt;</span><span class="c">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;</span><span class="nt">p</span>&gt;
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>The actual contents of the underscore templates in the *.html templates will
 now be compiled and loaded into "templates[data-name]" where I can access it later.</p>
@@ -138,65 +486,113 @@ in our app. For special cases we can overide them later. However, for the sake o
 want some decalrative way of telling the object what template to use and a default render()
 method that we can use in most situations.</p>
 
-<p>{% codeblock lang:javascript %}
-  //first we declare a namespace to store these new Objects
-  application = {};
-  application.BaseView = Backbone.View.extend({</p>
-
-<pre><code>initialize: function() {
-  Backbone.View.prototype.initialize.apply(this, arguments);
-  if (this.model) {
-    this.listenTo(this.model, 'change', this.render);
-  }
-  /*
-    if the BaseView is extended with a tpl string, we want to 
-    have that be available but we also want to be able to load 
-    it at runtime and have it overide the base tpl string
-  */
-  this.tpl = options.tpl || this.tpl
-  this.loadTemplate(this.tpl);
-}
-loadTemplate: function(tpl) {
-  /*  
-    if tpl is a function, we assign it directly, 
-    otherwise, if its a string, we look it up
-    in our templates map.
-  */
-  if (_.isFunction(tpl)) {
-    this.template = tpl;
-  } else if (_.isString(tpl)) {
-    this.template = template[tpl];
-  } else {
-    throw new Error('tpl must be a function or a string!');
-  }
-}
-render: function() {
-  //see below
-}
-</code></pre>
-
-<p>  });
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="c1">//first we declare a namespace to store these new Objects</span>
+</span><span class='line'>  <span class="nx">application</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>  <span class="nx">application</span><span class="p">.</span><span class="nx">BaseView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">initialize</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">,</span> <span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="cm">/*</span>
+</span><span class='line'><span class="cm">    if the BaseView is extended with a tpl string, we want to </span>
+</span><span class='line'><span class="cm">    have that be available but we also want to be able to load </span>
+</span><span class='line'><span class="cm">    it at runtime and have it overide the base tpl string</span>
+</span><span class='line'><span class="cm">  */</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">tpl</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">tpl</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">tpl</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">loadTemplate</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">tpl</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">loadTemplate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">tpl</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="cm">/*  </span>
+</span><span class='line'><span class="cm">    if tpl is a function, we assign it directly, </span>
+</span><span class='line'><span class="cm">    otherwise, if its a string, we look it up</span>
+</span><span class='line'><span class="cm">    in our templates map.</span>
+</span><span class='line'><span class="cm">  */</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">tpl</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">template</span> <span class="o">=</span> <span class="nx">tpl</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">tpl</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">template</span> <span class="o">=</span> <span class="nx">template</span><span class="p">[</span><span class="nx">tpl</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s1">&#39;tpl must be a function or a string!&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//see below</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Next up we need to create a render function. Its arbitrary based on the particular
 needs of your application. For most purposes however, Its sufficiant to make a
 view's model's attributes available inside the templates.</p>
 
-<p>{% codeblock lang:javascript %}
-  //from the render in the preceeding example
-  render: function() {</p>
-
-<pre><code>this.$el.html('');//empty the view's node
-var context = {}; //create a context object
-if (this.model) {
-  _.extend(context, this.model.attributes);
-}
-this.$el.html(this.template(context));
-return this;
-</code></pre>
-
-<p>  }
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="c1">//from the render in the preceeding example</span>
+</span><span class='line'>  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span><span class="c1">//empty the view&#39;s node</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">context</span> <span class="o">=</span> <span class="p">{};</span> <span class="c1">//create a context object</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">attributes</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="nx">context</span><span class="p">));</span>
+</span><span class='line'><span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Here's a great first start. Now any View that extends BaseView will have a
 render. The only interface we must follow is that the View have a model
@@ -217,20 +613,22 @@ document object model.</p>
 
 <p>you may be familiar with a dom object if you've used jquery.</p>
 
-<p>{% codeblock lang:javascript %}
-  var $body = $('body'); // => returns a jquery wrapped object
-  $body[0] //returns the wrapped object representing the body dom node.
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">$body</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">);</span> <span class="c1">// =&gt; returns a jquery wrapped object</span>
+</span><span class='line'>  <span class="nx">$body</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1">//returns the wrapped object representing the body dom node.</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>In much the same way, a backbone view is a controller for a dom object.</p>
 
 <p>You may have seen the kickstart for a backbone app that involves doing a jquery
 lookup on a node and setting its html to your view's $el property</p>
 
-<p>{% codeblock lang:javascript %}
-  var $container =  $('.container');
-  $container.html(view.render().$el);
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">$container</span> <span class="o">=</span>  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.container&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">$container</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">view</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">$el</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Assuming the render() method of the view returns 'this', then calling it before calling the
 $el property guarantees that the dom object managed by the view will be updated before being
@@ -245,45 +643,81 @@ the webpage to reflect the latest state of the model.</p>
 initial render of the dom node marking off somehow places to embed subviews. Then afterwards,
 go back through the $el and systematically embed $el for each subview in their respective places.</p>
 
-<p>{% codeblock lang:javascript %}
-  //updated render()
-  this.$el.html('');
-  var context = {};
-  context._subView = function(viewName) {</p>
-
-<pre><code>return '&lt;div class="subView view-' + viewName + '"&gt;&lt;/div&gt;';
-</code></pre>
-
-<p>  };
-  if (this.model) {</p>
-
-<pre><code>_.extend(context, this.model.attributes);
-</code></pre>
-
-<p>  }
-  //pop it in the dom
-  this.$el.html(this.template(context));
-  //notice we do this AFTER we rerender the new this.$el
-  var subViews = this.subViews;
-  this.$el.find('.subView').each(_.bind(function(index, el) {</p>
-
-<pre><code>var $el = $(el);
-// view-
-var subView = _(Array.prototype.slice.call(el.classList)).chain()
-  .filter(function(className, index) {
-    return (className.match(/^view-/));
-  }, this)
-  .map(function(className) {
-    return className.slice(5);
-  }, this)
-  .value()[0]; //grab the first item
-$el.html(subViews[subView].render().$el);
-</code></pre>
-
-<p>  }, this));</p>
-
-<p>  return this;
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="c1">//updated render()</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">context</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>  <span class="nx">context</span><span class="p">.</span><span class="nx">_subView</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">viewName</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">return</span> <span class="s1">&#39;&amp;lt;div class=&quot;subView view-&#39;</span> <span class="o">+</span> <span class="nx">viewName</span> <span class="o">+</span> <span class="s1">&#39;&quot;&amp;gt;&amp;lt;/div&amp;gt;&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">attributes</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span>
+</span><span class='line'>  <span class="c1">//pop it in the dom</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="nx">context</span><span class="p">));</span>
+</span><span class='line'>  <span class="c1">//notice we do this AFTER we rerender the new this.$el</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">subViews</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">subViews</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.subView&#39;</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">index</span><span class="p">,</span> <span class="nx">el</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">$el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">el</span><span class="p">);</span>
+</span><span class='line'><span class="c1">// view-</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">subView</span> <span class="o">=</span> <span class="nx">_</span><span class="p">(</span><span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">el</span><span class="p">.</span><span class="nx">classList</span><span class="p">)).</span><span class="nx">chain</span><span class="p">()</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">className</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="nx">className</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/^view-/</span><span class="p">));</span>
+</span><span class='line'>  <span class="p">},</span> <span class="k">this</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">className</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">className</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">},</span> <span class="k">this</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">value</span><span class="p">()[</span><span class="mi">0</span><span class="p">];</span> <span class="c1">//grab the first item</span>
+</span><span class='line'><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">subViews</span><span class="p">[</span><span class="nx">subView</span><span class="p">].</span><span class="nx">render</span><span class="p">().</span><span class="nx">$el</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">},</span> <span class="k">this</span><span class="p">));</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>There's a new things we've added to this version.</p>
 
@@ -299,47 +733,81 @@ Its a property of teh parent view.</li>
 
 <p>With this, we now have an easy way of supporting subviews.</p>
 
-<p>{% codeblock lang:javascript %}
-  childView = new application.BaseView({</p>
-
-<pre><code>tpl: 'child'
-</code></pre>
-
-<p>  });</p>
-
-<p>  var parentView = new application.BaseView({</p>
-
-<pre><code>tpl: 'parent'
-subViews: {
-  child: childView
-}
-</code></pre>
-
-<p>  });</p>
-
-<p>  $('div.container').html(parentView.render().$el);</p>
-
-<p>{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="nx">childView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">application</span><span class="p">.</span><span class="nx">BaseView</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">tpl</span><span class="o">:</span> <span class="s1">&#39;child&#39;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">parentView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">application</span><span class="p">.</span><span class="nx">BaseView</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">tpl</span><span class="o">:</span> <span class="s1">&#39;parent&#39;</span>
+</span><span class='line'><span class="nx">subViews</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">child</span><span class="o">:</span> <span class="nx">childView</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;div.container&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">parentView</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">$el</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>In parentView's template, its as simple as using out new subView helper</p>
 
-<p>{% codeblock lang:html %}
-  <script type="text/template" date-name="parent"></p>
-
-<pre><code>&lt;p&gt;
-  &lt;%= _subView('child') %&gt;
-&lt;/p&gt;
-</code></pre>
-
-<p>  </script></p>
-
-<p>  <script type="text/template" date-name="child"></p>
-
-<pre><code>&lt;span&gt; hi I'm the child view!! &lt;/span&gt;
-</code></pre>
-
-<p>  </script>
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>  <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/template&quot;</span> <span class="na">date-name=</span><span class="s">&quot;parent&quot;</span><span class="nt">&gt;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">p</span><span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span>
+</span><span class='line'>  <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="o">%=</span> <span class="nx">_subView</span><span class="p">(</span><span class="s1">&#39;child&#39;</span><span class="p">)</span> <span class="o">%&amp;</span><span class="nx">gt</span><span class="p">;</span>
+</span><span class='line'><span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="err">/p&amp;gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nt">&lt;/script&gt;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/template&quot;</span> <span class="na">date-name=</span><span class="s">&quot;child&quot;</span><span class="nt">&gt;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">span</span><span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="nx">hi</span> <span class="nx">I</span><span class="err">&#39;</span><span class="nx">m</span> <span class="nx">the</span> <span class="nx">child</span> <span class="nx">view</span><span class="o">!!</span> <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="err">/span&amp;gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nt">&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>In the next installment in this series, we'll build a base ControllerView class which we
 can use to render generic collections. Yes, they'll be embedable as subviews in our BaseView.</p>
@@ -363,29 +831,43 @@ positivly badass at Javascript.</p>
 
 <p>I'm assuming you have written code before. Hell, I'd dare assume you've written a <em>var.</em></p>
 
-<p>{% codeblock lang:javascript %}
-var variableName = "variable value";
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">variableName</span> <span class="o">=</span> <span class="s2">&quot;variable value&quot;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>What does it mean to use the <em>var</em> keyword? As you may know, good javascript has you
 prepend all your variables with var. Most will also advocate wrapping all your code in
 an immediatly invoked function.</p>
 
-<p>{% codeblock lang:javascript %}
-//this is being declared in the global scope.
-//its functionally equivilant to window.foo or just plain foo
-var foo = "super bar";</p>
-
-<p>(function() {
-  var foo = "inner bar";
-  console.log('this foo refers to the foo inside this function ', foo);
-})();
-/<em> I don't always create inline annonymous functions, but when I do, I
-immediatly invoke them. Live dynamically my friends &lt;3 </em>/</p>
-
-<p>console.log('this one will print the top level: ', foo);</p>
-
-<p>{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//this is being declared in the global scope.</span>
+</span><span class='line'><span class="c1">//its functionally equivilant to window.foo or just plain foo</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s2">&quot;super bar&quot;</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s2">&quot;inner bar&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;this foo refers to the foo inside this function &#39;</span><span class="p">,</span> <span class="nx">foo</span><span class="p">);</span>
+</span><span class='line'><span class="p">})();</span>
+</span><span class='line'><span class="err">/&lt;em&gt; I don&#39;t always create inline annonymous functions, but when I do, I</span>
+</span><span class='line'><span class="nx">immediatly</span> <span class="nx">invoke</span> <span class="nx">them</span><span class="p">.</span> <span class="nx">Live</span> <span class="nx">dynamically</span> <span class="nx">my</span> <span class="nx">friends</span> <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="mi">3</span> <span class="o">&lt;</span><span class="sr">/em&gt;/</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;this one will print the top level: &#39;</span><span class="p">,</span> <span class="nx">foo</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Let's start with this relativly simple example to begin growing some understanding.
 Internally, the interpreter/compiler represents scopes with a tree (in simple cases, just a linked list).
@@ -404,40 +886,66 @@ the variable foo exists. It refers to the value "super bar."</p>
 <p>The rules for creating scopes differ between languages. In Javascript, we start new scopes with a
 function.</p>
 
-<p>{% codeblock lang:javascript %}
-var foo = "global scope";
-var goo = "ber";
-(function() {
-  var foo = "inner scope";
-  (function() {</p>
-
-<pre><code>var foo = "super inner scope bro!";
-</code></pre>
-
-<p>  })();
-})();
-{% endcodeblock%}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s2">&quot;global scope&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">goo</span> <span class="o">=</span> <span class="s2">&quot;ber&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s2">&quot;inner scope&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s2">&quot;super inner scope bro!&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">})();</span>
+</span><span class='line'><span class="p">})();</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>This creates a tree with three nodes we can visually represent
 in pseudo-coffeescript.</p>
 
-<p>{% codeblock lang:coffeescript %}
- scope_chain = global:</p>
-
-<pre><code>              variables:
-                foo: "global scope";
-                goo: "ber"
-              children:
-                inner_scope:
-                  variables:
-                    foo: "inner scope"
-                  children:
-                    super_inner_scope:
-                      variables:
-                        foo : "super inner scope bro!"
-</code></pre>
-
-<p>{% endcodeblock%}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'> <span class="nv">scope_chain = </span><span class="nx">global</span><span class="o">:&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span>              <span class="nv">variables:</span>
+</span><span class='line'>                <span class="nv">foo: </span><span class="s">&quot;global scope&quot;</span><span class="p">;</span>
+</span><span class='line'>                <span class="nv">goo: </span><span class="s">&quot;ber&quot;</span>
+</span><span class='line'>              <span class="nv">children:</span>
+</span><span class='line'>                <span class="nv">inner_scope:</span>
+</span><span class='line'>                  <span class="nv">variables:</span>
+</span><span class='line'>                    <span class="nv">foo: </span><span class="s">&quot;inner scope&quot;</span>
+</span><span class='line'>                  <span class="nv">children:</span>
+</span><span class='line'>                    <span class="nv">super_inner_scope:</span>
+</span><span class='line'>                      <span class="nv">variables:</span>
+</span><span class='line'>                        <span class="nv">foo : </span><span class="s">&quot;super inner scope bro!&quot;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>As you can see, we have three nodes and there are variables that are available
 at each node. If you try to access a variable, the interpreter will look up the nodes
@@ -458,27 +966,45 @@ pulled from some other scope where we invoke the function.</li>
 
 <p>We delay the instantiation of the scopes until they are invoked later in the program.</p>
 
-<p>{% codeblock lang:javascript %}
-  //scope A
-  var binder = function(st) {</p>
-
-<pre><code>//scope B
-var state = st
-return {
-  set: function(newState) {
-    //scope C
-    state = newState;
-    return state;
-  },
-  get: function() {
-    //scope E
-    return state;
-  }
-}
-</code></pre>
-
-<p>  }
-{% endcodeblock%}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="c1">//scope A</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">binder</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">st</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">//scope B</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="nx">st</span>
+</span><span class='line'><span class="k">return</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">set</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">newState</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//scope C</span>
+</span><span class='line'>    <span class="nx">state</span> <span class="o">=</span> <span class="nx">newState</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">state</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//scope E</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">state</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Scope order is created lexically. Each new function definition in the source (ie: text, hence the lexical)
 is being read into the interpreter as a place to mark a new node in the scope chain on invocation.
@@ -488,14 +1014,21 @@ belong to B as siblings. B in turn, belongs to A.</p>
 <p>None of these functions are being invoked but the scope lookup rules are locked to A -> B, B-> C, B->E
 Things get hairier when we invoke them.</p>
 
-<p>{% codeblock lang:javascript %}
-  //scope A
-  var b1 = binder(5);
-  b1.get();   // => 5
-  b1.set(2); // => 2
-  b1.get(); // => 2</p>
-
-<p>{% endcodeblock%}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="c1">//scope A</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">b1</span> <span class="o">=</span> <span class="nx">binder</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">b1</span><span class="p">.</span><span class="nx">get</span><span class="p">();</span>   <span class="c1">// =&gt; 5</span>
+</span><span class='line'>  <span class="nx">b1</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span> <span class="c1">// =&gt; 2</span>
+</span><span class='line'>  <span class="nx">b1</span><span class="p">.</span><span class="nx">get</span><span class="p">();</span> <span class="c1">// =&gt; 2&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>How on earth is this function maintaining state? The Binder, on invocation, takes the argument 5
 and creates a scope according to the rules set forward in the source code of binder.</p>
@@ -522,73 +1055,139 @@ This gives us a leg up when trying to wrangle asynchrounous processes.</p>
 while we wait for the function to fire,
 we can register functions to be called when the function is resolved.</p>
 
-<p>{% codeblock lang:javascript %}</p>
-
-<p>  //scope A
-  var delay = function(fn, args, timeout) {</p>
-
-<pre><code>//Scope B
-var status = "pending"; //how we track what the status of the internal state is
-var result; //where we are going to store the result of calling fn.
-var deps = []; //where we store registered callbacks.
-
-setTimeout(function() {
-  //Scope C
-  /* the scope chain from here is A -&gt; B-&gt; C
-  this simply calls teh function and allows us to pass in the
-  arguments as an array
-  */
-  result = fn.apply(this, args); //call the function
-  status = "done";
-  //we run through all the functions in deps and run them one
-  //by one.
-  deps.forEach(function(dep) {
-    //Scope D
-    dep.call(this, result);
-  });
-}, timeout);
-
-//the two objects being returned have access to this scope
-//which allows us to invoke them to affect this internal 
-//environmental.
-return {
-  done: function(func) {
-    //Scope E
-    //A -&gt; B -&gt; C
-    if (status === "pending") {
-      deps.push(func);
-    }
-    if (status === "done") {
-      func(result);
-    }
-  }
-}
-</code></pre>
-
-<p>  }</p>
-
-<p>  var promise = delay(function(msg) {</p>
-
-<pre><code>//Scope F
-return msg + " world";
-</code></pre>
-
-<p>  }, ["hello"], 3000);</p>
-
-<p>  //by passing this function to done, you guarantee that
-  //when the function passed into delay is called, it will pass
-  //the result into the function passed in here.
-  promise.done(function(result) {</p>
-
-<pre><code>//Scope G
-console.log(result);
-</code></pre>
-
-<p>  });</p>
-
-<p>  //3000 milliseconds later
-  //> "hello world"
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="c1">//scope A</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">delay</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">,</span> <span class="nx">args</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">//Scope B</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">status</span> <span class="o">=</span> <span class="s2">&quot;pending&quot;</span><span class="p">;</span> <span class="c1">//how we track what the status of the internal state is</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">result</span><span class="p">;</span> <span class="c1">//where we are going to store the result of calling fn.</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">deps</span> <span class="o">=</span> <span class="p">[];</span> <span class="c1">//where we store registered callbacks.</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//Scope C</span>
+</span><span class='line'>  <span class="cm">/* the scope chain from here is A -&amp;gt; B-&amp;gt; C</span>
+</span><span class='line'><span class="cm">  this simply calls teh function and allows us to pass in the</span>
+</span><span class='line'><span class="cm">  arguments as an array</span>
+</span><span class='line'><span class="cm">  */</span>
+</span><span class='line'>  <span class="nx">result</span> <span class="o">=</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">args</span><span class="p">);</span> <span class="c1">//call the function</span>
+</span><span class='line'>  <span class="nx">status</span> <span class="o">=</span> <span class="s2">&quot;done&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//we run through all the functions in deps and run them one</span>
+</span><span class='line'>  <span class="c1">//by one.</span>
+</span><span class='line'>  <span class="nx">deps</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">dep</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//Scope D</span>
+</span><span class='line'>    <span class="nx">dep</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">result</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">},</span> <span class="nx">timeout</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//the two objects being returned have access to this scope</span>
+</span><span class='line'><span class="c1">//which allows us to invoke them to affect this internal </span>
+</span><span class='line'><span class="c1">//environmental.</span>
+</span><span class='line'><span class="k">return</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">done</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">func</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//Scope E</span>
+</span><span class='line'>    <span class="c1">//A -&amp;gt; B -&amp;gt; C</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s2">&quot;pending&quot;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">deps</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">func</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s2">&quot;done&quot;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">func</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">promise</span> <span class="o">=</span> <span class="nx">delay</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">msg</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">//Scope F</span>
+</span><span class='line'><span class="k">return</span> <span class="nx">msg</span> <span class="o">+</span> <span class="s2">&quot; world&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">},</span> <span class="p">[</span><span class="s2">&quot;hello&quot;</span><span class="p">],</span> <span class="mi">3000</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="c1">//by passing this function to done, you guarantee that</span>
+</span><span class='line'>  <span class="c1">//when the function passed into delay is called, it will pass</span>
+</span><span class='line'>  <span class="c1">//the result into the function passed in here.</span>
+</span><span class='line'>  <span class="nx">promise</span><span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">//Scope G</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="c1">//3000 milliseconds later</span>
+</span><span class='line'>  <span class="c1">//&gt; &quot;hello world&quot;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Yeah its a wee bit contrived but it illustrates a point. By using a closure to wrap a
 bunch of data into this enclosed space, we can hide away some
@@ -602,126 +1201,241 @@ async functions.</p>
 <p>What if we could apply the same principle and get an object we could pass along functions to
 and know it will take care of running them when the file is available?</p>
 
-<p>{% codeblock lang:javascript %}
-var fileObject = function(fileName, encoding) {
-  var fs = require('fs');
-  var status = "pending";
-  var result_data;
-  var result_error;
-  var deps_success = [];
-  var deps_fail = [];
-  var deps_always = [];
-  var ret = {};
-  encod = encoding || 'utf8';</p>
-
-<p>  fs.readFile(fileName, encoding ,function(err, data) {</p>
-
-<pre><code>result_data = data;
-result_error = err;
-if (!result_error) {
-  deps_success.forEach(function(fn) {
-    fn(result_data);
-  });
-  status = "success";
-} else {
-  deps_fail.forEach(function(fn) {
-    fn(result_error);
-  });
-  status = "error";
-}
-deps_always.forEach(function(fn) {
-  fn();
-});
-</code></pre>
-
-<p>  });
-  var queueFunction = function(list, fn) {</p>
-
-<pre><code>list.push(fn);
-</code></pre>
-
-<p>  };
-  var done = function(fn) {</p>
-
-<pre><code>if (status === "done") {
-  fn(result_data);
-  return ret;
-}
-if (status === 'pending') {
-  queueFunction(deps_success, fn);
-  return ret;
-}
-</code></pre>
-
-<p>  };
-  var fail = function(fn) {</p>
-
-<pre><code>if (status === "error") {
-  fn(result_error);
-}
-if (status === "pending") {
-  queueFunction(deps_fail, fn);
-}
-return ret;
-</code></pre>
-
-<p>  };
-  var always = function(fn) {</p>
-
-<pre><code>if (status === "pending") {
-  queueFunction(deps_always, fn);
-} else {
-  fn();
-}
-return ret;
-</code></pre>
-
-<p>  };
-  ret.done = done;
-  ret.fail = fail;
-  ret.always = always;</p>
-
-<p>  //this exposes the status as a readonly property
-  Object.defineProperty(ret, 'status', {</p>
-
-<pre><code>get: function() {
-  return status;
-},
-enumerable: true
-</code></pre>
-
-<p>  });</p>
-
-<p>  return ret;
-};</p>
-
-<p>{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">fileObject</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fileName</span><span class="p">,</span> <span class="nx">encoding</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">status</span> <span class="o">=</span> <span class="s2">&quot;pending&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">result_data</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">result_error</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">deps_success</span> <span class="o">=</span> <span class="p">[];</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">deps_fail</span> <span class="o">=</span> <span class="p">[];</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">deps_always</span> <span class="o">=</span> <span class="p">[];</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>  <span class="nx">encod</span> <span class="o">=</span> <span class="nx">encoding</span> <span class="o">||</span> <span class="s1">&#39;utf8&#39;</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">fs</span><span class="p">.</span><span class="nx">readFile</span><span class="p">(</span><span class="nx">fileName</span><span class="p">,</span> <span class="nx">encoding</span> <span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">result_data</span> <span class="o">=</span> <span class="nx">data</span><span class="p">;</span>
+</span><span class='line'><span class="nx">result_error</span> <span class="o">=</span> <span class="nx">err</span><span class="p">;</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">result_error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">deps_success</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">fn</span><span class="p">(</span><span class="nx">result_data</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  <span class="nx">status</span> <span class="o">=</span> <span class="s2">&quot;success&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">deps_fail</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">fn</span><span class="p">(</span><span class="nx">result_error</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  <span class="nx">status</span> <span class="o">=</span> <span class="s2">&quot;error&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">deps_always</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">fn</span><span class="p">();</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">queueFunction</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">list</span><span class="p">,</span> <span class="nx">fn</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">list</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">fn</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">done</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s2">&quot;done&quot;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">fn</span><span class="p">(</span><span class="nx">result_data</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s1">&#39;pending&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">queueFunction</span><span class="p">(</span><span class="nx">deps_success</span><span class="p">,</span> <span class="nx">fn</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">fail</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">fn</span><span class="p">(</span><span class="nx">result_error</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s2">&quot;pending&quot;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">queueFunction</span><span class="p">(</span><span class="nx">deps_fail</span><span class="p">,</span> <span class="nx">fn</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">always</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s2">&quot;pending&quot;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">queueFunction</span><span class="p">(</span><span class="nx">deps_always</span><span class="p">,</span> <span class="nx">fn</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">fn</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
+</span><span class='line'>  <span class="nx">ret</span><span class="p">.</span><span class="nx">done</span> <span class="o">=</span> <span class="nx">done</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">ret</span><span class="p">.</span><span class="nx">fail</span> <span class="o">=</span> <span class="nx">fail</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">ret</span><span class="p">.</span><span class="nx">always</span> <span class="o">=</span> <span class="nx">always</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="c1">//this exposes the status as a readonly property</span>
+</span><span class='line'>  <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nx">ret</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">status</span><span class="p">;</span>
+</span><span class='line'><span class="p">},</span>
+</span><span class='line'><span class="nx">enumerable</span><span class="o">:</span> <span class="kc">true</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Hey, that wasn't so bad. We return an object of three functions and
 it will take care of running the appropriate functions based on the
 status of the object's internal async operation when its resolved.</p>
 
-<p>{% codeblock lang:javascript %}</p>
-
-<p>var newFile = fileObject('./hello.txt');</p>
-
-<p>newFile.done(function(data) {
-  console.log('two ' + data);
-});</p>
-
-<p>newFile.done(function(data) {
-  console.log('one ' + data);
-});</p>
-
-<p>newFile.fail(function(err) {
-  console.log('the file errored out. returned: ' + err);
-});</p>
-
-<p>newFile.always(function() {
-  console.log('this always gets called');
-});</p>
-
-<p>{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">newFile</span> <span class="o">=</span> <span class="nx">fileObject</span><span class="p">(</span><span class="s1">&#39;./hello.txt&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">newFile</span><span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;two &#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">newFile</span><span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;one &#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">newFile</span><span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;the file errored out. returned: &#39;</span> <span class="o">+</span> <span class="nx">err</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">newFile</span><span class="p">.</span><span class="nx">always</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;this always gets called&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>In short, lexical scoping and closures are pretty damn awesome.</p>
 ]]></content>
@@ -763,13 +1477,21 @@ exist at all.</p>
 <p>Backbone.Model is a storage container where we can add and remove
 items via <em>set</em> and <em>get</em> attributes.</p>
 
-<p>{% codeblock lang:javascript %}</p>
-
-<p>  var newModel = new Backbone.Model();
-  newModel.set('foo', bar);
-  newModel.get('foo') // => 'bar'</p>
-
-<p>{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">newModel</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">();</span>
+</span><span class='line'>  <span class="nx">newModel</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="nx">bar</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">newModel</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">)</span> <span class="c1">// =&gt; &#39;bar&#39;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>You may be wondering why you don't use <em>newModel.foo = 'bar'?</em>
 The real power in backbone is in the
@@ -789,43 +1511,79 @@ that may be specific to our particular subclass of Backbone.Model. For instance,
 lets create a Comments model which may contain a username, content, rating
 and timestamp.</p>
 
-<p>{% codeblock lang:javascript %}
-  var Comment = Backbone.Model.extend({</p>
-
-<pre><code>//defaults are self explanatory
-defaults: {
-  rating: 0,
-},
-/*
- * initialize runs whenever new is called, it takes care of
- * setting up __super in the inheritance chain
- * there is also 'constructor' which overides the contructor entirely
- * leaving you to manually impliment the prototype chaining.
- * ie: only use constructor if you know what you are doing.
-*/
-initialize: function() {
-  this.set('owner', getCurrentUser());
-  this.set('timestamp', new Date());
-},
-upvote: function() {
-  this.set('rating', this.get('rating')++);
-  return this;
-}
-</code></pre>
-
-<p>  });</p>
-
-<p>  /<em> now we initialize the model passing in values in an object. </em>/</p>
-
-<pre><code>var newComment = new Comment({
-content: "backbone needs a library for reactive databindings",
-</code></pre>
-
-<p>  });</p>
-
-<p>  newComment.upvote().get('rating'); // => 1</p>
-
-<p>{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">Comment</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">//defaults are self explanatory</span>
+</span><span class='line'><span class="nx">defaults</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">rating</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'><span class="p">},</span>
+</span><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm"> * initialize runs whenever new is called, it takes care of</span>
+</span><span class='line'><span class="cm"> * setting up __super in the inheritance chain</span>
+</span><span class='line'><span class="cm"> * there is also &#39;constructor&#39; which overides the contructor entirely</span>
+</span><span class='line'><span class="cm"> * leaving you to manually impliment the prototype chaining.</span>
+</span><span class='line'><span class="cm"> * ie: only use constructor if you know what you are doing.</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'><span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="nx">getCurrentUser</span><span class="p">());</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;timestamp&#39;</span><span class="p">,</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">());</span>
+</span><span class='line'><span class="p">},</span>
+</span><span class='line'><span class="nx">upvote</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">)</span><span class="o">++</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="err">/&lt;em&gt; now we initialize the model passing in values in an object. &lt;/em&gt;/&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">newComment</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Comment</span><span class="p">({</span>
+</span><span class='line'><span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;backbone needs a library for reactive databindings&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">newComment</span><span class="p">.</span><span class="nx">upvote</span><span class="p">().</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">);</span> <span class="c1">// =&gt; 1&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Here we've set up a basic backbone model for setting representing a comment.
 In defaults, we put in an object of default attributes. You may be wondering why I
@@ -834,20 +1592,31 @@ set up the owner and timestamp attributes in <em>initialize.</em></p>
 <p>The defaults object and anything inside it is evaluated into a static object
 inside the extend function call. Thus, if you were to try this</p>
 
-<p>{% codeblock lang:javascript %}
- var Comment = Backbone.Model.extend({</p>
-
-<pre><code>//defaults are self explanatory
-defaults: {
-  rating    : 0,
-  owner     : getCurrentUser();
-  timestamp : (function() { return new Date() })();
-}
-...
-</code></pre>
-
-<p> })
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'> <span class="kd">var</span> <span class="nx">Comment</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">//defaults are self explanatory</span>
+</span><span class='line'><span class="nx">defaults</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">rating</span>    <span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">owner</span>     <span class="o">:</span> <span class="nx">getCurrentUser</span><span class="p">();</span>
+</span><span class='line'>  <span class="nx">timestamp</span> <span class="o">:</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">()</span> <span class="p">})();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="p">...</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span> <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>you would find that every instance will have the same timestamp. To get around this,
 I have the functionality for those defaults set to run in initialize.</p>
@@ -864,28 +1633,51 @@ to the model. Unlike the dom, we have to explicitly set up our own event bubblin
 <p>To set up your own event delegation, you have to set up a listener in the parent model to listen for
 events in the attribute model.</p>
 
-<p>{% codeblock lang:javascript %}</p>
-
-<p>  var CommentHolder = Backbone.Model.extend({</p>
-
-<pre><code>initialize: function() {
-  /* We set up event listeners here
-    the first argument is message being fired
-    the second is the function to be invoked
-    the third is the context for function to be called in
-  */
-  this.get('comment').on('all', this.bubble, this);
-},
-bubble: function() {
-  // apply is used to propegate all possible arguments
-  // that can be coming form multiple events.
-  this.trigger.apply(this, arguments); //trigger is a backbone function
-}
-</code></pre>
-
-<p>  })</p>
-
-<p>{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">CommentHolder</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="cm">/* We set up event listeners here</span>
+</span><span class='line'><span class="cm">    the first argument is message being fired</span>
+</span><span class='line'><span class="cm">    the second is the function to be invoked</span>
+</span><span class='line'><span class="cm">    the third is the context for function to be called in</span>
+</span><span class='line'><span class="cm">  */</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">bubble</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+</span><span class='line'><span class="p">},</span>
+</span><span class='line'><span class="nx">bubble</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// apply is used to propegate all possible arguments</span>
+</span><span class='line'>  <span class="c1">// that can be coming form multiple events.</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span> <span class="c1">//trigger is a backbone function</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">})</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p><a href="http://backbonejs.org/#Events-catalog">'all'</a> is a backbone defined catch all event
 that sends along the name of the event as the first argument. The model will listen
