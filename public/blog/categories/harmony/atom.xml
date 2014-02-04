@@ -4,7 +4,7 @@
   <title><![CDATA[Category: harmony | console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/blog/categories/harmony/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2014-02-02T18:31:53-08:00</updated>
+  <updated>2014-02-04T15:06:43-08:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -216,6 +216,8 @@ shows that we do have the necessary modules for a basic todo.</p>
 <span class='line-number'>61</span>
 <span class='line-number'>62</span>
 <span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//jshint esnext</span>
 </span><span class='line'><span class="kd">var</span> <span class="nx">koa</span>          <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;koa&#39;</span><span class="p">);</span>
 </span><span class='line'><span class="kd">var</span> <span class="nx">staticServer</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;koa-static&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
@@ -252,10 +254,12 @@ shows that we do have the necessary modules for a basic todo.</p>
 </span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">router</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/todos&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="o">&lt;</span><span class="nx">em</span><span class="o">&gt;</span><span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>  <span class="err">/&lt;/em&gt;&lt;/p&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">yield</span> <span class="nx">lets</span> <span class="nx">us</span> <span class="nx">pass</span> <span class="nx">asynchronous</span> <span class="nx">functions</span> <span class="nx">that</span> <span class="nx">pass</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">yield</span> <span class="nx">lets</span> <span class="nx">us</span> <span class="nx">pass</span> <span class="nx">asynchronous</span> <span class="nx">functions</span> <span class="nx">that</span> <span class="k">return</span> <span class="nx">promises</span> <span class="nx">or</span> <span class="nx">thunks</span>
+</span><span class='line'><span class="nx">It</span> <span class="nx">will</span> <span class="nx">freeze</span> <span class="nx">the</span> <span class="nx">middleware</span> <span class="nx">till</span> <span class="nx">its</span> <span class="nx">resolved</span> <span class="nx">and</span> <span class="nx">pass</span> <span class="nx">it</span> <span class="nx">back</span> <span class="k">in</span><span class="p">.</span>
 </span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">todo</span> <span class="o">=</span> <span class="p">(</span><span class="nx">yield</span> <span class="nx">parse</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="k">this</span><span class="p">));</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="o">*</span><span class="err">/</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">todo</span> <span class="o">=</span> <span class="p">(</span><span class="nx">yield</span> <span class="nx">parse</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="k">this</span><span class="p">));</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">todo</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">counter</span><span class="p">();</span>
 </span><span class='line'>  <span class="nx">todos</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">todo</span><span class="p">);</span>

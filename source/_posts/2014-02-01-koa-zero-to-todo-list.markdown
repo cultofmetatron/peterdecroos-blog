@@ -135,7 +135,9 @@ app.use(staticServer(path.join(__dirname, 'public')));
 
 app.use(router.post('/todos', function *() {
   /*
-    yield lets us pass asynchronous functions that pass 
+    yield lets us pass asynchronous functions that return promises or thunks
+    It will freeze the middleware till its resolved and pass it back in.
+  */
   var todo = (yield parse.json(this));
 
   todo.id = counter();
