@@ -4,7 +4,7 @@
   <title><![CDATA[Category: promises | console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/blog/categories/promises/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2014-02-08T20:26:00-08:00</updated>
+  <updated>2014-02-08T21:56:14-08:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -33,17 +33,27 @@ We then create an instance of the generator by calling it.</p>
 
 <p>Here's a basic example.</p>
 
-<p>{% codeblock lang:javascript %}
-var myGenerator = function *() {
-  var foo = yield 5;
-  console.log('this doesn't get written until the second call to next()');
-};</p>
-
-<p>var gen = myGenerator();
-var state = gen.next();
-console.log(state.value) //=> 5</p>
-
-<p>{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">myGenerator</span> <span class="o">=</span> <span class="kd">function</span> <span class="o">*</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="nx">yield</span> <span class="mi">5</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;this doesn&#39;</span><span class="nx">t</span> <span class="nx">get</span> <span class="nx">written</span> <span class="nx">until</span> <span class="nx">the</span> <span class="nx">second</span> <span class="nx">call</span> <span class="nx">to</span> <span class="nx">next</span><span class="p">()</span><span class="err">&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">};</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">gen</span> <span class="o">=</span> <span class="nx">myGenerator</span><span class="p">();</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="nx">gen</span><span class="p">.</span><span class="nx">next</span><span class="p">();</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span> <span class="c1">//=&gt; 5&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>When we run gen.next(), the code executes until we get to yield. The generator
 then stops which is why the console.log() does not get called. The state of the
@@ -60,27 +70,47 @@ of passing in an argument to it that will be returned by yield inside the genera
 
 <p>This example shows a more advanced example of bidirectional passing.</p>
 
-<p>{% codeblock lang:javascript %}
-var myGenerator = function *() {
-  var firstWord = yield 5;
-  console.log(firstWord); //=> "hello"
-  var secondWord = yield 10;
-  console.log(secondWord); //=> "world"
-};</p>
-
-<p>var gen = myGenerator();
-var state = gen.next();
-console.log(state.value); //=> 5
-state = gen.next("hello");
-//=> 'hello' gets printed to the screen from inside the generator
-console.log(state.value); //=> 10
-console.log(state.done); //=> false
-state = gen.next('world');
-//=> 'world' gets printed
-console.log(state.value); //=> 10
-console.log(state.done);  //=> true</p>
-
-<p>{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">myGenerator</span> <span class="o">=</span> <span class="kd">function</span> <span class="o">*</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">firstWord</span> <span class="o">=</span> <span class="nx">yield</span> <span class="mi">5</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">firstWord</span><span class="p">);</span> <span class="c1">//=&gt; &quot;hello&quot;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">secondWord</span> <span class="o">=</span> <span class="nx">yield</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">secondWord</span><span class="p">);</span> <span class="c1">//=&gt; &quot;world&quot;</span>
+</span><span class='line'><span class="p">};</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">gen</span> <span class="o">=</span> <span class="nx">myGenerator</span><span class="p">();</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="nx">gen</span><span class="p">.</span><span class="nx">next</span><span class="p">();</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span> <span class="c1">//=&gt; 5</span>
+</span><span class='line'><span class="nx">state</span> <span class="o">=</span> <span class="nx">gen</span><span class="p">.</span><span class="nx">next</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="c1">//=&gt; &#39;hello&#39; gets printed to the screen from inside the generator</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span> <span class="c1">//=&gt; 10</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">done</span><span class="p">);</span> <span class="c1">//=&gt; false</span>
+</span><span class='line'><span class="nx">state</span> <span class="o">=</span> <span class="nx">gen</span><span class="p">.</span><span class="nx">next</span><span class="p">(</span><span class="s1">&#39;world&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="c1">//=&gt; &#39;world&#39; gets printed</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span> <span class="c1">//=&gt; 10</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">done</span><span class="p">);</span>  <span class="c1">//=&gt; true&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>One of the biggest growing pains of javascript development is wrapping one's
 head around async programming and functions run asyncronously. Promises give us a
@@ -89,19 +119,29 @@ value that represents the eventual value returned from an asynchronous function.
 <p>Promises are promised in ecmascript 6 but they aren't available when I run node 0.11
 with --harmony  yet so I use <a href="https://github.com/petkaantonov/bluebird">Bluebird</a></p>
 
-<p>{% codeblock lang:javascript %}
-var Promise = require('bluebird');</p>
-
-<p>//extends node's fileSytem with versions of the async functions that return promises
-//the promisified versions are the original name + 'Async'
-var fs = Promise.promisifyAll(require('fs'));</p>
-
-<p>fs.readFileAsync('.gitignore',  'utf8').then(function(contents) {
-  console.log(contents); // prints the contents of the .gitignore file.
-});</p>
-
-<p>console.log('this runs before the callback passed to "then" which is counterintuitive.')
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">Promise</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;bluebird&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">//extends node&#39;s fileSytem with versions of the async functions that return promises</span>
+</span><span class='line'><span class="c1">//the promisified versions are the original name + &#39;Async&#39;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">promisifyAll</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">));</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">fs</span><span class="p">.</span><span class="nx">readFileAsync</span><span class="p">(</span><span class="s1">&#39;.gitignore&#39;</span><span class="p">,</span>  <span class="s1">&#39;utf8&#39;</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">contents</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">contents</span><span class="p">);</span> <span class="c1">// prints the contents of the .gitignore file.</span>
+</span><span class='line'><span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;this runs before the callback passed to &quot;then&quot; which is counterintuitive.&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>This code Works because when the function is called, it creates a closure that doesn't get
 garbage collected because the function passed to the promise retains a reference to this scope.
@@ -117,21 +157,35 @@ to the then() handler of the promise.</p>
 us to create coroutines using generators. thus we could write the previous code using
 generators.</p>
 
-<p>{% codeblock lang:javascript %}
-var Promise = require('bluebird');
-var fs = Promise.promisifyAll(require('fs'));
-var co = require('co');</p>
-
-<p>co(function *(){
-  var a = yield fs.readFileAsync('.gitignore',  'utf8');
-  console.log(a); //this doesn't run until the previous function resolves.
-  var c = yield fs.readFileAsync('package.json', 'utf8');
-  console.log(a);
-  console.log(c);
-  return;
-})();</p>
-
-<p>{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">Promise</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;bluebird&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">promisifyAll</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">));</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">co</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;co&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">co</span><span class="p">(</span><span class="kd">function</span> <span class="o">*</span><span class="p">(){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">yield</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileAsync</span><span class="p">(</span><span class="s1">&#39;.gitignore&#39;</span><span class="p">,</span>  <span class="s1">&#39;utf8&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span> <span class="c1">//this doesn&#39;t run until the previous function resolves.</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">yield</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileAsync</span><span class="p">(</span><span class="s1">&#39;package.json&#39;</span><span class="p">,</span> <span class="s1">&#39;utf8&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">c</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">return</span><span class="p">;</span>
+</span><span class='line'><span class="p">})();</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>This is pretty exciting, This Asyncrouous code looks downright synchronous. Its also running
 in its own context so it doesn't block the event loop. Within the generator, we can write
@@ -144,50 +198,93 @@ passing in the value from the resolved promise.</p>
 <p>co itself is extremely flexible allowing you to pass in thunks, or A+spec promises into
 yield. Here I'll demonstrate a simplified version that can accept only promises.</p>
 
-<p>{% codeblock lang:javascript %}
-var co = function(fngen) {
-  /<em>
-  next takes a instatiated generator and calls
-  and a value returned from calling next on it
-  gen is an instance of a generator
-  yieldable is the value returned from calling gen.next()
-  </em>/
-  var next = function(gen, yieldable) {</p>
-
-<pre><code>if (! yieldable.done) { //if 
-  //we assume yieldable.value is a promise so we call then() to get the value
-  yieldable.value.then(function(val) {
-    /*
-    we call next on gen and pass in the value into gen.next() to 
-    inject the value back into out coroutine where it gets returned
-    by the yield in the generator. 
-
-    By call gen.next(val), gen resumes execustion passing val back 
-    and gen.next() return when it hits the next yield keyword returning 
-    the value passed in to yield.
-    */
-    next(gen, gen.next(val));
-  });
-}
-</code></pre>
-
-<p>  };</p>
-
-<p>  return function() {</p>
-
-<pre><code>//instatiate the generator
-var gensym = fngen();
-//get the first yieldable
-var yieldable = gensym.next();
-if (!yieldable.done) {
-  next(gensym, yieldable);
-}
-</code></pre>
-
-<p>  };
-};</p>
-
-<p>{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">co</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fngen</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="err">/&lt;em&gt;</span>
+</span><span class='line'>  <span class="nx">next</span> <span class="nx">takes</span> <span class="nx">a</span> <span class="nx">instatiated</span> <span class="nx">generator</span> <span class="nx">and</span> <span class="nx">calls</span>
+</span><span class='line'>  <span class="nx">and</span> <span class="nx">a</span> <span class="nx">value</span> <span class="nx">returned</span> <span class="nx">from</span> <span class="nx">calling</span> <span class="nx">next</span> <span class="nx">on</span> <span class="nx">it</span>
+</span><span class='line'>  <span class="nx">gen</span> <span class="nx">is</span> <span class="nx">an</span> <span class="nx">instance</span> <span class="nx">of</span> <span class="nx">a</span> <span class="nx">generator</span>
+</span><span class='line'>  <span class="nx">yieldable</span> <span class="nx">is</span> <span class="nx">the</span> <span class="nx">value</span> <span class="nx">returned</span> <span class="nx">from</span> <span class="nx">calling</span> <span class="nx">gen</span><span class="p">.</span><span class="nx">next</span><span class="p">()</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="sr">/em&gt;/</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">next</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">gen</span><span class="p">,</span> <span class="nx">yieldable</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">yieldable</span><span class="p">.</span><span class="nx">done</span><span class="p">)</span> <span class="p">{</span> <span class="c1">//if </span>
+</span><span class='line'>  <span class="c1">//we assume yieldable.value is a promise so we call then() to get the value</span>
+</span><span class='line'>  <span class="nx">yieldable</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="cm">/*</span>
+</span><span class='line'><span class="cm">    we call next on gen and pass in the value into gen.next() to </span>
+</span><span class='line'><span class="cm">    inject the value back into out coroutine where it gets returned</span>
+</span><span class='line'><span class="cm">    by the yield in the generator. </span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">    By call gen.next(val), gen resumes execustion passing val back </span>
+</span><span class='line'><span class="cm">    and gen.next() return when it hits the next yield keyword returning </span>
+</span><span class='line'><span class="cm">    the value passed in to yield.</span>
+</span><span class='line'><span class="cm">    */</span>
+</span><span class='line'>    <span class="nx">next</span><span class="p">(</span><span class="nx">gen</span><span class="p">,</span> <span class="nx">gen</span><span class="p">.</span><span class="nx">next</span><span class="p">(</span><span class="nx">val</span><span class="p">));</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">//instatiate the generator</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">gensym</span> <span class="o">=</span> <span class="nx">fngen</span><span class="p">();</span>
+</span><span class='line'><span class="c1">//get the first yieldable</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">yieldable</span> <span class="o">=</span> <span class="nx">gensym</span><span class="p">.</span><span class="nx">next</span><span class="p">();</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">yieldable</span><span class="p">.</span><span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">next</span><span class="p">(</span><span class="nx">gensym</span><span class="p">,</span> <span class="nx">yieldable</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
+</span><span class='line'><span class="p">};</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>The concept is pretty simple, yield passed back the value on the right to gen.next()
 which it returns. The value we pass into the gen.next call to gen.next() becomes
