@@ -6,8 +6,8 @@ comments: true
 categories: functional-programming ecmascript6 javascript generators
 ---
 
-The web is abuzz right now with ecmascript 6 on the horizon. If you get not 0.11,
-you can use them already server side. Once of the big features I'm excited about 
+The web is abuzz right now with ecmascript 6 on the horizon. If you get node 0.11,
+you can use it server side already. Once of the big features I'm excited about 
 are generators.
 
 I've [blogged about them previously](http://blog.peterdecroos.com/blog/2014/01/22/javascript-generators-first-impressions/)
@@ -15,7 +15,7 @@ Alas, I've only found nothing out there on the web that covers anything beyond b
 instatiation and invocation. With just that to go on, it was hard for me to initially see
 the hype. A few days ago, I had an appifany. 
 
-Generators are first class objects and like functions, they can be composed from smaller parts. Therefore,
+Generators are first class objects. Like functions, they can be composed from smaller parts. Therefore,
 much of we know about functions can be applied to generators!
 
 On that note, I will lay the ground work for understanding how to really USE generators.
@@ -71,11 +71,11 @@ gen.next();
 {% endcodeblock %}
 
 Unlike a function, We are going to compose generators to be run inside of a co() function.
-Co will run a generator until it comes accross a yield. At which time, whatever is on
+Co will run a generator until it comes accross a yield. Whatever is on
 right side of the yield will be passed into co. the generator will be frozen until the
 value can be resolved. This includes thunks, promises and even other generators!
 
-With that in mind, a generator equivilent for a bind looks like this.
+A generator equivilent for a bind looks like this.
 {%codeblock lang:javascript %}
 var bind = function(genFunc, ctx) {
   return function *() {
@@ -172,8 +172,8 @@ In addition to cascade and bind, Shen also currently includes...
   * oscillator: run a generator at a specific interval and get back an immediate event emitter 
   that fires with the latest returned value of the generator
 
-Current usecases off the top of my head include using oscillator and parrallel to run several 
-network requests at the same time. you'd geta  single event emitter with all the returned values in
+Current use-cases off the top of my head include using oscillator and parrallel to run several 
+network requests at the same time. you'd get an event emitter with all the returned values in
 one place. One thing to note is that you can't completely escape callbacks but you can create
 areas in your code where callbacks are invisible. The generator takes care of the hard stuff.
 

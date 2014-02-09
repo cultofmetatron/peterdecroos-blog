@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2014-02-08T21:56:14-08:00</updated>
+  <updated>2014-02-08T23:57:43-08:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -18,8 +18,8 @@
     <link href="http://blog.peterdecroos.com/blog/2014/02/08/functional-programming-with-ecmascript6-generators/"/>
     <updated>2014-02-08T19:12:00-08:00</updated>
     <id>http://blog.peterdecroos.com/blog/2014/02/08/functional-programming-with-ecmascript6-generators</id>
-    <content type="html"><![CDATA[<p>The web is abuzz right now with ecmascript 6 on the horizon. If you get not 0.11,
-you can use them already server side. Once of the big features I'm excited about
+    <content type="html"><![CDATA[<p>The web is abuzz right now with ecmascript 6 on the horizon. If you get node 0.11,
+you can use it server side already. Once of the big features I'm excited about
 are generators.</p>
 
 <p>I've <a href="http://blog.peterdecroos.com/blog/2014/01/22/javascript-generators-first-impressions/">blogged about them previously</a>
@@ -27,7 +27,7 @@ Alas, I've only found nothing out there on the web that covers anything beyond b
 instatiation and invocation. With just that to go on, it was hard for me to initially see
 the hype. A few days ago, I had an appifany.</p>
 
-<p>Generators are first class objects and like functions, they can be composed from smaller parts. Therefore,
+<p>Generators are first class objects. Like functions, they can be composed from smaller parts. Therefore,
 much of we know about functions can be applied to generators!</p>
 
 <p>On that note, I will lay the ground work for understanding how to really USE generators.</p>
@@ -107,11 +107,11 @@ literal function passing along the context and possible arguments using .apply()
 
 
 <p>Unlike a function, We are going to compose generators to be run inside of a co() function.
-Co will run a generator until it comes accross a yield. At which time, whatever is on
+Co will run a generator until it comes accross a yield. Whatever is on
 right side of the yield will be passed into co. the generator will be frozen until the
 value can be resolved. This includes thunks, promises and even other generators!</p>
 
-<p>With that in mind, a generator equivilent for a bind looks like this.
+<p>A generator equivilent for a bind looks like this.
 <div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -293,8 +293,8 @@ that fires with the latest returned value of the generator</li>
 </ul>
 
 
-<p>Current usecases off the top of my head include using oscillator and parrallel to run several
-network requests at the same time. you'd geta  single event emitter with all the returned values in
+<p>Current use-cases off the top of my head include using oscillator and parrallel to run several
+network requests at the same time. you'd get an event emitter with all the returned values in
 one place. One thing to note is that you can't completely escape callbacks but you can create
 areas in your code where callbacks are invisible. The generator takes care of the hard stuff.</p>
 
