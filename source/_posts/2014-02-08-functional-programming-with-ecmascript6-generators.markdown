@@ -26,9 +26,7 @@ If you've worked with javascript for any of length of time, You should be famili
 
 {%codeblock lang:javascript %}
   var bind = function(fn, ctx, args) {
-    args = Array.prototype.slice.apply(arguments, 2);
     return function() {
-      args2 = Array.prototype.slice.apply(arguments);
       return fn.apply(this, arguments);
     }
   }
