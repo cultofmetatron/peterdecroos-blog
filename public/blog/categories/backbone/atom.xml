@@ -4,7 +4,7 @@
   <title><![CDATA[Category: backbone | console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/blog/categories/backbone/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2014-02-04T15:06:43-08:00</updated>
+  <updated>2014-02-08T20:26:00-08:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -50,19 +50,14 @@ from executing it as javascript, we add a type that is not 'text/javascript'.</p
 
 <p>I like to use "text/template."</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'>  <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/template&quot;</span> <span class="na">data-name=</span><span class="s">&quot;templateName&quot;</span><span class="nt">&gt;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="o">!--</span> <span class="nx">template</span> <span class="nx">contents</span> <span class="nx">goes</span> <span class="nx">here</span> <span class="o">--&amp;</span><span class="nx">gt</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nt">&lt;/script&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:html %}
+  <script type="text/template" data-name="templateName"></p>
+
+<pre><code>&lt;!-- template contents goes here --&gt;
+</code></pre>
+
+<p>  </script>
+{% endcodeblock%}</p>
 
 <p>Transforming these into working templates is fairly straightforward. For each
 script tag with type="text/template", run the template compiler over the html inside and
@@ -70,25 +65,17 @@ store it somewhere. In this case I add a data-name attribute which will be the k
 hash I store the compiled template in.</p>
 
 <p><a href="https://github.com/cultofmetatron/backbone-framework-example/blob/master/public/javascripts/init.js">/public/javascripts/init.js</a>
-<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="nb">window</span><span class="p">.</span><span class="nx">templates</span> <span class="o">=</span> <span class="p">{};</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">$sources</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;script[type=&quot;text/template&quot;]&#39;</span><span class="p">);</span>
-</span><span class='line'>  <span class="nx">$sources</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">index</span><span class="p">,</span> <span class="nx">el</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">$el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">el</span><span class="p">);</span>
-</span><span class='line'><span class="nx">templates</span><span class="p">[</span><span class="nx">$el</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">());</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+{% codeblock lang:javascript %}
+  window.templates = {};
+  var $sources = $('script[type="text/template"]');
+  $sources.each(function(index, el) {</p>
+
+<pre><code>var $el = $(el);
+templates[$el.data('name')] = _.template($el.html());
+</code></pre>
+
+<p>  });
+{% endcodeblock %}</p>
 
 <p>In this version, I chose to use express + jade, Of course writing underscore templates
 in jade seemed a little odd so I delegated those to jade's include statement. I know there
@@ -96,63 +83,35 @@ are projects like jade-browserify so maybe I'll eventually update this using jus
 
 <p><a href="https://github.com/cultofmetatron/backbone-framework-example/blob/master/views/layout.jade">/views/layout.jade</a></p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-</pre></td><td class='code'><pre><code class='jade'><span class='line'><span class="nt">doctype</span> html
-</span><span class='line'><span class="nt">html</span>
-</span><span class='line'>  <span class="nt">head</span>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'><span class="err">&lt;</span><span class="nt">pre</span>&gt;&lt;code&gt;title= title
-</span><span class='line'><span class="nt">link</span>( <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="err">,</span> <span class="na">href=</span><span class="s">&#39;http://blog.peterdecroos.com/components/bootstrap/dist/css/bootstrap.css&#39;</span>)
-</span><span class='line'><span class="nt">link</span>( <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="err">,</span> <span class="na">href=</span><span class="s">&#39;http://blog.peterdecroos.com/stylesheets/style.css&#39;</span>)
-</span><span class='line'><span class="nt">script</span>( <span class="na">src=</span><span class="s">&quot;http://blog.peterdecroos.com/components/jquery/jquery.js&quot;</span>)
-</span><span class='line'><span class="nt">script</span>( <span class="na">src=</span><span class="s">&quot;http://blog.peterdecroos.com/components/bootstrap/dist/js/bootstrap.js&quot;</span>)
-</span><span class='line'><span class="nt">script</span>( <span class="na">src=</span><span class="s">&quot;http://blog.peterdecroos.com/components/underscore/underscore.js&quot;</span>)
-</span><span class='line'><span class="nt">script</span>( <span class="na">src=</span><span class="s">&quot;http://blog.peterdecroos.com/components/backbone/backbone.js&quot;</span>)
-</span><span class='line'><span class="nt">script</span>( <span class="na">src=</span><span class="s">&quot;http://blog.peterdecroos.com/javascripts/base.js&quot;</span>)
-</span><span class='line'><span class="nt">script</span>( <span class="na">src=</span><span class="s">&quot;http://blog.peterdecroos.com/javascripts/application.js&quot;</span>)
-</span><span class='line'><span class="err">&lt;</span><span class="c">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>  body&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'><span class="err">&lt;</span><span class="nt">pre</span>&gt;&lt;code&gt;block content
-</span><span class='line'><span class="nt">script</span>(<span class="na">type=</span><span class="s">&quot;text/template&quot;</span><span class="err">,</span> <span class="na">data-name=</span><span class="s">&quot;main&quot;</span>)
-</span><span class='line'>  <span class="nt">include</span> templates/main.html
-</span><span class='line'><span class="nt">script</span>(<span class="na">type=</span><span class="s">&quot;text/template&quot;</span><span class="err">,</span> <span class="na">data-name=</span><span class="s">&quot;header&quot;</span>)
-</span><span class='line'>  <span class="nt">include</span> templates/header.html
-</span><span class='line'><span class="nt">script</span>(<span class="na">type=</span><span class="s">&quot;text/template&quot;</span><span class="err">,</span> <span class="na">data-name=</span><span class="s">&quot;menuLinks&quot;</span>)
-</span><span class='line'>  <span class="nt">include</span> templates/menulink.html
-</span><span class='line'><span class="nt">script</span>( <span class="na">src=</span><span class="s">&quot;http://blog.peterdecroos.com/javascripts/init.js&quot;</span>)
-</span><span class='line'><span class="err">&lt;</span><span class="c">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">&lt;</span><span class="nt">p</span>&gt;
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:jade %}
+doctype html
+html
+  head</p>
+
+<pre><code>title= title
+link( rel="stylesheet", href='http://blog.peterdecroos.com/components/bootstrap/dist/css/bootstrap.css')
+link( rel="stylesheet", href='http://blog.peterdecroos.com/stylesheets/style.css')
+script( src="http://blog.peterdecroos.com/components/jquery/jquery.js")
+script( src="http://blog.peterdecroos.com/components/bootstrap/dist/js/bootstrap.js")
+script( src="http://blog.peterdecroos.com/components/underscore/underscore.js")
+script( src="http://blog.peterdecroos.com/components/backbone/backbone.js")
+script( src="http://blog.peterdecroos.com/javascripts/base.js")
+script( src="http://blog.peterdecroos.com/javascripts/application.js")
+</code></pre>
+
+<p>  body</p>
+
+<pre><code>block content
+script(type="text/template", data-name="main")
+  include templates/main.html
+script(type="text/template", data-name="header")
+  include templates/header.html
+script(type="text/template", data-name="menuLinks")
+  include templates/menulink.html
+script( src="http://blog.peterdecroos.com/javascripts/init.js") 
+</code></pre>
+
+<p>{% endcodeblock %}</p>
 
 <p>The actual contents of the underscore templates in the *.html templates will
 now be compiled and loaded into "templates[data-name]" where I can access it later.</p>
@@ -164,113 +123,65 @@ in our app. For special cases we can overide them later. However, for the sake o
 want some decalrative way of telling the object what template to use and a default render()
 method that we can use in most situations.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="c1">//first we declare a namespace to store these new Objects</span>
-</span><span class='line'>  <span class="nx">application</span> <span class="o">=</span> <span class="p">{};</span>
-</span><span class='line'>  <span class="nx">application</span><span class="p">.</span><span class="nx">BaseView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">initialize</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">,</span> <span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="cm">/*</span>
-</span><span class='line'><span class="cm">    if the BaseView is extended with a tpl string, we want to </span>
-</span><span class='line'><span class="cm">    have that be available but we also want to be able to load </span>
-</span><span class='line'><span class="cm">    it at runtime and have it overide the base tpl string</span>
-</span><span class='line'><span class="cm">  */</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">tpl</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">tpl</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">tpl</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">loadTemplate</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">tpl</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">loadTemplate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">tpl</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="cm">/*  </span>
-</span><span class='line'><span class="cm">    if tpl is a function, we assign it directly, </span>
-</span><span class='line'><span class="cm">    otherwise, if its a string, we look it up</span>
-</span><span class='line'><span class="cm">    in our templates map.</span>
-</span><span class='line'><span class="cm">  */</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">tpl</span><span class="p">))</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">template</span> <span class="o">=</span> <span class="nx">tpl</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">tpl</span><span class="p">))</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">template</span> <span class="o">=</span> <span class="nx">template</span><span class="p">[</span><span class="nx">tpl</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s1">&#39;tpl must be a function or a string!&#39;</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//see below</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+  //first we declare a namespace to store these new Objects
+  application = {};
+  application.BaseView = Backbone.View.extend({</p>
+
+<pre><code>initialize: function() {
+  Backbone.View.prototype.initialize.apply(this, arguments);
+  if (this.model) {
+    this.listenTo(this.model, 'change', this.render);
+  }
+  /*
+    if the BaseView is extended with a tpl string, we want to 
+    have that be available but we also want to be able to load 
+    it at runtime and have it overide the base tpl string
+  */
+  this.tpl = options.tpl || this.tpl
+  this.loadTemplate(this.tpl);
+}
+loadTemplate: function(tpl) {
+  /*  
+    if tpl is a function, we assign it directly, 
+    otherwise, if its a string, we look it up
+    in our templates map.
+  */
+  if (_.isFunction(tpl)) {
+    this.template = tpl;
+  } else if (_.isString(tpl)) {
+    this.template = template[tpl];
+  } else {
+    throw new Error('tpl must be a function or a string!');
+  }
+}
+render: function() {
+  //see below
+}
+</code></pre>
+
+<p>  });
+{% endcodeblock %}</p>
 
 <p>Next up we need to create a render function. Its arbitrary based on the particular
 needs of your application. For most purposes however, Its sufficiant to make a
 view's model's attributes available inside the templates.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="c1">//from the render in the preceeding example</span>
-</span><span class='line'>  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span><span class="c1">//empty the view&#39;s node</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">context</span> <span class="o">=</span> <span class="p">{};</span> <span class="c1">//create a context object</span>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">attributes</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="nx">context</span><span class="p">));</span>
-</span><span class='line'><span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+  //from the render in the preceeding example
+  render: function() {</p>
+
+<pre><code>this.$el.html('');//empty the view's node
+var context = {}; //create a context object
+if (this.model) {
+  _.extend(context, this.model.attributes);
+}
+this.$el.html(this.template(context));
+return this;
+</code></pre>
+
+<p>  }
+{% endcodeblock %}</p>
 
 <p>Here's a great first start. Now any View that extends BaseView will have a
 render. The only interface we must follow is that the View have a model
@@ -291,22 +202,20 @@ document object model.</p>
 
 <p>you may be familiar with a dom object if you've used jquery.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">$body</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">);</span> <span class="c1">// =&gt; returns a jquery wrapped object</span>
-</span><span class='line'>  <span class="nx">$body</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1">//returns the wrapped object representing the body dom node.</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+  var $body = $('body'); // => returns a jquery wrapped object
+  $body[0] //returns the wrapped object representing the body dom node.
+{% endcodeblock %}</p>
 
 <p>In much the same way, a backbone view is a controller for a dom object.</p>
 
 <p>You may have seen the kickstart for a backbone app that involves doing a jquery
 lookup on a node and setting its html to your view's $el property</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">$container</span> <span class="o">=</span>  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.container&#39;</span><span class="p">);</span>
-</span><span class='line'>  <span class="nx">$container</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">view</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">$el</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+  var $container =  $('.container');
+  $container.html(view.render().$el);
+{% endcodeblock %}</p>
 
 <p>Assuming the render() method of the view returns 'this', then calling it before calling the
 $el property guarantees that the dom object managed by the view will be updated before being
@@ -321,81 +230,45 @@ the webpage to reflect the latest state of the model.</p>
 initial render of the dom node marking off somehow places to embed subviews. Then afterwards,
 go back through the $el and systematically embed $el for each subview in their respective places.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="c1">//updated render()</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">context</span> <span class="o">=</span> <span class="p">{};</span>
-</span><span class='line'>  <span class="nx">context</span><span class="p">.</span><span class="nx">_subView</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">viewName</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">return</span> <span class="s1">&#39;&amp;lt;div class=&quot;subView view-&#39;</span> <span class="o">+</span> <span class="nx">viewName</span> <span class="o">+</span> <span class="s1">&#39;&quot;&amp;gt;&amp;lt;/div&amp;gt;&#39;</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">attributes</span><span class="p">);</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span>
-</span><span class='line'>  <span class="c1">//pop it in the dom</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="nx">context</span><span class="p">));</span>
-</span><span class='line'>  <span class="c1">//notice we do this AFTER we rerender the new this.$el</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">subViews</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">subViews</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;.subView&#39;</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">index</span><span class="p">,</span> <span class="nx">el</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">$el</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">el</span><span class="p">);</span>
-</span><span class='line'><span class="c1">// view-</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">subView</span> <span class="o">=</span> <span class="nx">_</span><span class="p">(</span><span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">el</span><span class="p">.</span><span class="nx">classList</span><span class="p">)).</span><span class="nx">chain</span><span class="p">()</span>
-</span><span class='line'>  <span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">className</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="nx">className</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/^view-/</span><span class="p">));</span>
-</span><span class='line'>  <span class="p">},</span> <span class="k">this</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">className</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nx">className</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">},</span> <span class="k">this</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">.</span><span class="nx">value</span><span class="p">()[</span><span class="mi">0</span><span class="p">];</span> <span class="c1">//grab the first item</span>
-</span><span class='line'><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">subViews</span><span class="p">[</span><span class="nx">subView</span><span class="p">].</span><span class="nx">render</span><span class="p">().</span><span class="nx">$el</span><span class="p">);</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">},</span> <span class="k">this</span><span class="p">));</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+  //updated render()
+  this.$el.html('');
+  var context = {};
+  context._subView = function(viewName) {</p>
+
+<pre><code>return '&lt;div class="subView view-' + viewName + '"&gt;&lt;/div&gt;';
+</code></pre>
+
+<p>  };
+  if (this.model) {</p>
+
+<pre><code>_.extend(context, this.model.attributes);
+</code></pre>
+
+<p>  }
+  //pop it in the dom
+  this.$el.html(this.template(context));
+  //notice we do this AFTER we rerender the new this.$el
+  var subViews = this.subViews;
+  this.$el.find('.subView').each(_.bind(function(index, el) {</p>
+
+<pre><code>var $el = $(el);
+// view-
+var subView = _(Array.prototype.slice.call(el.classList)).chain()
+  .filter(function(className, index) {
+    return (className.match(/^view-/));
+  }, this)
+  .map(function(className) {
+    return className.slice(5);
+  }, this)
+  .value()[0]; //grab the first item
+$el.html(subViews[subView].render().$el);
+</code></pre>
+
+<p>  }, this));</p>
+
+<p>  return this;
+{% endcodeblock %}</p>
 
 <p>There's a new things we've added to this version.</p>
 
@@ -411,81 +284,47 @@ Its a property of teh parent view.</li>
 
 <p>With this, we now have an easy way of supporting subviews.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="nx">childView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">application</span><span class="p">.</span><span class="nx">BaseView</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">tpl</span><span class="o">:</span> <span class="s1">&#39;child&#39;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">parentView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">application</span><span class="p">.</span><span class="nx">BaseView</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">tpl</span><span class="o">:</span> <span class="s1">&#39;parent&#39;</span>
-</span><span class='line'><span class="nx">subViews</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">child</span><span class="o">:</span> <span class="nx">childView</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;div.container&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">parentView</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">$el</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+  childView = new application.BaseView({</p>
+
+<pre><code>tpl: 'child'
+</code></pre>
+
+<p>  });</p>
+
+<p>  var parentView = new application.BaseView({</p>
+
+<pre><code>tpl: 'parent'
+subViews: {
+  child: childView
+}
+</code></pre>
+
+<p>  });</p>
+
+<p>  $('div.container').html(parentView.render().$el);</p>
+
+<p>{% endcodeblock %}</p>
 
 <p>In parentView's template, its as simple as using out new subView helper</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'>  <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/template&quot;</span> <span class="na">date-name=</span><span class="s">&quot;parent&quot;</span><span class="nt">&gt;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">p</span><span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span>
-</span><span class='line'>  <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="o">%=</span> <span class="nx">_subView</span><span class="p">(</span><span class="s1">&#39;child&#39;</span><span class="p">)</span> <span class="o">%&amp;</span><span class="nx">gt</span><span class="p">;</span>
-</span><span class='line'><span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="err">/p&amp;gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nt">&lt;/script&gt;&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/template&quot;</span> <span class="na">date-name=</span><span class="s">&quot;child&quot;</span><span class="nt">&gt;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">span</span><span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="nx">hi</span> <span class="nx">I</span><span class="err">&#39;</span><span class="nx">m</span> <span class="nx">the</span> <span class="nx">child</span> <span class="nx">view</span><span class="o">!!</span> <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="err">/span&amp;gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nt">&lt;/script&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:html %}
+  <script type="text/template" date-name="parent"></p>
+
+<pre><code>&lt;p&gt;
+  &lt;%= _subView('child') %&gt;
+&lt;/p&gt;
+</code></pre>
+
+<p>  </script></p>
+
+<p>  <script type="text/template" date-name="child"></p>
+
+<pre><code>&lt;span&gt; hi I'm the child view!! &lt;/span&gt;
+</code></pre>
+
+<p>  </script>
+{% endcodeblock %}</p>
 
 <p>In the next installment in this series, we'll build a base ControllerView class which we
 can use to render generic collections. Yes, they'll be embedable as subviews in our BaseView.</p>
@@ -538,72 +377,42 @@ your templating system.</p>
 
 <p>Handlebars is an html templating language for javascript.</p></blockquote>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">h1</span><span class="o">&gt;</span><span class="p">{{</span> <span class="nx">value</span> <span class="p">}}</span><span class="o">&lt;</span><span class="err">/h1&gt;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span><span class='line'>  <span class="p">{{</span><span class="err">#</span><span class="k">if</span> <span class="nx">foo</span><span class="p">}}{{</span><span class="nx">foobar</span><span class="p">}}{{</span><span class="err">/if}}&gt;.</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}</p>
+
+<h1>{% raw %}{{ value }}{% endraw %}</h1>
+
+
+<p>
+  {% raw %}{{#if foo}}{{foobar}}{{/if}}>{% endraw %}.
+</p>
+
+
+<p>{% endcodeblock%}</p>
 
 <h3>Handlebars</h3>
 
 <p>This handlebars code is fed into Handlebars.compile() which returns a template function.
 This function is then passed a "context" object. example:</p>
 
-<p> <div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="p">{</span>
-</span><span class='line'>  <span class="nx">value</span><span class="o">:</span> <span class="s2">&quot;hello there&quot;</span>
-</span><span class='line'>  <span class="nx">foo</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>  <span class="nx">foobar</span><span class="o">:</span> <span class="s2">&quot;hello Douglas&quot;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p> {% codeblock lang:javascript %}</p>
+
+<pre><code>{ 
+  value: "hello there" 
+  foo: true,
+  foobar: "hello Douglas"
+}
+</code></pre>
+
+<p>{% endcodeblock %}</p>
 
 <p>and generates a string of html that you can inject into the dom.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;h1&gt;</span>hello there<span class="nt">&lt;/h1&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;p&gt;</span>hello Douglas<span class="nt">&lt;/p&gt;&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;p&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:html %}</p>
+
+<p>  <h1>hello there</h1>
+  <p>hello Douglas</p></p>
+
+<p>{% endcodeblock %}</p>
 
 <p>Since Thorax makes the decision of using Handlebars, it can give us a default render()
 method that's usable rather than a noop(). Thorax.View.render() constucts a
@@ -611,55 +420,31 @@ context object containing all of the <em>properties</em> of the view instance an
 of the model which is passed into the Handlebars template function so that it's available
 in the rendered view.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">//render function, this is what a Thorax render does,</span>
-</span><span class='line'><span class="c1">// &lt;em&gt;this&lt;/em&gt; resolves to the thorax instance&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">render</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//get the attributes of the property</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">viewProperties</span> <span class="o">=</span> <span class="p">{};</span>
-</span><span class='line'>  <span class="k">for</span> <span class="p">(</span> <span class="kd">var</span> <span class="nx">property</span> <span class="k">in</span> <span class="k">this</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">viewProperties</span><span class="p">[</span><span class="nx">property</span><span class="p">]</span> <span class="o">=</span> <span class="k">this</span><span class="p">[</span><span class="nx">property</span><span class="p">];</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
-</span><span class='line'>  <span class="c1">//underscore.js&#39;s extend</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">viewProperties</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">viewProperties</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">attributes</span><span class="p">);</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="nx">viewProperties</span><span class="p">));</span>
-</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}</p>
+
+<p>//render function, this is what a Thorax render does,
+// <em>this</em> resolves to the thorax instance</p>
+
+<p>var render = function() {
+  //get the attributes of the property
+  var viewProperties = {};
+  for ( var property in this) {</p>
+
+<pre><code>viewProperties[property] = this[property];
+</code></pre>
+
+<p>  };
+  //underscore.js's extend
+  if (this.model) {</p>
+
+<pre><code>viewProperties = _.extend(viewProperties, this.model.attributes);
+</code></pre>
+
+<p>  };
+  this.$el.html(this.template(viewProperties));
+  return this;
+}
+{% endcodeblock %}</p>
 
 <p>By default, properties of the view insance get passed to the template
 but not the functions. What if we want to overide this?</p>
@@ -668,77 +453,43 @@ but not the functions. What if we want to overide this?</p>
 There's a more elegant way using the
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty">defineProperty</a> function.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">peter</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Thorax</span><span class="p">.</span><span class="nx">Model</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">firstName</span><span class="o">:</span> <span class="s1">&#39;Peter&#39;</span><span class="p">,</span>
-</span><span class='line'><span class="nx">lastName</span><span class="o">:</span>  <span class="s1">&#39;de Croos&#39;</span><span class="p">,</span>
-</span><span class='line'><span class="nx">githubHandle</span><span class="o">:</span> <span class="s1">&#39;Cultofmetatron&#39;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">PersonView</span> <span class="o">=</span> <span class="nx">Thorax</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">template</span><span class="o">:</span>
-</span><span class='line'>  <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span><span class="s2">&quot;we can call</span>
-</span><span class='line'><span class="s2">           {{firstName}}, </span>
-</span><span class='line'><span class="s2">           {{lastName}} and </span>
-</span><span class='line'><span class="s2">           {{fullName}}&quot;</span><span class="p">),</span>
-</span><span class='line'><span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;fullName&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;firstName&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;lastName&#39;</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>    <span class="nx">enumerable</span><span class="o">:</span> <span class="kc">true</span> <span class="c1">// see note below</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">peterView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PersonView</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">model</span><span class="o">:</span> <span class="nx">peter</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+  var peter = new Thorax.Model({</p>
+
+<pre><code>firstName: 'Peter',
+lastName:  'de Croos',
+githubHandle: 'Cultofmetatron'
+</code></pre>
+
+<p>  });</p>
+
+<p>  var PersonView = Thorax.View.extend({</p>
+
+<pre><code>template:
+  Handlebars.compile("we can call
+           {% raw %}{{firstName}}, 
+           {{lastName}} and 
+           {{fullName}}{% endraw %}"),
+initialize: function() {
+  Object.defineProperty(this, 'fullName', {
+    get: function() {
+      return this.model.get('firstName') + ' ' +
+      this.model.get('lastName');
+    },
+    enumerable: true // see note below
+  });
+}
+</code></pre>
+
+<p>  });</p>
+
+<p>  var peterView = new PersonView({</p>
+
+<pre><code>model: peter
+</code></pre>
+
+<p>  });
+{% endcodeblock %}</p>
 
 <blockquote><p><em>Technical note:</em> By default, properties defined by <em>defineProperty</em> are not enumerable.</p>
 
@@ -758,69 +509,39 @@ Thorax provides some great helper functions for this. It just wins.</p>
 
 <p>Thorax.Views can be embedded in another view simply by adding the subview as a property.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">blogModel</span> <span class="o">=</span> <span class="nx">Thorax</span><span class="p">.</span><span class="nx">Model</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;console.log(this.thought)&#39;</span><span class="p">,</span>
-</span><span class='line'><span class="nx">post</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Thorax</span><span class="p">.</span><span class="nx">Model</span><span class="p">({</span>
-</span><span class='line'>  <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Thorax is awesome&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;maximum callstack exeeded&quot;</span>
-</span><span class='line'><span class="p">})</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">PostView</span> <span class="o">=</span> <span class="nx">Thorax</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">template</span><span class="o">:</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span><span class="s1">&#39;&amp;lt;h2&amp;gt;{{title}}&amp;lt;/h2&amp;gt;&amp;lt;p&amp;gt;{{content}}&amp;lt;/p&amp;gt;&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">blogView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">BlogView</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">template</span><span class="o">:</span> <span class="nx">Handlebars</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span><span class="s2">&quot;&amp;lt;h1&amp;gt;{{name}}&amp;lt;/h1&amp;gt;{{view postView}}&quot;</span><span class="p">),</span>
-</span><span class='line'><span class="nx">model</span><span class="o">:</span> <span class="nx">blogModel</span><span class="p">,</span>
-</span><span class='line'><span class="nx">postView</span><span class="o">:</span> <span class="k">new</span> <span class="nx">PostView</span><span class="p">({</span>
-</span><span class='line'>  <span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;post&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="p">})</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}</p>
 
-<p>As you can see, it was as easy as embedding  {{view postView }}
+<p>  var blogModel = Thorax.Model({</p>
+
+<pre><code>name: 'console.log(this.thought)',
+post: new Thorax.Model({
+  title: "Thorax is awesome",
+  content: "maximum callstack exeeded"
+})
+</code></pre>
+
+<p>  });</p>
+
+<p>  var PostView = Thorax.View.extend({</p>
+
+<pre><code>template: Handlebars.compile('{% raw %}&lt;h2&gt;{{title}}&lt;/h2&gt;&lt;p&gt;{{content}}&lt;/p&gt;{% endraw %}')
+</code></pre>
+
+<p>  });</p>
+
+<p>  var blogView = new BlogView({</p>
+
+<pre><code>template: Handlebars.compile("{% raw %}&lt;h1&gt;{{name}}&lt;/h1&gt;{{view postView}}{% endraw %}"),
+model: blogModel,
+postView: new PostView({
+  model: this.model.get('post')
+})
+</code></pre>
+
+<p>  });
+{% endcodeblock %}</p>
+
+<p>As you can see, it was as easy as embedding {% raw %} {{view postView }}{% endraw %}
 inside the template and Thorax takes of care of yielding control of that region to the
 child view.</p>
 
@@ -867,29 +588,19 @@ it to a view so that it can be rendered.</p>
 <p>Lets create a function PostController that does nothing more than lookup a
 model by its id and creates a post view.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">postController</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">postId</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//for info on Thorax.Views, Thorax.Models and Thorax.Collections,</span>
-</span><span class='line'>  <span class="c1">//see the note below</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">postView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Thorax</span><span class="p">.</span><span class="nx">Views</span><span class="p">.</span><span class="nx">FullPagePostView</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">model</span><span class="o">:</span> <span class="nx">Thorax</span><span class="p">.</span><span class="nx">Collections</span><span class="p">.</span><span class="nx">posts</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">postId</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span>
-</span><span class='line'>  <span class="k">return</span> <span class="nx">postView</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+var postController = function(postId) {
+  //for info on Thorax.Views, Thorax.Models and Thorax.Collections,
+  //see the note below
+  var postView = new Thorax.Views.FullPagePostView({</p>
+
+<pre><code>model: Thorax.Collections.posts.get(postId)
+</code></pre>
+
+<p>  });
+  return postView;
+}
+{% endcodeblock %}</p>
 
 <blockquote><p> <strong>Note</strong> About Thorax Registries</p>
 
@@ -906,33 +617,21 @@ I have worked on, I've solved this problem using the router.</p>
 <p>Thorax does nothing special with the router so we will use Backbone.Router as is. It will manage one
 Layout view, a special Thorax view made for holding other views.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//router.js</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">layoutContainer</span><span class="p">;</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">callController</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">controller</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">//arguments is used to shift responsibilty of knowing the </span>
-</span><span class='line'><span class="c1">//amount of paramaters to the controller</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="nx">controller</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
-</span><span class='line'><span class="nx">layoutContainer</span><span class="p">.</span><span class="nx">setView</span><span class="p">(</span><span class="nx">view</span><span class="p">);</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
-</span><span class='line'><span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+//router.js
+var layoutContainer;
+var callController = function(controller) {
+  return function() {</p>
+
+<pre><code>//arguments is used to shift responsibilty of knowing the 
+//amount of paramaters to the controller
+var view = controller.apply(this, arguments);
+layoutContainer.setView(view);
+</code></pre>
+
+<p>  };
+};
+{% endcodeblock %}</p>
 
 <p>The function <em>callController</em> takes a controller, passes along
 the arguments given to it by the router and takes care of the
@@ -941,71 +640,43 @@ boiler plate of creating a view and setting it into the container.
 all elements attached to the previous view (if there was a previous view)
 as it swaps in the html of the new view.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//continued from above</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">Router</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Router</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-</span><span class='line'>  <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">layoutContainer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Thorax</span><span class="p">.</span><span class="nx">LayoutView</span><span class="p">({</span>
-</span><span class='line'>  <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;#AppLayout&#39;</span>
-</span><span class='line'><span class="p">});</span>
-</span><span class='line'><span class="cm">/*</span>
-</span><span class='line'><span class="cm">  this is the point in the html where our container will be </span>
-</span><span class='line'><span class="cm">  injected in. from here on out, the router and controller</span>
-</span><span class='line'><span class="cm">  system will take care of swappng out application views </span>
-</span><span class='line'><span class="cm">  within this container.</span>
-</span><span class='line'><span class="cm">*/</span>
-</span><span class='line'><span class="nx">layoutContainer</span><span class="p">.</span><span class="nx">appendTo</span><span class="p">(</span><span class="s1">&#39;#entry-point&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">&#39;popstate&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">},</span>
-</span><span class='line'>  <span class="nx">routes</span><span class="o">:</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="s1">&#39;posts/:postId&#39;</span><span class="o">:</span> <span class="s1">&#39;postRoute&#39;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">},</span>
-</span><span class='line'>  <span class="nx">postRoute</span><span class="o">:</span> <span class="nx">callController</span><span class="p">(</span><span class="nx">postController</span><span class="p">)</span>
-</span><span class='line'><span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+//continued from above
+var Router = Backbone.Router.extend({
+  initialize: function() {</p>
+
+<pre><code>layoutContainer = new Thorax.LayoutView({
+  template: '#AppLayout'
+});
+/*
+  this is the point in the html where our container will be 
+  injected in. from here on out, the router and controller
+  system will take care of swappng out application views 
+  within this container.
+*/
+layoutContainer.appendTo('#entry-point');
+$(document).trigger('popstate');
+</code></pre>
+
+<p>  },
+  routes: {</p>
+
+<pre><code>'posts/:postId': 'postRoute'
+</code></pre>
+
+<p>  },
+  postRoute: callController(postController)
+});</p>
+
+<p>{% endcodeblock %}</p>
 
 <p>This is a pretty straight forward setup with one possible new thing. So you
 probably noticed the <em>$(document).trigger('popstate')</em>. In standard backbone,
 the application instance Router has a method <em>navigate()</em> usually called by</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="nx">router</span><span class="p">.</span><span class="nx">navigate</span><span class="p">(</span><span class="s1">&#39;path/to/route&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">trigger</span><span class="o">:</span> <span class="kc">true</span> <span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+  router.navigate('path/to/route', { trigger: true });
+{% endcodeblock %}</p>
 
 <p>The trigger true is needed by backbone for the router to trigger any associated actions.
 The browser by default writes to history when the document recieves the
@@ -1024,23 +695,14 @@ website they visit. The app takes care of loading the right content based on the
 By default, Thorax wraps the layout in a div tag. We can customize the layoutView by giving it a template
 and using the layout-element helper in that template.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;script </span><span class="na">id=</span><span class="s">&quot;appLayout&quot;</span> <span class="na">type=</span><span class="s">&quot;handlebars/template&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>   <span class="p">{{</span><span class="nx">layout</span><span class="o">-</span><span class="nx">element</span> <span class="nx">tag</span><span class="o">=</span><span class="s2">&quot;div&quot;</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;currentContext&quot;</span> <span class="kr">class</span><span class="o">=</span><span class="s2">&quot;container&quot;</span><span class="p">}}</span>
-</span><span class='line'><span class="nt">&lt;/script&gt;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;p&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:html %}</p>
+
+<script id="appLayout" type="handlebars/template">
+  {% raw %} {{layout-element tag="div" id="currentContext" class="container"}} {% endraw %}
+</script>
+
+
+<p>{% endcodeblock %}</p>
 ]]></content>
   </entry>
   

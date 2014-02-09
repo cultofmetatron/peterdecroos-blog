@@ -4,7 +4,7 @@
   <title><![CDATA[console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2014-02-04T15:06:43-08:00</updated>
+  <updated>2014-02-08T20:25:56-08:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -12,6 +12,121 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Functional programming with ecmascript6 generators]]></title>
+    <link href="http://blog.peterdecroos.com/blog/2014/02/08/functional-programming-with-ecmascript6-generators/"/>
+    <updated>2014-02-08T19:12:00-08:00</updated>
+    <id>http://blog.peterdecroos.com/blog/2014/02/08/functional-programming-with-ecmascript6-generators</id>
+    <content type="html"><![CDATA[<p>The web is abuzz right now with ecmascript 6 on the horizon. If you get not 0.11,
+you can use them already server side. Once of the big features I&#8217;m excited about
+are generators.</p>
+
+<p>I&#8217;ve <a href="http://blog.peterdecroos.com/blog/2014/01/22/javascript-generators-first-impressions/">blogged about them previously</a>
+Alas, I&#8217;ve only found nothing out there on the web that covers anything beyond basic
+instatiation and invocation. With just that to go on, it was hard for me to initially see
+the hype. A few days ago, I had an appifany.</p>
+
+<p>Generators are first class objects and like functions, they can be composed from smaller parts. Therefore,
+much of we know about functions can be applied to generators!</p>
+
+<p>On that note, I will lay the ground work for understanding how to really USE generators.</p>
+
+<h3>It all starts with a bind</h3>
+
+<p>If you&#8217;ve worked with javascript for any of length of time, You should be familiar with bind.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">bind</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">args</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">args</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">arguments</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">args2</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A function has 2 diffrent modes, literal and called.</p>
+
+<ul>
+<li>Literal: a function itself, its not being run.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">something</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;do something&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Called: running the function which gives us its return value along with side effects.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">something</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The bind is implimented by taking a literal function and calling it within another
+literal function passing along the context and possible arguments using .apply().</p>
+
+<p>A Generator has 3 states,
+  1. Literal: A literal Generator function</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">Gen</span> <span class="o">=</span> <span class="kd">function</span> <span class="o">*</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">yield</span> <span class="nx">asyncTask</span><span class="p">();</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>Instantiated: a runnable instance is created by calling the Generator function</li>
+</ol>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">gen</span> <span class="o">=</span> <span class="nx">Gen</span><span class="p">();</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>Run: You can then iterate through the generator by calling next()</li>
+</ol>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">gen</span><span class="p">.</span><span class="nx">next</span><span class="p">();</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[koa: zero to todo list]]></title>

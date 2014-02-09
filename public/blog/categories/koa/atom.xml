@@ -4,7 +4,7 @@
   <title><![CDATA[Category: koa | console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/blog/categories/koa/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2014-02-04T15:06:43-08:00</updated>
+  <updated>2014-02-08T20:26:00-08:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -28,31 +28,18 @@ reimagining of how we will be able to build web applications in javascript.</p>
 
 <p>In the standard node library, The 'http' module is used to create servers.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">server</span> <span class="o">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">res</span><span class="p">.</span><span class="nx">writeHead</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="o">:</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">});</span>
-</span><span class='line'>  <span class="c1">//server logic goes here</span>
-</span><span class='line'>  <span class="nx">res</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">server</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">3000</span><span class="p">,</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;listening on port 3000&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{%codeblock lang:javascript %}</p>
+
+<p>var server = http.createServer(function(req, res) {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  //server logic goes here
+  res.end('');
+});</p>
+
+<p>server.listen(3000, '127.0.0.1');
+console.log('listening on port 3000');</p>
+
+<p>{% endcodeblock %}</p>
 
 <p>Express exposes a function that we can give to
 http.createServer as a callback. Express middleware is a set of functions that
@@ -69,53 +56,30 @@ model of control flow.</p>
 
 <p>A very basic koa app looks like this, lets make it serve up the contents of a file</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">koa</span>          <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;koa&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">Promise</span>      <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;bluebird&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">//creates promise yielding versions of fs</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">promisifyAll</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">));</span>
-</span><span class='line'><span class="c1">//create the koa instance</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">koa</span><span class="p">();</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="kd">function</span> <span class="o">*</span><span class="p">(</span><span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//here&#39;s an example middleware that logs to the console</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;timestamp: before request =&gt; &#39;</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nx">now</span><span class="p">());</span>
-</span><span class='line'>  <span class="nx">yield</span> <span class="nx">next</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;timestamp: after request  =&gt; &#39;</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nx">now</span><span class="p">());</span>
-</span><span class='line'><span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="kd">function</span> <span class="o">*</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">body</span> <span class="o">=</span> <span class="nx">yield</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileAsync</span><span class="p">(</span><span class="s1">&#39;./app.js&#39;</span><span class="p">,</span> <span class="s1">&#39;utf8&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">3000</span><span class="p">);</span>
-</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;now listening on port 3000&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{%codeblock lang:javascript %}
+var koa          = require('koa');
+var Promise      = require('bluebird');</p>
+
+<p>//creates promise yielding versions of fs
+var fs = Promise.promisifyAll(require('fs'));
+//create the koa instance
+var app = koa();</p>
+
+<p>app.use(function *(next) {
+  //here's an example middleware that logs to the console
+  console.log('timestamp: before request => ', time.now());
+  yield next
+  console.log('timestamp: after request  => ', time.now());
+});</p>
+
+<p>app.use(function *() {
+  this.body = yield fs.readFileAsync('./app.js', 'utf8');
+});</p>
+
+<p>app.listen(3000);
+console.log('now listening on port 3000');</p>
+
+<p>{% endcodeblock %}</p>
 
 <p>Unlike Express, the middleware is written using generators.
 Downstream middleware in Koa flows upstream on return. Middleware
@@ -153,137 +117,73 @@ shows that we do have the necessary modules for a basic todo.</p>
 
 
 <p>Here's the basic server side api
-<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//jshint esnext</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">koa</span>          <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;koa&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">staticServer</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;koa-static&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">//this allows us to parse the native req object to get the body</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">parse</span>        <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;co-body&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">router</span>       <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;koa-route&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">_</span>            <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;underscore&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">Promise</span>      <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;bluebird&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">path</span>         <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">promisifyAll</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">));</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">koa</span><span class="p">();</span>
-</span><span class='line'><span class="c1">//our very basic data store</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">todos</span> <span class="o">=</span> <span class="p">[];</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">//gets us unique ids</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">counter</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">count</span><span class="o">++</span><span class="p">;</span>
-</span><span class='line'><span class="k">return</span> <span class="nx">count</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
-</span><span class='line'><span class="p">})();</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">//serve up the public directory where we have all the assets</span>
-</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">staticServer</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;public&#39;</span><span class="p">)));</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">router</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/todos&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="o">&lt;</span><span class="nx">em</span><span class="o">&gt;</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="err">/&lt;/em&gt;&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">yield</span> <span class="nx">lets</span> <span class="nx">us</span> <span class="nx">pass</span> <span class="nx">asynchronous</span> <span class="nx">functions</span> <span class="nx">that</span> <span class="k">return</span> <span class="nx">promises</span> <span class="nx">or</span> <span class="nx">thunks</span>
-</span><span class='line'><span class="nx">It</span> <span class="nx">will</span> <span class="nx">freeze</span> <span class="nx">the</span> <span class="nx">middleware</span> <span class="nx">till</span> <span class="nx">its</span> <span class="nx">resolved</span> <span class="nx">and</span> <span class="nx">pass</span> <span class="nx">it</span> <span class="nx">back</span> <span class="k">in</span><span class="p">.</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="o">*</span><span class="err">/</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">todo</span> <span class="o">=</span> <span class="p">(</span><span class="nx">yield</span> <span class="nx">parse</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="k">this</span><span class="p">));</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">todo</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">counter</span><span class="p">();</span>
-</span><span class='line'>  <span class="nx">todos</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">todo</span><span class="p">);</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">body</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">todos</span><span class="p">);</span>
-</span><span class='line'><span class="p">}));</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">router</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/todos&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="o">*</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">body</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">todos</span><span class="p">);</span>
-</span><span class='line'><span class="p">}));</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">router</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="s1">&#39;/todos/:id&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="o">*</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">todos</span> <span class="o">=</span> <span class="nx">_</span><span class="p">(</span><span class="nx">todos</span><span class="p">).</span><span class="nx">reject</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">todo</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;what? &#39;</span><span class="p">,</span> <span class="nx">todo</span><span class="p">,</span> <span class="nx">id</span> <span class="p">);</span>
-</span><span class='line'><span class="k">return</span> <span class="nx">todo</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">},</span> <span class="k">this</span><span class="p">);</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">body</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">todos</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">a</span> <span class="o">-</span> <span class="nx">b</span><span class="p">;}));</span>
-</span><span class='line'><span class="p">}));</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">3000</span><span class="p">);</span>
-</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;listening on port 3000&#39;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+{%codeblock lang:javascript %}
+//jshint esnext
+var koa          = require('koa');
+var staticServer = require('koa-static');</p>
+
+<p>//this allows us to parse the native req object to get the body
+var parse        = require('co-body');</p>
+
+<p>var router       = require('koa-route');
+var _            = require('underscore');</p>
+
+<p>var Promise      = require('bluebird');
+var path         = require('path');</p>
+
+<p>var fs = Promise.promisifyAll(require('fs'));
+var app = koa();
+//our very basic data store
+var todos = [];</p>
+
+<p>//gets us unique ids
+var counter = (function() {
+  var count = 0;
+  return function() {</p>
+
+<pre><code>count++;
+return count;
+</code></pre>
+
+<p>  };
+})();</p>
+
+<p>//serve up the public directory where we have all the assets
+app.use(staticServer(path.join(__dirname, 'public')));</p>
+
+<p>app.use(router.post('/todos', function <em>() {
+  /</em></p>
+
+<pre><code>yield lets us pass asynchronous functions that return promises or thunks
+It will freeze the middleware till its resolved and pass it back in.
+</code></pre>
+
+<p>  */
+  var todo = (yield parse.json(this));</p>
+
+<p>  todo.id = counter();
+  todos.push(todo);
+  this.body = JSON.stringify(todos);
+}));</p>
+
+<p>app.use(router.get('/todos', function *() {
+  this.body = JSON.stringify(todos);
+}));</p>
+
+<p>app.use(router.delete('/todos/:id', function *(id) {
+  todos = _(todos).reject(function(todo) {</p>
+
+<pre><code>console.log('what? ', todo, id );
+return todo.id === parseInt(id, 10);
+</code></pre>
+
+<p>  }, this);
+  this.body = JSON.stringify(todos.sort(function(a, b) { return a - b;}));
+}));</p>
+
+<p>app.listen(3000);
+console.log('listening on port 3000');
+{% endcodeblock %}</p>
 
 <p><a href="https://github.com/cultofmetatron/koa-todo">Download the code on github</a>
 The github version includes frontend code.</p>
@@ -304,35 +204,26 @@ of any operations that occur after it.</p>
 <p>For example, if we run three asyncronous operations top to bottom that do not depend on
 each other, like the following...</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="kd">function</span> <span class="o">*</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">yield</span> <span class="nx">async1</span><span class="p">();</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">yield</span> <span class="nx">async2</span><span class="p">();</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">yield</span> <span class="nx">async3</span><span class="p">();</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{%codeblock lang:javascript %}
+app.use(function *() {
+  var a = yield async1();
+  var b = yield async2();
+  var c = yield async3();
+});
+{% endcodeblock %}</p>
 
 <p>This completely defeats the purpose of node's (almost automatic) concurrency. When we call
 async1, we are blocking until async2 runs. This is unoptimal. It would be better to get the promises
 for the three functions and yield on a merged promise.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="kd">function</span> <span class="o">*</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">async1</span><span class="p">();</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">async2</span><span class="p">();</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">async3</span><span class="p">();</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">yield</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">all</span><span class="p">([</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">]);</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{%codeblock lang:javascript %}
+app.use(function *() {
+  var a = async1();
+  var b = async2();
+  var c = async3();
+  var result = yield Promise.all([a, b, c]);
+});
+{% endcodeblock %}</p>
 
 <p>I'm excited to cut my teeth on sme bigger problems. As the frameowrk matures, Its going to
 allow more fine grained control for how we write the next generation of web applications.</p>

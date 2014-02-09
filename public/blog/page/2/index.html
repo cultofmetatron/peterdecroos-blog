@@ -7,9 +7,18 @@
 	<meta name="author" content="Peter de Croos">
 
 	
-	<meta name="description" content="I&#8217;m in a couple of weeks into Robert Sedgewick&#8217;s class on algorithms currently
-running on coursera. To round off the weekend
-I decided &hellip;">
+	<meta name="description" content="Here&#8217;s a basic Quicksort algorithm. You can call this code using Node.js 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+var Sort = require(&#39;./quicksort.js&#39 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -74,6 +83,197 @@ I decided &hellip;">
 </header>
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2013/02/14/quicksort/">Quicksort Algorithm in Javascript</a></h1>
+	<div class="entry-content">
+		<p>Here&#8217;s a basic Quicksort algorithm. You can call this code using Node.js</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">Sort</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./quicksort.js&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">];</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">sorted</span> <span class="o">=</span> <span class="nx">Sort</span><span class="p">(</span><span class="nx">list</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&gt;</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>have fun and hope this proves useful to somebody!</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//quicksort.js</span>
+</span><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">list1</span><span class="p">,</span> <span class="nx">compareFunction</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">list</span> <span class="o">=</span> <span class="nx">list1</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">cmp</span> <span class="o">=</span> <span class="nx">compareFunction</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">swap</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">j</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="cm">/* swaps the indexer A[i] and A[j] */</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">_i</span> <span class="o">=</span> <span class="nx">list</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">_j</span> <span class="o">=</span> <span class="nx">list</span><span class="p">[</span><span class="nx">j</span><span class="p">];</span>
+</span><span class='line'>        <span class="nx">list</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="o">=</span> <span class="nx">_i</span><span class="p">;</span>
+</span><span class='line'>        <span class="nx">list</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">_j</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">partition</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="cm">/* the partition function goes through the array</span>
+</span><span class='line'><span class="cm">         *  list[</span>
+</span><span class='line'><span class="cm">         */</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="nx">r</span><span class="p">;</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">p</span><span class="p">;</span> <span class="c1">//on intiial pass, p is 0</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="cm">/* for each entry i where A[i] is less than A[r-1]</span>
+</span><span class='line'><span class="cm">         * where r-1 is the index of the Penultimate item</span>
+</span><span class='line'><span class="cm">         */</span>
+</span><span class='line'>        <span class="c1">//from j = 0 to j = r-1</span>
+</span><span class='line'>        <span class="c1">//exchange A[i] and A[j] if A[j] &gt; A[r]</span>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">j</span> <span class="o">=</span> <span class="nx">p</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="nx">r</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="c1">//console.log(&quot;lets try this &quot;, list);</span>
+</span><span class='line'>            <span class="c1">//console.log(&quot;i : &quot; + i + &quot; j : &quot; + j);</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="nx">cmp</span><span class="p">(</span><span class="nx">list</span><span class="p">[</span><span class="nx">j</span><span class="p">],</span><span class="nx">list</span><span class="p">[</span><span class="nx">r</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="c1">//swap them!! and then increment i</span>
+</span><span class='line'>                <span class="nx">swap</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">j</span><span class="p">);</span>
+</span><span class='line'>                <span class="nx">i</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">swap</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">r</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">i</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">quickSort</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">p</span> <span class="o">&lt;</span> <span class="nx">r</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">q</span> <span class="o">=</span> <span class="nx">partition</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">r</span><span class="p">);</span>
+</span><span class='line'>            <span class="nx">quickSort</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>            <span class="nx">quickSort</span><span class="p">(</span><span class="nx">q</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">initialize</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">quickSort</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">list1</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="c1">//compute the sorted value</span>
+</span><span class='line'>    <span class="nx">initialize</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">list1</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-14T18:49:00-08:00" pubdate data-updated="true">Feb 14<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/algorithms/'>algorithms</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>, <a class='category' href='/blog/categories/sorting/'>sorting</a>
+
+
+</div>
+	
+		<span class="comments"><a href="/blog/2013/02/14/quicksort//blog/page/2/index.html#disqus_thread">Comments</a></span>
+	
+</div></article>
 
 
     <article class="post">

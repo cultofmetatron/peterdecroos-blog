@@ -4,7 +4,7 @@
   <title><![CDATA[Category: scoping | console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/blog/categories/scoping/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2014-02-04T15:06:43-08:00</updated>
+  <updated>2014-02-08T20:26:00-08:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -30,43 +30,29 @@ positivly badass at Javascript.</p>
 
 <p>I'm assuming you have written code before. Hell, I'd dare assume you've written a <em>var.</em></p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">variableName</span> <span class="o">=</span> <span class="s2">&quot;variable value&quot;</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+var variableName = "variable value";
+{% endcodeblock %}</p>
 
 <p>What does it mean to use the <em>var</em> keyword? As you may know, good javascript has you
 prepend all your variables with var. Most will also advocate wrapping all your code in
 an immediatly invoked function.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//this is being declared in the global scope.</span>
-</span><span class='line'><span class="c1">//its functionally equivilant to window.foo or just plain foo</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s2">&quot;super bar&quot;</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s2">&quot;inner bar&quot;</span><span class="p">;</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;this foo refers to the foo inside this function &#39;</span><span class="p">,</span> <span class="nx">foo</span><span class="p">);</span>
-</span><span class='line'><span class="p">})();</span>
-</span><span class='line'><span class="err">/&lt;em&gt; I don&#39;t always create inline annonymous functions, but when I do, I</span>
-</span><span class='line'><span class="nx">immediatly</span> <span class="nx">invoke</span> <span class="nx">them</span><span class="p">.</span> <span class="nx">Live</span> <span class="nx">dynamically</span> <span class="nx">my</span> <span class="nx">friends</span> <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="mi">3</span> <span class="o">&lt;</span><span class="sr">/em&gt;/</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;this one will print the top level: &#39;</span><span class="p">,</span> <span class="nx">foo</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+//this is being declared in the global scope.
+//its functionally equivilant to window.foo or just plain foo
+var foo = "super bar";</p>
+
+<p>(function() {
+  var foo = "inner bar";
+  console.log('this foo refers to the foo inside this function ', foo);
+})();
+/<em> I don't always create inline annonymous functions, but when I do, I
+immediatly invoke them. Live dynamically my friends &lt;3 </em>/</p>
+
+<p>console.log('this one will print the top level: ', foo);</p>
+
+<p>{% endcodeblock %}</p>
 
 <p>Let's start with this relativly simple example to begin growing some understanding.
 Internally, the interpreter/compiler represents scopes with a tree (in simple cases, just a linked list).
@@ -85,66 +71,40 @@ the variable foo exists. It refers to the value "super bar."</p>
 <p>The rules for creating scopes differ between languages. In Javascript, we start new scopes with a
 function.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s2">&quot;global scope&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">goo</span> <span class="o">=</span> <span class="s2">&quot;ber&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s2">&quot;inner scope&quot;</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s2">&quot;super inner scope bro!&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">})();</span>
-</span><span class='line'><span class="p">})();</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+var foo = "global scope";
+var goo = "ber";
+(function() {
+  var foo = "inner scope";
+  (function() {</p>
+
+<pre><code>var foo = "super inner scope bro!";
+</code></pre>
+
+<p>  })();
+})();
+{% endcodeblock%}</p>
 
 <p>This creates a tree with three nodes we can visually represent
 in pseudo-coffeescript.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'> <span class="nv">scope_chain = </span><span class="nx">global</span><span class="o">:&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span>              <span class="nv">variables:</span>
-</span><span class='line'>                <span class="nv">foo: </span><span class="s">&quot;global scope&quot;</span><span class="p">;</span>
-</span><span class='line'>                <span class="nv">goo: </span><span class="s">&quot;ber&quot;</span>
-</span><span class='line'>              <span class="nv">children:</span>
-</span><span class='line'>                <span class="nv">inner_scope:</span>
-</span><span class='line'>                  <span class="nv">variables:</span>
-</span><span class='line'>                    <span class="nv">foo: </span><span class="s">&quot;inner scope&quot;</span>
-</span><span class='line'>                  <span class="nv">children:</span>
-</span><span class='line'>                    <span class="nv">super_inner_scope:</span>
-</span><span class='line'>                      <span class="nv">variables:</span>
-</span><span class='line'>                        <span class="nv">foo : </span><span class="s">&quot;super inner scope bro!&quot;</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:coffeescript %}
+ scope_chain = global:</p>
+
+<pre><code>              variables:
+                foo: "global scope";
+                goo: "ber"
+              children:
+                inner_scope:
+                  variables:
+                    foo: "inner scope"
+                  children:
+                    super_inner_scope:
+                      variables:
+                        foo : "super inner scope bro!"
+</code></pre>
+
+<p>{% endcodeblock%}</p>
 
 <p>As you can see, we have three nodes and there are variables that are available
 at each node. If you try to access a variable, the interpreter will look up the nodes
@@ -165,45 +125,27 @@ pulled from some other scope where we invoke the function.</li>
 
 <p>We delay the instantiation of the scopes until they are invoked later in the program.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="c1">//scope A</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">binder</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">st</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">//scope B</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="nx">st</span>
-</span><span class='line'><span class="k">return</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">set</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">newState</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">//scope C</span>
-</span><span class='line'>    <span class="nx">state</span> <span class="o">=</span> <span class="nx">newState</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nx">state</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">},</span>
-</span><span class='line'>  <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">//scope E</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nx">state</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+  //scope A
+  var binder = function(st) {</p>
+
+<pre><code>//scope B
+var state = st
+return {
+  set: function(newState) {
+    //scope C
+    state = newState;
+    return state;
+  },
+  get: function() {
+    //scope E
+    return state;
+  }
+}
+</code></pre>
+
+<p>  }
+{% endcodeblock%}</p>
 
 <p>Scope order is created lexically. Each new function definition in the source (ie: text, hence the lexical)
 is being read into the interpreter as a place to mark a new node in the scope chain on invocation.
@@ -213,21 +155,14 @@ belong to B as siblings. B in turn, belongs to A.</p>
 <p>None of these functions are being invoked but the scope lookup rules are locked to A -> B, B-> C, B->E
 Things get hairier when we invoke them.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="c1">//scope A</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">b1</span> <span class="o">=</span> <span class="nx">binder</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
-</span><span class='line'>  <span class="nx">b1</span><span class="p">.</span><span class="nx">get</span><span class="p">();</span>   <span class="c1">// =&gt; 5</span>
-</span><span class='line'>  <span class="nx">b1</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span> <span class="c1">// =&gt; 2</span>
-</span><span class='line'>  <span class="nx">b1</span><span class="p">.</span><span class="nx">get</span><span class="p">();</span> <span class="c1">// =&gt; 2&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+  //scope A
+  var b1 = binder(5);
+  b1.get();   // => 5
+  b1.set(2); // => 2
+  b1.get(); // => 2</p>
+
+<p>{% endcodeblock%}</p>
 
 <p>How on earth is this function maintaining state? The Binder, on invocation, takes the argument 5
 and creates a scope according to the rules set forward in the source code of binder.</p>
@@ -254,139 +189,73 @@ This gives us a leg up when trying to wrangle asynchrounous processes.</p>
 while we wait for the function to fire,
 we can register functions to be called when the function is resolved.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="c1">//scope A</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">delay</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">,</span> <span class="nx">args</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">//Scope B</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">status</span> <span class="o">=</span> <span class="s2">&quot;pending&quot;</span><span class="p">;</span> <span class="c1">//how we track what the status of the internal state is</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">result</span><span class="p">;</span> <span class="c1">//where we are going to store the result of calling fn.</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">deps</span> <span class="o">=</span> <span class="p">[];</span> <span class="c1">//where we store registered callbacks.</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//Scope C</span>
-</span><span class='line'>  <span class="cm">/* the scope chain from here is A -&amp;gt; B-&amp;gt; C</span>
-</span><span class='line'><span class="cm">  this simply calls teh function and allows us to pass in the</span>
-</span><span class='line'><span class="cm">  arguments as an array</span>
-</span><span class='line'><span class="cm">  */</span>
-</span><span class='line'>  <span class="nx">result</span> <span class="o">=</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">args</span><span class="p">);</span> <span class="c1">//call the function</span>
-</span><span class='line'>  <span class="nx">status</span> <span class="o">=</span> <span class="s2">&quot;done&quot;</span><span class="p">;</span>
-</span><span class='line'>  <span class="c1">//we run through all the functions in deps and run them one</span>
-</span><span class='line'>  <span class="c1">//by one.</span>
-</span><span class='line'>  <span class="nx">deps</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">dep</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">//Scope D</span>
-</span><span class='line'>    <span class="nx">dep</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">result</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'><span class="p">},</span> <span class="nx">timeout</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//the two objects being returned have access to this scope</span>
-</span><span class='line'><span class="c1">//which allows us to invoke them to affect this internal </span>
-</span><span class='line'><span class="c1">//environmental.</span>
-</span><span class='line'><span class="k">return</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">done</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">func</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">//Scope E</span>
-</span><span class='line'>    <span class="c1">//A -&amp;gt; B -&amp;gt; C</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s2">&quot;pending&quot;</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">deps</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">func</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s2">&quot;done&quot;</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">func</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kd">var</span> <span class="nx">promise</span> <span class="o">=</span> <span class="nx">delay</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">msg</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">//Scope F</span>
-</span><span class='line'><span class="k">return</span> <span class="nx">msg</span> <span class="o">+</span> <span class="s2">&quot; world&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">},</span> <span class="p">[</span><span class="s2">&quot;hello&quot;</span><span class="p">],</span> <span class="mi">3000</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="c1">//by passing this function to done, you guarantee that</span>
-</span><span class='line'>  <span class="c1">//when the function passed into delay is called, it will pass</span>
-</span><span class='line'>  <span class="c1">//the result into the function passed in here.</span>
-</span><span class='line'>  <span class="nx">promise</span><span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">//Scope G</span>
-</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="c1">//3000 milliseconds later</span>
-</span><span class='line'>  <span class="c1">//&gt; &quot;hello world&quot;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}</p>
+
+<p>  //scope A
+  var delay = function(fn, args, timeout) {</p>
+
+<pre><code>//Scope B
+var status = "pending"; //how we track what the status of the internal state is
+var result; //where we are going to store the result of calling fn.
+var deps = []; //where we store registered callbacks.
+
+setTimeout(function() {
+  //Scope C
+  /* the scope chain from here is A -&gt; B-&gt; C
+  this simply calls teh function and allows us to pass in the
+  arguments as an array
+  */
+  result = fn.apply(this, args); //call the function
+  status = "done";
+  //we run through all the functions in deps and run them one
+  //by one.
+  deps.forEach(function(dep) {
+    //Scope D
+    dep.call(this, result);
+  });
+}, timeout);
+
+//the two objects being returned have access to this scope
+//which allows us to invoke them to affect this internal 
+//environmental.
+return {
+  done: function(func) {
+    //Scope E
+    //A -&gt; B -&gt; C
+    if (status === "pending") {
+      deps.push(func);
+    }
+    if (status === "done") {
+      func(result);
+    }
+  }
+}
+</code></pre>
+
+<p>  }</p>
+
+<p>  var promise = delay(function(msg) {</p>
+
+<pre><code>//Scope F
+return msg + " world";
+</code></pre>
+
+<p>  }, ["hello"], 3000);</p>
+
+<p>  //by passing this function to done, you guarantee that
+  //when the function passed into delay is called, it will pass
+  //the result into the function passed in here.
+  promise.done(function(result) {</p>
+
+<pre><code>//Scope G
+console.log(result);
+</code></pre>
+
+<p>  });</p>
+
+<p>  //3000 milliseconds later
+  //> "hello world"
+{% endcodeblock %}</p>
 
 <p>Yeah its a wee bit contrived but it illustrates a point. By using a closure to wrap a
 bunch of data into this enclosed space, we can hide away some
@@ -400,241 +269,126 @@ async functions.</p>
 <p>What if we could apply the same principle and get an object we could pass along functions to
 and know it will take care of running them when the file is available?</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">fileObject</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fileName</span><span class="p">,</span> <span class="nx">encoding</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">);</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">status</span> <span class="o">=</span> <span class="s2">&quot;pending&quot;</span><span class="p">;</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">result_data</span><span class="p">;</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">result_error</span><span class="p">;</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">deps_success</span> <span class="o">=</span> <span class="p">[];</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">deps_fail</span> <span class="o">=</span> <span class="p">[];</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">deps_always</span> <span class="o">=</span> <span class="p">[];</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="p">{};</span>
-</span><span class='line'>  <span class="nx">encod</span> <span class="o">=</span> <span class="nx">encoding</span> <span class="o">||</span> <span class="s1">&#39;utf8&#39;</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">fs</span><span class="p">.</span><span class="nx">readFile</span><span class="p">(</span><span class="nx">fileName</span><span class="p">,</span> <span class="nx">encoding</span> <span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">result_data</span> <span class="o">=</span> <span class="nx">data</span><span class="p">;</span>
-</span><span class='line'><span class="nx">result_error</span> <span class="o">=</span> <span class="nx">err</span><span class="p">;</span>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">result_error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">deps_success</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">fn</span><span class="p">(</span><span class="nx">result_data</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'>  <span class="nx">status</span> <span class="o">=</span> <span class="s2">&quot;success&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">deps_fail</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">fn</span><span class="p">(</span><span class="nx">result_error</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'>  <span class="nx">status</span> <span class="o">=</span> <span class="s2">&quot;error&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">deps_always</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">fn</span><span class="p">();</span>
-</span><span class='line'><span class="p">});</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">queueFunction</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">list</span><span class="p">,</span> <span class="nx">fn</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">list</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">fn</span><span class="p">);</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">done</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s2">&quot;done&quot;</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">fn</span><span class="p">(</span><span class="nx">result_data</span><span class="p">);</span>
-</span><span class='line'>  <span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s1">&#39;pending&#39;</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">queueFunction</span><span class="p">(</span><span class="nx">deps_success</span><span class="p">,</span> <span class="nx">fn</span><span class="p">);</span>
-</span><span class='line'>  <span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">fail</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">fn</span><span class="p">(</span><span class="nx">result_error</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s2">&quot;pending&quot;</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">queueFunction</span><span class="p">(</span><span class="nx">deps_fail</span><span class="p">,</span> <span class="nx">fn</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">always</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="s2">&quot;pending&quot;</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">queueFunction</span><span class="p">(</span><span class="nx">deps_always</span><span class="p">,</span> <span class="nx">fn</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">fn</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">};</span>
-</span><span class='line'>  <span class="nx">ret</span><span class="p">.</span><span class="nx">done</span> <span class="o">=</span> <span class="nx">done</span><span class="p">;</span>
-</span><span class='line'>  <span class="nx">ret</span><span class="p">.</span><span class="nx">fail</span> <span class="o">=</span> <span class="nx">fail</span><span class="p">;</span>
-</span><span class='line'>  <span class="nx">ret</span><span class="p">.</span><span class="nx">always</span> <span class="o">=</span> <span class="nx">always</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="c1">//this exposes the status as a readonly property</span>
-</span><span class='line'>  <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nx">ret</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="nx">status</span><span class="p">;</span>
-</span><span class='line'><span class="p">},</span>
-</span><span class='line'><span class="nx">enumerable</span><span class="o">:</span> <span class="kc">true</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
-</span><span class='line'><span class="p">};</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}
+var fileObject = function(fileName, encoding) {
+  var fs = require('fs');
+  var status = "pending";
+  var result_data;
+  var result_error;
+  var deps_success = [];
+  var deps_fail = [];
+  var deps_always = [];
+  var ret = {};
+  encod = encoding || 'utf8';</p>
+
+<p>  fs.readFile(fileName, encoding ,function(err, data) {</p>
+
+<pre><code>result_data = data;
+result_error = err;
+if (!result_error) {
+  deps_success.forEach(function(fn) {
+    fn(result_data);
+  });
+  status = "success";
+} else {
+  deps_fail.forEach(function(fn) {
+    fn(result_error);
+  });
+  status = "error";
+}
+deps_always.forEach(function(fn) {
+  fn();
+});
+</code></pre>
+
+<p>  });
+  var queueFunction = function(list, fn) {</p>
+
+<pre><code>list.push(fn);
+</code></pre>
+
+<p>  };
+  var done = function(fn) {</p>
+
+<pre><code>if (status === "done") {
+  fn(result_data);
+  return ret;
+}
+if (status === 'pending') {
+  queueFunction(deps_success, fn);
+  return ret;
+}
+</code></pre>
+
+<p>  };
+  var fail = function(fn) {</p>
+
+<pre><code>if (status === "error") {
+  fn(result_error);
+}
+if (status === "pending") {
+  queueFunction(deps_fail, fn);
+}
+return ret;
+</code></pre>
+
+<p>  };
+  var always = function(fn) {</p>
+
+<pre><code>if (status === "pending") {
+  queueFunction(deps_always, fn);
+} else {
+  fn();
+}
+return ret;
+</code></pre>
+
+<p>  };
+  ret.done = done;
+  ret.fail = fail;
+  ret.always = always;</p>
+
+<p>  //this exposes the status as a readonly property
+  Object.defineProperty(ret, 'status', {</p>
+
+<pre><code>get: function() {
+  return status;
+},
+enumerable: true
+</code></pre>
+
+<p>  });</p>
+
+<p>  return ret;
+};</p>
+
+<p>{% endcodeblock %}</p>
 
 <p>Hey, that wasn't so bad. We return an object of three functions and
 it will take care of running the appropriate functions based on the
 status of the object's internal async operation when its resolved.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">newFile</span> <span class="o">=</span> <span class="nx">fileObject</span><span class="p">(</span><span class="s1">&#39;./hello.txt&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">newFile</span><span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;two &#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">);</span>
-</span><span class='line'><span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">newFile</span><span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;one &#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">);</span>
-</span><span class='line'><span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">newFile</span><span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;the file errored out. returned: &#39;</span> <span class="o">+</span> <span class="nx">err</span><span class="p">);</span>
-</span><span class='line'><span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">newFile</span><span class="p">.</span><span class="nx">always</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;this always gets called&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="p">});</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:javascript %}</p>
+
+<p>var newFile = fileObject('./hello.txt');</p>
+
+<p>newFile.done(function(data) {
+  console.log('two ' + data);
+});</p>
+
+<p>newFile.done(function(data) {
+  console.log('one ' + data);
+});</p>
+
+<p>newFile.fail(function(err) {
+  console.log('the file errored out. returned: ' + err);
+});</p>
+
+<p>newFile.always(function() {
+  console.log('this always gets called');
+});</p>
+
+<p>{% endcodeblock %}</p>
 
 <p>In short, lexical scoping and closures are pretty damn awesome.</p>
 ]]></content>
