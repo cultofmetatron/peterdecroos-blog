@@ -15,7 +15,7 @@ mongodb and backbone.js. lately I've been smitten with soma
 and thorax.
 
 
-[My github](github.peterdecroos.com)
+[My github](https://github.com/cultofmetatron)
 
 
 
