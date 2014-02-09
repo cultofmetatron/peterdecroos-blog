@@ -38,7 +38,7 @@ near the end of the middleware stack.
 
 ### Enter Koa, The generators based framework
 
-Like express, Koa works internatlly by generating a callback that can be passed to 
+Like express, Koa works internally by generating a callback that can be passed to 
 http.createServer().  Unlike Express, it uses generators to provide a much more fine grained
 model of control flow.
 
@@ -74,11 +74,11 @@ Downstream middleware in Koa flows upstream on return. Middleware
 yields down stream by explicitly calling 'yield next.'. Upon return, the control
 flow yields back up to where the upstream middleware yielded downstream.
 
-Where Express passes native node req and res obects through to each function, Koa
+Where Express passes native node req and res objects through to each function, Koa
 manages a context where it encapsulates them behind an interface. They are still available 
-thrugh the 'this' keyword as this.req and this.res. However, Its not reccomended in
+through the 'this' keyword as this.req and this.res. However, Its not reccomended in
 the docs that you work with these native objects. One could imagine calling this.res.end('')
-would throw a monkey wrench in the control flow. Instead you are suppossed to work through
+would throw a monkey wrench in the control flow. Instead you are supposed to work through
 the this.response and this.request. Most of the methods are aliased directly to this. 'this.body'
 for example, is aliased to this.response.body. 
   
@@ -93,7 +93,7 @@ List seems like a good thing no one has ever tried to make before in any technol
 To simplify assumptions, lets just store the todos in memory.
 
 By itself, Koa is very minimalistic. It does not provide body parsing, sessions, or 
-routing in the core. Unfortunatly Koa is still young so there just aren't that many 
+routing in the core. Unfortunately Koa is still young so there just aren't that many 
 npm modules for it just yet. A quick search on [the Koa website](https://github.com/koajs/koa/wiki)
 shows that we do have the necessary modules for a basic todo.
 
@@ -171,8 +171,8 @@ The github version includes frontend code.
 
 The 'yield' keyword ca do some interesting things. If we pass into it
 an asynchronous function that returns a thunk or promise, it will stop execution of
-the middleware and wait till it resolves. It then returns the value of the promse or thunk
-and resumes the generator. This is a hell of alot easier to read.
+the middleware and wait till it resolves. It then returns the value of the promise or thunk
+and resumes the generator. This is a hell of a lot easier to read.
 
 ####A word of caution
 
@@ -180,7 +180,7 @@ The 'yield' keyword lets us do some safe blocking but it isn't always the ideal 
 While the event loop itself isn't blocked by it the way futures can, it does block resuming
 of any operations that occur after it. 
 
-For example, if we run three asyncronous operations top to bottom that do not depend on 
+For example, if we run three asynchronous operations top to bottom that do not depend on 
 each other, like the following...
 
 {%codeblock lang:javascript %}
@@ -206,7 +206,7 @@ app.use(function *() {
 {% endcodeblock %}
 
 
-I'm excited to cut my teeth on sme bigger problems. As the frameowrk matures, Its going to 
+I'm excited to cut my teeth on some bigger problems. As the framework matures, Its going to 
 allow more fine grained control for how we write the next generation of web applications.
 
 
