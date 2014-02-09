@@ -4,7 +4,7 @@
   <title><![CDATA[console.blog( this.thought )]]></title>
   <link href="http://blog.peterdecroos.com/atom.xml" rel="self"/>
   <link href="http://blog.peterdecroos.com/"/>
-  <updated>2014-02-09T02:58:48-08:00</updated>
+  <updated>2014-02-09T12:18:31-08:00</updated>
   <id>http://blog.peterdecroos.com/</id>
   <author>
     <name><![CDATA[Peter de Croos]]></name>
@@ -334,7 +334,7 @@ near the end of the middleware stack.</p>
 
 <h3>Enter Koa, The generators based framework</h3>
 
-<p>Like express, Koa works internatlly by generating a callback that can be passed to
+<p>Like express, Koa works internally by generating a callback that can be passed to
 http.createServer().  Unlike Express, it uses generators to provide a much more fine grained
 model of control flow.</p>
 
@@ -390,11 +390,11 @@ Downstream middleware in Koa flows upstream on return. Middleware
 yields down stream by explicitly calling &#8216;yield next.&#8217;. Upon return, the control
 flow yields back up to where the upstream middleware yielded downstream.</p>
 
-<p>Where Express passes native node req and res obects through to each function, Koa
+<p>Where Express passes native node req and res objects through to each function, Koa
 manages a context where it encapsulates them behind an interface. They are still available
-thrugh the &#8216;this&#8217; keyword as this.req and this.res. However, Its not reccomended in
+through the &#8216;this&#8217; keyword as this.req and this.res. However, Its not reccomended in
 the docs that you work with these native objects. One could imagine calling this.res.end(&#8221;)
-would throw a monkey wrench in the control flow. Instead you are suppossed to work through
+would throw a monkey wrench in the control flow. Instead you are supposed to work through
 the this.response and this.request. Most of the methods are aliased directly to this. &#8216;this.body&#8217;
 for example, is aliased to this.response.body.</p>
 
@@ -409,7 +409,7 @@ List seems like a good thing no one has ever tried to make before in any technol
 To simplify assumptions, lets just store the todos in memory.</p>
 
 <p>By itself, Koa is very minimalistic. It does not provide body parsing, sessions, or
-routing in the core. Unfortunatly Koa is still young so there just aren&#8217;t that many
+routing in the core. Unfortunately Koa is still young so there just aren&#8217;t that many
 npm modules for it just yet. A quick search on <a href="https://github.com/koajs/koa/wiki">the Koa website</a>
 shows that we do have the necessary modules for a basic todo.</p>
 
@@ -550,8 +550,8 @@ The github version includes frontend code.</p>
 
 <p>The &#8216;yield&#8217; keyword ca do some interesting things. If we pass into it
 an asynchronous function that returns a thunk or promise, it will stop execution of
-the middleware and wait till it resolves. It then returns the value of the promse or thunk
-and resumes the generator. This is a hell of alot easier to read.</p>
+the middleware and wait till it resolves. It then returns the value of the promise or thunk
+and resumes the generator. This is a hell of a lot easier to read.</p>
 
 <h4>A word of caution</h4>
 
@@ -559,7 +559,7 @@ and resumes the generator. This is a hell of alot easier to read.</p>
 While the event loop itself isn&#8217;t blocked by it the way futures can, it does block resuming
 of any operations that occur after it.</p>
 
-<p>For example, if we run three asyncronous operations top to bottom that do not depend on
+<p>For example, if we run three asynchronous operations top to bottom that do not depend on
 each other, like the following&#8230;</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -594,7 +594,7 @@ for the three functions and yield on a merged promise.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>I&#8217;m excited to cut my teeth on sme bigger problems. As the frameowrk matures, Its going to
+<p>I&#8217;m excited to cut my teeth on some bigger problems. As the framework matures, Its going to
 allow more fine grained control for how we write the next generation of web applications.</p>
 ]]></content>
   </entry>
