@@ -53,19 +53,24 @@ The bind is implimented by taking a literal function and calling it within anoth
 literal function passing along the context and possible arguments using .apply().
 
 A Generator has 3 states,
-  1. Literal: A literal Generator function
+  
+  * Literal: A literal Generator function
+
  {%codeblock lang:javascript %}
 var Gen = function *() {
   var value = yield asyncTask();
   return value;
 };
  {% endcodeblock %}
-  2. Instantiated: a runnable instance is created by calling the Generator function
+  
+  * Instantiated: a runnable instance is created by calling the Generator function
+
 {%codeblock lang:javascript %}
 var gen = Gen();
 {% endcodeblock %}
 
-  3. Run: You can then iterate through the generator by calling next()
+  * Run: You can then iterate through the generator by calling next()
+
 {%codeblock lang:javascript %}
 gen.next();
 {% endcodeblock %}
