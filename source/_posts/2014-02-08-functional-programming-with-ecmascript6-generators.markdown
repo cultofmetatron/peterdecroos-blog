@@ -27,7 +27,7 @@ If you've worked with javascript for any of length of time, You should be famili
 {%codeblock lang:javascript %}
   var bind = function(fn, ctx, args) {
     return function() {
-      return fn.apply(this, arguments);
+      return fn.apply(ctx, arguments);
     }
   }
 {% endcodeblock %}
